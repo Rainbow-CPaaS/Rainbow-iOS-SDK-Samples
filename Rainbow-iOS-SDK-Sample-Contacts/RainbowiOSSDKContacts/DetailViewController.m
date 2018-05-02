@@ -30,10 +30,10 @@
 
 @implementation DetailViewController
 
--(void)updateUI:(Contact *)contact {
+-(void)updateUI {
     if(![NSThread isMainThread]){
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self updateUI:contact];
+            [self updateUI];
         });
         return;
     }
@@ -60,7 +60,7 @@
     [super viewDidLoad];
 
     // Update the UI with already fetched informations
-    [self updateUI:self.contact];
+    [self updateUI];
     
     // Fetch potentially missing informations about the contact
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didGetInfo:) name:kContactsManagerServiceDidUpdateContact object:nil];
@@ -70,8 +70,8 @@
 #pragma mark - get contact info notification
 
 -(void) didGetInfo:(NSNotification *) notification {
-    Contact *contact = (Contact *)[notification.object objectForKey:@"contact"];
-    [self updateUI:contact];
+    self.contact = (Contact *)[notification.object objectForKey:@"contact"];
+    [self updateUI];
 }
 
 #pragma mark - UITableViewDataSource
