@@ -17,18 +17,40 @@ import UIKit
 import Rainbow
 
 class MainViewController: UIViewController {
-
+    @IBOutlet weak var contactsButton: UIButton!
+    
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         NotificationCenter.default.addObserver(self, selector: #selector(didLogin(notification:)), name: NSNotification.Name(kLoginManagerDidLoginSucceeded), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(didLogout(notification:)), name: NSNotification.Name(kLoginManagerDidLogoutSucceeded), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(failedToAuthenticate(notification:)), name: NSNotification.Name(kLoginManagerDidFailedToAuthenticate), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didEndPopulatingMyNetwork(notification:)), name: NSNotification.Name(kContactsManagerServiceDidEndPopulatingMyNetwork), object: nil)
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kLoginManagerDidLoginSucceeded), object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kLoginManagerDidLogoutSucceeded), object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kLoginManagerDidFailedToAuthenticate), object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kContactsManagerServiceDidEndPopulatingMyNetwork), object: nil)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        contactsButton.isEnabled = false
     }
  
+    @objc func didEndPopulatingMyNetwork(notification : Notification) {
+        // Enforce that this method is called on the main thread
+        if !Thread.isMainThread {
+            DispatchQueue.main.async {
+                self.didEndPopulatingMyNetwork(notification: notification)
+            }
+            return
+        }
+        NSLog("Did end populating my network");
+        contactsButton.isEnabled = true
+    }
+    
     @IBAction func logoutAction(_ sender: Any) {
         ServicesManager.sharedInstance().loginManager.disconnect()
         ServicesManager.sharedInstance().loginManager.resetAllCredentials()
