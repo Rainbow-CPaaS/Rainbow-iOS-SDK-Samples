@@ -15,7 +15,7 @@ You can select a contact to display more information about him like the company 
 
 ### Retrieve the list of contacts
 
-Once connected, you can retrieve the list of your contact when the ContactsManager has finished to retrieve the contacts from the server and has sent the `kContactsManagerServiceDidEndPopulatingMyNetwork` notifications,
+Once connected, you can get the list of your contact when the `ContactsManagerService` has finished to retrieve the contacts from the server and has sent the `kContactsManagerServiceDidEndPopulatingMyNetwork` notifications and populated the `[ServicesManager sharedInstance].contactsManagerService.contacts` array,
 
 ```objective-c 
 -(void) viewDidLoad { 
@@ -30,7 +30,7 @@ Once connected, you can retrieve the list of your contact when the ContactsManag
 	self.contactsArray = [[NSMutableArray alloc] init];
 	
 	// fill contactsArray with the contacts already loaded by the ContactsManager
-	for(Contact *contact in _contactsManager.contacts){
+	for(Contact *contact in [ServicesManager sharedInstance].contactsManagerService.contacts){
         // keep only contacts that are in the connected user's roster
         if(contact.isInRoster){
             [self.contactsArray addObject:contact];
