@@ -108,21 +108,38 @@
                                     <segue destination="AKG-5M-hBw" kind="show" id="t2Q-xd-WsH"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Unread messages:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qa4-6r-8jq">
+                                <rect key="frame" x="106.5" y="173" width="112.5" height="16"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="07I-VV-35D">
+                                <rect key="frame" x="227" y="173" width="8.5" height="16"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="8OI-vO-cLe" firstAttribute="centerX" secondItem="JJU-hv-GMQ" secondAttribute="centerX" id="3RY-yC-nGZ"/>
                             <constraint firstItem="Diq-SN-o0l" firstAttribute="top" secondItem="8OI-vO-cLe" secondAttribute="bottom" constant="16" id="6Pu-8E-8kE"/>
+                            <constraint firstItem="07I-VV-35D" firstAttribute="leading" secondItem="qa4-6r-8jq" secondAttribute="trailing" constant="8" id="GmB-gr-bHn"/>
                             <constraint firstItem="Diq-SN-o0l" firstAttribute="centerX" secondItem="JJU-hv-GMQ" secondAttribute="centerX" id="IbJ-h3-wkd"/>
+                            <constraint firstItem="8OI-vO-cLe" firstAttribute="trailing" secondItem="qa4-6r-8jq" secondAttribute="trailing" id="N5n-AC-EUX"/>
                             <constraint firstItem="7Z1-47-YNS" firstAttribute="top" secondItem="Mfy-zg-w4v" secondAttribute="top" constant="70" id="U2Y-cD-Pok"/>
+                            <constraint firstItem="07I-VV-35D" firstAttribute="baseline" secondItem="qa4-6r-8jq" secondAttribute="baseline" id="UBm-u4-vZL"/>
                             <constraint firstItem="7Z1-47-YNS" firstAttribute="centerX" secondItem="JJU-hv-GMQ" secondAttribute="centerX" id="YLz-pX-eDl"/>
                             <constraint firstItem="8OI-vO-cLe" firstAttribute="top" secondItem="7Z1-47-YNS" secondAttribute="bottom" constant="100" id="feN-Ec-39Y"/>
+                            <constraint firstItem="qa4-6r-8jq" firstAttribute="top" secondItem="7Z1-47-YNS" secondAttribute="bottom" constant="18" id="iJU-Nd-xWF"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="Mfy-zg-w4v"/>
                     </view>
                     <navigationItem key="navigationItem" title="Rainbow" id="azQ-jf-Ulk"/>
                     <connections>
                         <outlet property="contactsButton" destination="8OI-vO-cLe" id="pKO-al-Exf"/>
+                        <outlet property="unreadMessagesCountLabel" destination="07I-VV-35D" id="lM9-eg-cBd"/>
                         <segue destination="BYZ-38-t0r" kind="show" identifier="BackToLoginSegue" id="BXE-r2-cMs"/>
                     </connections>
                 </viewController>
