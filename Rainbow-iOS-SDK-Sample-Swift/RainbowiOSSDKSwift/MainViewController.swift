@@ -70,13 +70,19 @@ class MainViewController: UIViewController {
     }
     
     @objc func didEndLoadingConversations(notification : Notification) {
-        totalNbOfUnreadMessagesInAllConversations = ServicesManager.sharedInstance().conversationsManagerService.totalNbOfUnreadMessagesInAllConversations
-        NSLog("totalNbOfUnreadMessagesInAllConversations=%ld", totalNbOfUnreadMessagesInAllConversations)
+        // Read the unread message count in a asynchronous block as it is a synchronous method protected by a lock
+        DispatchQueue.main.async {
+            self.totalNbOfUnreadMessagesInAllConversations = ServicesManager.sharedInstance().conversationsManagerService.totalNbOfUnreadMessagesInAllConversations
+            NSLog("totalNbOfUnreadMessagesInAllConversations=%ld", self.totalNbOfUnreadMessagesInAllConversations)
+        }
     }
     
     @objc func didUpdateMessagesUnreadCount(notification : Notification) {
-        totalNbOfUnreadMessagesInAllConversations = ServicesManager.sharedInstance().conversationsManagerService.totalNbOfUnreadMessagesInAllConversations
-        NSLog("totalNbOfUnreadMessagesInAllConversations=%ld", totalNbOfUnreadMessagesInAllConversations)
+        // Read the unread message count in a asynchronous block as it is a synchronous method protected by a lock
+        DispatchQueue.main.async {
+            self.totalNbOfUnreadMessagesInAllConversations = ServicesManager.sharedInstance().conversationsManagerService.totalNbOfUnreadMessagesInAllConversations
+            NSLog("totalNbOfUnreadMessagesInAllConversations=%ld", self.totalNbOfUnreadMessagesInAllConversations)
+        }
     }
     
     @IBAction func logoutAction(_ sender: Any) {
