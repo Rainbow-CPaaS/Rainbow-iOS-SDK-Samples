@@ -26,6 +26,15 @@ class ConversationsTableViewController: UITableViewController {
         serviceManager = ServicesManager.sharedInstance()
          conversationsManager = serviceManager.conversationsManagerService
         super.init(coder: aDecoder)
+        NotificationCenter.default.addObserver(self, selector:#selector(didReceiveNewMessageForConversation(notification:)), name:NSNotification.Name(kConversationsManagerDidReceiveNewMessageForConversation), object:nil)
+        NotificationCenter.default.addObserver(self, selector:#selector(didAddConversation(notification:)), name:NSNotification.Name(kConversationsManagerDidAddConversation), object:nil)
+        NotificationCenter.default.addObserver(self, selector:#selector(didRemoveConversation(notification:)), name:NSNotification.Name(kConversationsManagerDidRemoveConversation), object:nil)
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kConversationsManagerDidReceiveNewMessageForConversation), object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kConversationsManagerDidAddConversation), object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kConversationsManagerDidRemoveConversation), object: nil)
     }
     
     override func viewDidLoad() {
@@ -33,6 +42,41 @@ class ConversationsTableViewController: UITableViewController {
         self.tableView.reloadData()
     }
 
+    // MARK: - conversation notifications
+    
+    @objc func didReceiveNewMessageForConversation(notification : Notification) {
+        if !Thread.isMainThread {
+            DispatchQueue.main.sync {
+                self.didReceiveNewMessageForConversation(notification: notification)
+            }
+            return
+        }
+        
+        self.tableView.reloadData()
+    }
+    
+    @objc func didAddConversation(notification : Notification) {
+        if !Thread.isMainThread {
+            DispatchQueue.main.sync {
+                self.didAddConversation(notification: notification)
+            }
+            return
+        }
+        
+        self.tableView.reloadData()
+    }
+    
+    @objc func didRemoveConversation(notification : Notification) {
+        if !Thread.isMainThread {
+            DispatchQueue.main.sync {
+                self.didRemoveConversation(notification: notification)
+            }
+            return
+        }
+        
+        self.tableView.reloadData()
+    }
+    
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -60,8 +104,10 @@ class ConversationsTableViewController: UITableViewController {
             }
             if let photoData = (conversationsManager.conversations[indexPath.row].peer as? Contact)?.photoData {
                 conversationsCell.avatar.image = UIImage(data: photoData)
+                conversationsCell.avatar.tintColor = UIColor.clear
             } else {
                 conversationsCell.avatar.image = UIImage(named: "Default_Avatar")
+                conversationsCell.avatar.tintColor = UIColor(hue:CGFloat(indexPath.row*36%100)/100.0, saturation:1.0, brightness:1.0, alpha:1.0)
             }
         }
     }
@@ -81,13 +127,11 @@ class ConversationsTableViewController: UITableViewController {
                     if let contact = conversationsManager.conversations[selectedIndex.row].peer as? Contact {
                         vc.contact = contact
                     }
-                    //vc.contactImage = ((ContactTableViewCell *)[self.tableView cellForRowAtIndexPath:self.selectedIndex]).avatar.image
-                    //vc.contactImageTint = ((ContactTableViewCell *)[self.tableView cellForRowAtIndexPath:self.selectedIndex]).avatar.tintColor
+                    vc.contactImage = (tableView.cellForRow(at: selectedIndex) as? ConversationsTableViewCell)?.avatar.image
+                    vc.contactImageTint = (tableView.cellForRow(at: selectedIndex) as? ConversationsTableViewCell)?.avatar.tintColor
                 }
             }
         }
     }
-    
-    
-    
+
 }

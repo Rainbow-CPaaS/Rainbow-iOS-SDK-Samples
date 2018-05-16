@@ -18,9 +18,12 @@ import Rainbow
 
 class MainViewController: UIViewController {
     @IBOutlet weak var contactsButton: UIButton!
+    @IBOutlet weak var conversationsButton: UIButton!
     @IBOutlet weak var unreadMessagesCountLabel: UILabel!
     
     var totalNbOfUnreadMessagesInAllConversations = 0
+    var conversationsLoaded = false
+    var contactsLoaded = false
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -49,7 +52,8 @@ class MainViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        contactsButton.isEnabled = false
+        contactsButton.isEnabled = contactsLoaded
+        conversationsButton.isEnabled = conversationsLoaded
     }
  
     override func viewWillAppear(_ animated: Bool) {
@@ -66,12 +70,19 @@ class MainViewController: UIViewController {
             return
         }
         NSLog("Did end populating my network");
-        contactsButton.isEnabled = true
+        contactsLoaded = true
+        if isViewLoaded {
+            contactsButton.isEnabled = true
+        }
     }
     
     @objc func didEndLoadingConversations(notification : Notification) {
+        conversationsLoaded = true
         // Read the unread message count in a asynchronous block as it is a synchronous method protected by a lock
         DispatchQueue.main.async {
+            if self.isViewLoaded {
+                self.conversationsButton.isEnabled = true
+            }
             self.totalNbOfUnreadMessagesInAllConversations = ServicesManager.sharedInstance().conversationsManagerService.totalNbOfUnreadMessagesInAllConversations
             NSLog("totalNbOfUnreadMessagesInAllConversations=%ld", self.totalNbOfUnreadMessagesInAllConversations)
         }

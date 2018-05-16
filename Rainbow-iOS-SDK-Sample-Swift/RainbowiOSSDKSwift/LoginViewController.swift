@@ -62,8 +62,10 @@ class LoginViewController: UIViewController {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        ServicesManager.sharedInstance().loginManager.setUsername(self.loginTextField.text, andPassword: self.passwordTextField.text)
-        ServicesManager.sharedInstance().loginManager.connect()
+        if  segue.identifier == "LoginSegue" {
+            ServicesManager.sharedInstance().loginManager.setUsername(self.loginTextField.text, andPassword: self.passwordTextField.text)
+            ServicesManager.sharedInstance().loginManager.connect()
+        }
     }
     
     @objc func didChangeServer(notification: NSNotification) {

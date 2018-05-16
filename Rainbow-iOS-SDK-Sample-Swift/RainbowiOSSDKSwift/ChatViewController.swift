@@ -87,9 +87,10 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
             }
         }
         
-        NotificationCenter.default.addObserver(self, selector:#selector(keyboardWillShow(notification:)), name:NSNotification.Name(rawValue: "UIKeyboardWillShowNotification"), object: nil)
-        NotificationCenter.default.addObserver(self, selector:#selector(keyboardDidHide(notification:)), name:NSNotification.Name(rawValue: "UIKeyboardDidHideNotification"), object:nil)
-        NotificationCenter.default.addObserver(self, selector:#selector(didReceiveNewMessage(notification:)), name:NSNotification.Name(rawValue: kConversationsManagerDidReceiveNewMessageForConversation), object:nil)
+        NotificationCenter.default.addObserver(self, selector:#selector(keyboardWillShow(notification:)), name:NSNotification.Name("UIKeyboardWillShowNotification"), object: nil)
+        NotificationCenter.default.addObserver(self, selector:#selector(keyboardDidHide(notification:)),
+            name:NSNotification.Name("UIKeyboardDidHideNotification"), object:nil)
+        NotificationCenter.default.addObserver(self, selector:#selector(didReceiveNewMessage(notification:)), name:NSNotification.Name(kConversationsManagerDidReceiveNewMessageForConversation), object:nil)
         
         messagesBrowser = conversationsManager.messagesBrowser(for: self.theConversation, withPageSize:kPageSize, preloadMessages:true)
         messagesBrowser?.delegate = self

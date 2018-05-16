@@ -35,7 +35,7 @@
                                 <rect key="frame" x="168" y="405.5" width="38" height="30"/>
                                 <state key="normal" title="Login"/>
                                 <connections>
-                                    <segue destination="aHZ-Oi-7Of" kind="show" id="AnT-8b-LQE"/>
+                                    <segue destination="aHZ-Oi-7Of" kind="show" identifier="LoginSegue" id="AnT-8b-LQE"/>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="openrainbow.com" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ENq-a1-TYI">
@@ -149,6 +149,7 @@
                     <navigationItem key="navigationItem" title="Rainbow" id="azQ-jf-Ulk"/>
                     <connections>
                         <outlet property="contactsButton" destination="8OI-vO-cLe" id="pKO-al-Exf"/>
+                        <outlet property="conversationsButton" destination="sZE-7b-ZI7" id="VtE-zJ-QbK"/>
                         <outlet property="unreadMessagesCountLabel" destination="07I-VV-35D" id="lM9-eg-cBd"/>
                         <segue destination="BYZ-38-t0r" kind="show" identifier="BackToLoginSegue" id="BXE-r2-cMs"/>
                     </connections>
