@@ -79,9 +79,11 @@ class MainViewController: UIViewController {
     @objc func didEndLoadingConversations(notification : Notification) {
         conversationsLoaded = true
         // Read the unread message count in a asynchronous block as it is a synchronous method protected by a lock
-        DispatchQueue.main.async {
-            if self.isViewLoaded {
-                self.conversationsButton.isEnabled = true
+        DispatchQueue.global().async {
+            DispatchQueue.main.async {
+                if self.isViewLoaded {
+                    self.conversationsButton.isEnabled = true
+                }
             }
             self.totalNbOfUnreadMessagesInAllConversations = ServicesManager.sharedInstance().conversationsManagerService.totalNbOfUnreadMessagesInAllConversations
             NSLog("totalNbOfUnreadMessagesInAllConversations=%ld", self.totalNbOfUnreadMessagesInAllConversations)
@@ -90,7 +92,7 @@ class MainViewController: UIViewController {
     
     @objc func didUpdateMessagesUnreadCount(notification : Notification) {
         // Read the unread message count in a asynchronous block as it is a synchronous method protected by a lock
-        DispatchQueue.main.async {
+        DispatchQueue.global().async {
             self.totalNbOfUnreadMessagesInAllConversations = ServicesManager.sharedInstance().conversationsManagerService.totalNbOfUnreadMessagesInAllConversations
             NSLog("totalNbOfUnreadMessagesInAllConversations=%ld", self.totalNbOfUnreadMessagesInAllConversations)
         }

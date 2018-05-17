@@ -173,6 +173,8 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
         if let receivedConversation = notification.object as? Conversation {
             if(receivedConversation == self.theConversation){
                 NSLog("did received new message for the conversation")
+                let lastRow = IndexPath(row:  messageList.numberOfRows(inSection: 1), section: 1)
+                messageList.scrollToRow(at: lastRow, at: .bottom, animated: true)
             }
         }
     }
