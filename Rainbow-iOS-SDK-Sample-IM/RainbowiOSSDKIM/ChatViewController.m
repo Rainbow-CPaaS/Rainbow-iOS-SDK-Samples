@@ -212,10 +212,19 @@
 
 #pragma mark - Conversation manager notification
 
-- (void) didReceiveNewMessage : (NSNotification *) notification {
+- (void) didReceiveNewMessage: (NSNotification *) notification {
+    if(![NSThread isMainThread]){
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self didReceiveNewMessage:notification];
+        });
+        return;
+    }
+    
     Conversation * receivedConversation  = notification.object;
     if(receivedConversation == self.theConversation){
         NSLog(@"did received new message for the conversation");
+        NSIndexPath *lastRow = [NSIndexPath indexPathForItem:[self.messageList numberOfRowsInSection:0] - 1 inSection:0];
+        [self.messageList scrollToRowAtIndexPath:lastRow atScrollPosition:UITableViewScrollPositionBottom animated:YES];
     }
 }
 
