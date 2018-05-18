@@ -170,10 +170,16 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
     // MARK: - Conversation manager notification
     
     @objc func didReceiveNewMessage(notification : Notification) {
+        if !Thread.isMainThread {
+            DispatchQueue.main.async {
+                self.didReceiveNewMessage(notification: notification)
+            }
+            return
+        }
         if let receivedConversation = notification.object as? Conversation {
             if(receivedConversation == self.theConversation){
                 NSLog("did received new message for the conversation")
-                let lastRow = IndexPath(row:  messageList.numberOfRows(inSection: 1), section: 1)
+                let lastRow = IndexPath(row:  messageList.numberOfRows(inSection: 0) - 1, section: 0)
                 messageList.scrollToRow(at: lastRow, at: .bottom, animated: true)
             }
         }
