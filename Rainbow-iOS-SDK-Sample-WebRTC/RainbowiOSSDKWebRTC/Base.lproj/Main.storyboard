@@ -6,6 +6,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -182,7 +183,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="O4v-fN-hag">
-                                <rect key="frame" x="159" y="367" width="56" height="34"/>
+                                <rect key="frame" x="159" y="613" width="56" height="34"/>
                                 <state key="normal" title="Cancel">
                                     <color key="titleColor" red="0.93451857569999996" green="0.3066485524" blue="0.27838009600000002" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 </state>
@@ -190,24 +191,56 @@
                                     <action selector="cancelCall:" destination="UEs-5i-6et" eventType="touchUpInside" id="Y4N-pZ-q6O"/>
                                 </connections>
                             </button>
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="arH-4q-eg2" customClass="RTCEAGLVideoView">
+                                <rect key="frame" x="16" y="277" width="343" height="257.5"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="arH-4q-eg2" secondAttribute="height" multiplier="4:3" id="jKh-pp-aac"/>
+                                </constraints>
+                            </view>
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yid-Jk-MgZ" customClass="RTCCameraPreviewView">
+                                <rect key="frame" x="231" y="285" width="120" height="90"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="yid-Jk-MgZ" secondAttribute="height" multiplier="4:3" id="NxR-hI-9x9"/>
+                                    <constraint firstAttribute="width" constant="120" id="WgM-cF-jBp"/>
+                                </constraints>
+                            </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Akc-bN-I2t">
+                                <rect key="frame" x="152.5" y="575" width="69" height="30"/>
+                                <state key="normal" title="Add video"/>
+                                <connections>
+                                    <action selector="addVideo:" destination="UEs-5i-6et" eventType="touchUpInside" id="Tty-bi-VRa"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstItem="Akc-bN-I2t" firstAttribute="centerX" secondItem="2MA-aW-BRU" secondAttribute="centerX" id="5Uc-a8-MaH"/>
+                            <constraint firstItem="yid-Jk-MgZ" firstAttribute="top" secondItem="H0i-Zo-E5g" secondAttribute="bottom" constant="16" id="8mE-8E-8ez"/>
                             <constraint firstItem="O4v-fN-hag" firstAttribute="centerX" secondItem="2MA-aW-BRU" secondAttribute="centerX" id="DrU-Uq-R54"/>
+                            <constraint firstItem="A4o-uv-uPG" firstAttribute="trailing" secondItem="arH-4q-eg2" secondAttribute="trailing" constant="16" id="DzG-C6-F8A"/>
                             <constraint firstItem="34y-BP-Bv3" firstAttribute="centerX" secondItem="2MA-aW-BRU" secondAttribute="centerX" id="Fxf-5x-phr"/>
                             <constraint firstItem="H0i-Zo-E5g" firstAttribute="centerX" secondItem="2MA-aW-BRU" secondAttribute="centerX" id="I3k-GP-GQJ"/>
                             <constraint firstItem="mhp-2t-CL7" firstAttribute="centerX" secondItem="2MA-aW-BRU" secondAttribute="centerX" id="IM6-bq-sXI"/>
                             <constraint firstItem="34y-BP-Bv3" firstAttribute="top" secondItem="A4o-uv-uPG" secondAttribute="top" constant="100" id="JzM-fu-kJw"/>
                             <constraint firstItem="mhp-2t-CL7" firstAttribute="top" secondItem="A4o-uv-uPG" secondAttribute="top" constant="28" id="K1R-6D-nmv"/>
+                            <constraint firstItem="arH-4q-eg2" firstAttribute="leading" secondItem="A4o-uv-uPG" secondAttribute="leading" constant="16" id="PI2-ph-Jjl"/>
+                            <constraint firstItem="A4o-uv-uPG" firstAttribute="trailing" secondItem="yid-Jk-MgZ" secondAttribute="trailing" constant="24" id="Sbr-dV-qvY"/>
+                            <constraint firstItem="A4o-uv-uPG" firstAttribute="bottom" secondItem="O4v-fN-hag" secondAttribute="bottom" constant="20" id="URX-cn-7yS"/>
                             <constraint firstItem="H0i-Zo-E5g" firstAttribute="top" secondItem="34y-BP-Bv3" secondAttribute="bottom" constant="8" id="omF-g3-ZLR"/>
-                            <constraint firstItem="O4v-fN-hag" firstAttribute="top" secondItem="H0i-Zo-E5g" secondAttribute="bottom" constant="98" id="rU4-F7-AVC"/>
+                            <constraint firstItem="arH-4q-eg2" firstAttribute="top" secondItem="H0i-Zo-E5g" secondAttribute="bottom" constant="8" id="pZl-Ts-rmF"/>
+                            <constraint firstItem="O4v-fN-hag" firstAttribute="top" secondItem="Akc-bN-I2t" secondAttribute="bottom" constant="8" id="zL1-si-ngX"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="A4o-uv-uPG"/>
                     </view>
                     <connections>
+                        <outlet property="addVideoButton" destination="Akc-bN-I2t" id="5OM-fn-5r0"/>
                         <outlet property="avatar" destination="34y-BP-Bv3" id="MWH-Kz-xv1"/>
                         <outlet property="cancelButton" destination="O4v-fN-hag" id="3OF-an-ZFV"/>
+                        <outlet property="localVideoView" destination="yid-Jk-MgZ" id="kbR-hM-HQl"/>
                         <outlet property="nameLabel" destination="H0i-Zo-E5g" id="0uT-Qa-xDR"/>
+                        <outlet property="remoteVideoView" destination="arH-4q-eg2" id="3ZF-5u-7FI"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lBi-9J-13f" userLabel="First Responder" sceneMemberID="firstResponder"/>
