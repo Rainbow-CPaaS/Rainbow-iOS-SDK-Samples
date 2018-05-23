@@ -53,9 +53,9 @@ RTCCall *currentVideoCall = [[ServicesManager sharedInstance].rtcService beginNe
     }
 }
 
--(void)statusChanged:(NSNotification *)notification {
+-(void)statsUpdated:(NSNotification *)notification {
     if([notification.object class] == [RTCCall class]){
-        NSLog(@"statusChanged notification");
+        NSLog(@"statsUpdated notification");
     }
 }
 
@@ -84,6 +84,65 @@ RTCCall *currentVideoCall = [[ServicesManager sharedInstance].rtcService beginNe
 ```objective-c
  [[ServicesManager sharedInstance].rtcService cancelOutgoingCall:currentCall];
  [[ServicesManager sharedInstance].rtcService hangupCall:currentCall];
+```
+
+#### Video Call
+To start a video call you should pass the `RTCCallFeatureLocalVideo` feature like this,
+
+```objective-c
+RTCCall * currentCall = [[ServicesManager sharedInstance].rtcService beginNewOutgoingCallWithContact:_aContact withFeatures:(RTCCallFeatureLocalVideo)];
+```
+
+You may also add a video stream to a established audio call, first declare some properties and listen to video track notifications,
+
+```objective-c
+@property (strong, nonatomic) RTCCall *currentCall;
+@property (strong, nonatomic) RTCVideoTrack *localVideoTrack;
+@property (strong, nonatomic) RTCVideoTrack *remoteVideoTrack;
+@property (nonatomic, weak) IBOutlet RTCCameraPreviewView *localVideoView;
+@property (nonatomic, weak) IBOutlet RTCEAGLVideoView *remoteVideoView;
+...
+// Local video notifications
+[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didAddLocalVideoTrack:) name:kRTCServiceDidAddLocalVideoTrackNotification object:nil];
+[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didRemoveLocalVideoTrack:) name:kRTCServiceDidRemoveLocalVideoTrackNotification object:nil];
+// Remote video notifications
+[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didAddRemoteVideoTrack:) name:kRTCServiceDidAddRemoteVideoTrackNotification object:nil];
+[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didRemoveRemoteVideoTrack:) name:kRTCServiceDidRemoveRemoteVideoTrackNotification object:nil];
+```
+
+When the local video stream is started the following notification is called,
+
+```objective-c
+-(void)didAddLocalVideoTrack:(NSNotification *) notification {
+    if(![NSThread isMainThread]){
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self didAddLocalVideoTrack:notification];
+        });
+        return;
+    }
+    
+    RTCVideoTrack *localVideoTrack = (RTCVideoTrack *) notification.object;
+    if(!localVideoTrack){
+        RTCMediaStream *localStream = [[ServicesManager sharedInstance].rtcService localVideoStreamForCall:self.currentCall];
+        localVideoTrack = localStream.videoTracks[0];
+    }
+    if(self.localVideoTrack == localVideoTrack)
+        return;
+    
+    self.localVideoTrack = nil;
+    self.localVideoTrack = localVideoTrack;
+    
+    RTCAVFoundationVideoSource *source = nil;
+    if ([localVideoTrack.source isKindOfClass:[RTCAVFoundationVideoSource class]]) {
+        source = (RTCAVFoundationVideoSource*)localVideoTrack.source;
+    }
+    self.localVideoView.captureSession = source.captureSession;
+}
+```
+Then to add the video track to a established audio conversation you should do,
+
+```objective-c
+[[ServicesManager sharedInstance].rtcService addVideoMediaToCall:self.currentCall];
 ```
 
 ### RTC Call Status
