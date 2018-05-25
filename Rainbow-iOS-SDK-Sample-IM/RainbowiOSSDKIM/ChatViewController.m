@@ -111,11 +111,23 @@
 }
 
 /*
- * Scroll the message list to the latest one
+ * Scroll the message list to the latest one when the reloadData has finished
  */
--(void)scrollToBottom {
-    NSIndexPath *lastRow = [NSIndexPath indexPathForRow:[self.messageList numberOfRowsInSection:0] - 1 inSection:0];
-    [self.messageList scrollToRowAtIndexPath:lastRow atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+-(void)reloadAndScrollToBottom {
+    if(!self.messageList.dataSource){
+        // ChatViewController is being deallocated
+        return;
+    }
+    [CATransaction begin];
+    [CATransaction setCompletionBlock:^{
+        if([self.messageList numberOfRowsInSection:0] > 0){
+            NSIndexPath *lastRow = [NSIndexPath indexPathForRow:[self.messageList numberOfRowsInSection:0] - 1 inSection:0];
+            [self.messageList scrollToRowAtIndexPath:lastRow atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+        }
+        
+    }];
+    [self.messageList reloadData];
+    [CATransaction commit];
 }
 
 #pragma mark - IBAction
@@ -149,7 +161,9 @@
     }
     NSLog(@"%@ %@", NSStringFromSelector(_cmd), newItems);
     @synchronized(self.messages){
-        for(Message *message in [newItems reverseObjectEnumerator]){
+        __block NSUInteger newItemIndex = 0;
+        [indexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL * _Nonnull stop) {
+            Message *message = [newItems objectAtIndex:newItemIndex];
             MessageItem *item = [[MessageItem alloc] init];
             if(message.isOutgoing){
                 item.contact = self.serviceManager.myUser.contact;
@@ -157,23 +171,14 @@
                 item.contact = (Contact *)message.peer;
             }
             item.text = message.body;
-            [self.messages addObject:item];
-        }
-        // Scroll the message list when the reloadData has finished
-        [CATransaction begin];
-        [CATransaction setCompletionBlock:^{
-            [self scrollToBottom];
+            [self.messages setObject:item atIndexedSubscript:idx];
+            newItemIndex++;
         }];
-        [self.messageList reloadData];
-        [CATransaction commit];
     }
+    [self reloadAndScrollToBottom];
 }
 
 -(void) itemsBrowser:(CKItemsBrowser*)browser didRemoveCacheItems:(NSArray*)removedItems atIndexes:(NSIndexSet*)indexes {
-    if(browser != self.messagesBrowser){
-        return;
-    }
-    
     if(![NSThread isMainThread]){
         dispatch_async(dispatch_get_main_queue(), ^{
             [self itemsBrowser:browser didRemoveCacheItems:removedItems atIndexes:indexes];
@@ -182,6 +187,16 @@
     }
     
     NSLog(@"%@ %@", NSStringFromSelector(_cmd), removedItems);
+    @synchronized(self.messages){
+        NSMutableIndexSet *validatedIndexes = [NSMutableIndexSet indexSet];
+        [indexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL * _Nonnull stop) {
+            if(idx < self.messages.count){
+                [validatedIndexes addIndex:idx];
+            }
+        }];
+        [self.messages removeObjectsAtIndexes:validatedIndexes];
+    }
+    [self reloadAndScrollToBottom];
 }
 
 -(void) itemsBrowser:(CKItemsBrowser*)browser didUpdateCacheItems:(NSArray*)changedItems atIndexes:(NSIndexSet*)indexes {
@@ -193,20 +208,23 @@
     }
     
     NSLog(@"%@ %@", NSStringFromSelector(_cmd), changedItems);
-    __block NSUInteger changedItemIndex = 0;
-    [indexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL * _Nonnull stop) {
-        Message *message = [changedItems objectAtIndex:changedItemIndex];
-        MessageItem *item = [[MessageItem alloc] init];
-        if(message.isOutgoing){
-            item.contact = self.serviceManager.myUser.contact;
-        } else {
-            item.contact = (Contact *)message.peer;
-        }
-        item.text = message.body;
-        [self.messages setObject:item atIndexedSubscript:idx];
-        changedItemIndex++;
-    }];
-    [self.messageList reloadData];
+    @synchronized(self.messages){
+        __block NSUInteger changedItemIndex = 0;
+        [indexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL * _Nonnull stop) {
+            Message *message = [changedItems objectAtIndex:changedItemIndex];
+            MessageItem *item = [[MessageItem alloc] init];
+            if(message.isOutgoing){
+                item.contact = self.serviceManager.myUser.contact;
+            } else {
+                item.contact = (Contact *)message.peer;
+            }
+            item.text = message.body;
+            [self.messages setObject:item atIndexedSubscript:idx];
+            changedItemIndex++;
+        }];
+    }
+    [self reloadAndScrollToBottom];
+
 }
 
 -(void) itemsBrowser:(CKItemsBrowser*)browser didReorderCacheItemsAtIndexes:(NSArray*)oldIndexes toIndexes:(NSArray*)newIndexes {
@@ -250,7 +268,6 @@
     Conversation * receivedConversation  = notification.object;
     if(receivedConversation == self.theConversation){
         NSLog(@"did received new message for the conversation");
-        [self scrollToBottom];
     }
 }
 
@@ -294,8 +311,7 @@
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    NSInteger row = indexPath.row;
-    
+    NSInteger row = self.messages.count - indexPath.row - 1;
     if (self.messages[row].contact == _serviceManager.myUser.contact){
         return [tableView dequeueReusableCellWithIdentifier:@"MyUserTableViewCell" forIndexPath:indexPath];
     } else {
@@ -306,7 +322,7 @@
 #pragma mark - UITableViewDelegate
 
 -(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSInteger row = indexPath.row;
+    NSInteger row = self.messages.count - indexPath.row - 1;
     if([cell isKindOfClass:[MyUserTableViewCell class]]){
         MyUserTableViewCell  *myCell = (MyUserTableViewCell *)cell;
         if(self.myAvatar){
