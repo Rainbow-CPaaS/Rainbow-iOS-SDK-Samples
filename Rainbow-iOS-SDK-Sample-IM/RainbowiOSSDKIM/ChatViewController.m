@@ -14,7 +14,6 @@
  */
 
 #import "ChatViewController.h"
-#import <Rainbow/Rainbow.h>
 #import "MyUserTableViewCell.h"
 #import "PeerTableViewCell.h"
 
@@ -111,6 +110,14 @@
     _conversationsManager = nil;
 }
 
+/*
+ * Scroll the message list to the latest one
+ */
+-(void)scrollToBottom {
+    NSIndexPath *lastRow = [NSIndexPath indexPathForRow:[self.messageList numberOfRowsInSection:0] - 1 inSection:0];
+    [self.messageList scrollToRowAtIndexPath:lastRow atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+}
+
 #pragma mark - IBAction
 
 - (IBAction)sendAction:(id)sender {
@@ -145,14 +152,20 @@
         for(Message *message in [newItems reverseObjectEnumerator]){
             MessageItem *item = [[MessageItem alloc] init];
             if(message.isOutgoing){
-                item.contact = _serviceManager.myUser.contact;
+                item.contact = self.serviceManager.myUser.contact;
             } else {
                 item.contact = (Contact *)message.peer;
             }
             item.text = message.body;
             [self.messages addObject:item];
         }
+        // Scroll the message list when the reloadData has finished
+        [CATransaction begin];
+        [CATransaction setCompletionBlock:^{
+            [self scrollToBottom];
+        }];
         [self.messageList reloadData];
+        [CATransaction commit];
     }
 }
 
@@ -180,6 +193,20 @@
     }
     
     NSLog(@"%@ %@", NSStringFromSelector(_cmd), changedItems);
+    __block NSUInteger changedItemIndex = 0;
+    [indexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL * _Nonnull stop) {
+        Message *message = [changedItems objectAtIndex:changedItemIndex];
+        MessageItem *item = [[MessageItem alloc] init];
+        if(message.isOutgoing){
+            item.contact = self.serviceManager.myUser.contact;
+        } else {
+            item.contact = (Contact *)message.peer;
+        }
+        item.text = message.body;
+        [self.messages setObject:item atIndexedSubscript:idx];
+        changedItemIndex++;
+    }];
+    [self.messageList reloadData];
 }
 
 -(void) itemsBrowser:(CKItemsBrowser*)browser didReorderCacheItemsAtIndexes:(NSArray*)oldIndexes toIndexes:(NSArray*)newIndexes {
@@ -223,8 +250,7 @@
     Conversation * receivedConversation  = notification.object;
     if(receivedConversation == self.theConversation){
         NSLog(@"did received new message for the conversation");
-        NSIndexPath *lastRow = [NSIndexPath indexPathForItem:[self.messageList numberOfRowsInSection:0] - 1 inSection:0];
-        [self.messageList scrollToRowAtIndexPath:lastRow atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+        [self scrollToBottom];
     }
 }
 
@@ -285,14 +311,14 @@
         MyUserTableViewCell  *myCell = (MyUserTableViewCell *)cell;
         if(self.myAvatar){
             myCell.avatar.image = self.myAvatar;
-            myCell.message.text = self.messages[row].text;
         }
+        myCell.message.text = self.messages[row].text;
     } else {
         PeerTableViewCell *peerCell = (PeerTableViewCell *)cell;
         if(self.peerAvatar){
             peerCell.avatar.image = self.peerAvatar;
-            peerCell.message.text = self.messages[row].text;
         }
+        peerCell.message.text = self.messages[row].text;
     }
 }
 

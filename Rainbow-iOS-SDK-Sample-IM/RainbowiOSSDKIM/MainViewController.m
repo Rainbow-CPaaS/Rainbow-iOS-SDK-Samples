@@ -98,6 +98,10 @@
     if(contact.isBot) {
         return;
     }
+    // Keep only contact that are in the roster
+    if(!contact.isInRoster){
+        return;
+    }
     
     if (![_allObjects containsObject:contact]) {
         [_allObjects addObject:contact];
