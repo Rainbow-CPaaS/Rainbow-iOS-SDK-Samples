@@ -26,6 +26,13 @@ extension NSObject {
     }
 }
 
+// Swift equivalent of removeObjectsAtIndexes
+extension Array {
+    mutating func remove(indices: IndexSet) {
+        self = self.enumerated().filter { !indices.contains($0.offset) }.map { $0.element }
+    }
+}
+
 class MessageItem : NSObject {
     var contact : Contact?
     var text : String?
@@ -99,6 +106,26 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
         }
     }
     
+    
+    // Scroll the message list to the latest one when the reloadData has finished
+    func reloadAndScrollToBottom() {
+        if self.messageList.dataSource == nil {
+            // ChatViewController is being deallocated
+            return
+        }
+        CATransaction.begin()
+        CATransaction.setCompletionBlock(){
+            if self.messageList.numberOfRows(inSection: 0) > 0 {
+                let lastRow = IndexPath(item: self.messageList.numberOfRows(inSection: 0) - 1, section:0)
+                self.messageList.scrollToRow(at: lastRow, at:.bottom, animated:true)
+            }
+            
+        }
+        self.messageList.reloadData()
+        CATransaction.commit()
+    }
+
+    
     // MARK: - IBAction
     
     @IBAction func sendAction(_ sender : AnyObject) {
@@ -130,35 +157,70 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
             return
         }
 
+        NSLog("CKItemsBrowser didAddCacheItems")
         synchronized(self.messages as AnyObject){
-            for message in newItems.reversed() {
-                let item = MessageItem()
-                if let message = message as? Message {
-                    if(message.isOutgoing){
-                        item.contact = serviceManager.myUser.contact
+            // insert new items at the beginning of the messages array
+            self.messages.insert(contentsOf: Array.init(repeating: MessageItem(), count: newItems.count), at: 0)
+            for (idx, idxValue) in indexes.sorted().enumerated() {
+                if let message = newItems[idx] as? Message {
+                    let item = MessageItem()
+                    if message.isOutgoing {
+                        item.contact = self.serviceManager.myUser.contact
                     } else {
                         item.contact = message.peer as? Contact
                     }
                     item.text = message.body
-                   messages.append(item)
+                    self.messages[idxValue] = item
                 }
             }
-            messageList.reloadData()
         }
-            
-        
+        reloadAndScrollToBottom()
     }
-    
+
     func itemsBrowser(_ browser: CKItemsBrowser!, didRemoveCacheItems removedItems: [Any]!, at indexes: IndexSet!) {
+        if !Thread.isMainThread {
+            DispatchQueue.main.async {
+                self.itemsBrowser(browser, didRemoveCacheItems:removedItems, at:indexes)
+            }
+            return
+        }
         
+        NSLog("CKItemsBrowser didRemoveCacheItems")
+        synchronized(self.messages as AnyObject){
+            let validatedIndexes = IndexSet(indexes.filter({ $0 < self.messages.count }))
+            self.messages.remove(indices: validatedIndexes)
+        }
+        reloadAndScrollToBottom()
     }
     
     func itemsBrowser(_ browser: CKItemsBrowser!, didUpdateCacheItems changedItems: [Any]!, at indexes: IndexSet!) {
+        if !Thread.isMainThread {
+            DispatchQueue.main.async {
+                self.itemsBrowser(browser, didUpdateCacheItems:changedItems, at:indexes)
+            }
+            return
+        }
         
+        NSLog("CKItemsBrowser didUpdateCacheItems")
+        synchronized(self.messages as AnyObject){
+            for (idx, idxValue) in indexes.enumerated() {
+                if let message = changedItems[idx] as? Message {
+                    let item = MessageItem()
+                    if message.isOutgoing {
+                        item.contact = self.serviceManager.myUser.contact
+                    } else {
+                        item.contact = message.peer as? Contact
+                    }
+                    item.text = message.body
+                    self.messages[idxValue] = item
+                }
+            }
+        }
+        reloadAndScrollToBottom()
     }
     
     func itemsBrowser(_ browser: CKItemsBrowser!, didReorderCacheItemsAtIndexes oldIndexes: [Any]!, toIndexes newIndexes: [Any]!) {
-        
+        NSLog("CKItemsBrowser didReorderCacheItemsAtIndexes")
     }
     
     // MARK: - UITextviewDelegate
@@ -227,7 +289,7 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let row = indexPath.row
+        let row = self.messages.count - indexPath.row - 1
         if self.messages[row].contact == serviceManager.myUser.contact {
             return tableView.dequeueReusableCell(withIdentifier: "MyUserTableViewCell", for:indexPath)
         } else {
@@ -238,7 +300,7 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
     // MARK: - Table view delegate
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        let row = indexPath.row
+        let row = self.messages.count - indexPath.row - 1
         if let myCell = cell as? MyUserTableViewCell {
             if myAvatar != nil {
                 myCell.avatar.image = myAvatar
