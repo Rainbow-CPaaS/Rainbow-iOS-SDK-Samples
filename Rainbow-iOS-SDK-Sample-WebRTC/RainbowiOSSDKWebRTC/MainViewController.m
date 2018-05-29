@@ -24,6 +24,7 @@
 @interface MainViewController ()
 @property (nonatomic, strong) ServicesManager *serviceManager;
 @property (nonatomic, strong) ContactsManagerService *contactsManager;
+@property (nonatomic) BOOL reconnecting;
 @property (nonatomic, strong) NSMutableArray<Contact *> *allObjects;
 @property (nonatomic) BOOL populated;
 @property (nonatomic, strong) NSIndexPath *selectedIndex;
@@ -39,12 +40,12 @@
         _allObjects = [[NSMutableArray alloc] init];
         _populated = NO;
         _selectedIndex = nil;
+        _reconnecting = NO;
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didLogin:) name:kLoginManagerDidLoginSucceeded object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReconnect:) name:kLoginManagerDidReconnect object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didLogout:) name:kLoginManagerDidLogoutSucceeded object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(failedToAuthenticate:) name:kLoginManagerDidFailedToAuthenticate object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didAddContact:) name:kContactsManagerServiceDidAddContact object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didUpdateContact:) name:kContactsManagerServiceDidUpdateContact object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didEndPopulatingMyNetwork:) name:kContactsManagerServiceDidEndPopulatingMyNetwork object:nil];
     }
     return self;
@@ -52,6 +53,7 @@
 
 -(void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kLoginManagerDidLoginSucceeded object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kLoginManagerDidReconnect object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kLoginManagerDidLogoutSucceeded object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kLoginManagerDidFailedToAuthenticate object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kContactsManagerServiceDidAddContact object:nil];
@@ -65,6 +67,14 @@
 
 -(void) didLogin:(NSNotification *) notification {
     NSLog(@"Did login");
+    self.reconnecting = NO;
+}
+
+-(void) didReconnect:(NSNotification *) notification {
+    NSLog(@"Did reconnect");
+    self.reconnecting = YES;
+    [[ServicesManager sharedInstance].loginManager disconnect];
+    [[ServicesManager sharedInstance].loginManager connect];
 }
 
 -(void) didLogout:(NSNotification *) notification {
@@ -75,7 +85,9 @@
         return;
     }
     NSLog(@"Did logout");
-    [self performSegueWithIdentifier:@"BackToLoginSegue" sender:self];
+    if(!self.reconnecting){
+        [self performSegueWithIdentifier:@"BackToLoginSegue" sender:self];
+    }
 }
 
 -(void)failedToAuthenticate:(NSNotification *) notification {
@@ -86,6 +98,7 @@
         return;
     }
     NSLog(@"Failed to login");
+    self.reconnecting = NO;
     [self performSegueWithIdentifier:@"BackToLoginSegue" sender:self];
 }
 
@@ -125,6 +138,19 @@
     }
     NSLog(@"Did end populating my network");
     
+    // fill allObjects array with the contacts already loaded by the ContactsManager
+    for(Contact *contact in _contactsManager.contacts){
+        // keep only contacts that are in the connected user roster
+        if(contact.isInRoster){
+            [_allObjects addObject:contact];
+        }
+    }
+    
+    // listen to update notifications
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didAddContact:) name:kContactsManagerServiceDidAddContact object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didRemoveContact:) name:kContactsManagerServiceDidRemoveContact object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didUpdateContact:) name:kContactsManagerServiceDidUpdateContact object:nil];
+    
     if([self isViewLoaded])
         [self.tableView reloadData];
     _populated = YES;
@@ -144,6 +170,24 @@
     
     if([self isViewLoaded] && _populated)
         [self.tableView reloadData];
+}
+
+-(void) didRemoveContact:(NSNotification *) notification {
+    // Enforce that this method is called on the main thread
+    if(![NSThread isMainThread]){
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self didRemoveContact:notification];
+        });
+        return;
+    }
+    
+    Contact *contact = notification.object;
+    if([self.allObjects containsObject:contact]){
+        [self.allObjects removeObject:contact];
+        
+        if([self isViewLoaded] && _populated)
+            [self.tableView reloadData];
+    }
 }
 
 -(void) didUpdateContact:(NSNotification *) notification {
