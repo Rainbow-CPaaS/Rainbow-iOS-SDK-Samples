@@ -24,6 +24,7 @@
 @interface MainViewController ()
 @property (nonatomic, strong) ServicesManager *serviceManager;
 @property (nonatomic, strong) ContactsManagerService *contactsManager;
+@property (nonatomic) BOOL reconnecting;
 @property (nonatomic, strong) NSMutableArray<Contact *> *allObjects;
 @property (nonatomic) BOOL populated;
 @property (nonatomic, strong) NSIndexPath *selectedIndex;
@@ -39,8 +40,10 @@
         _allObjects = [[NSMutableArray alloc] init];
         _populated = NO;
         _selectedIndex = nil;
+        _reconnecting = NO;
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didLogin:) name:kLoginManagerDidLoginSucceeded object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReconnect:) name:kLoginManagerDidReconnect object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didLogout:) name:kLoginManagerDidLogoutSucceeded object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(failedToAuthenticate:) name:kLoginManagerDidFailedToAuthenticate object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didEndPopulatingMyNetwork:) name:kContactsManagerServiceDidEndPopulatingMyNetwork object:nil];
@@ -50,6 +53,7 @@
 
 -(void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kLoginManagerDidLoginSucceeded object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kLoginManagerDidReconnect object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kLoginManagerDidLogoutSucceeded object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kLoginManagerDidFailedToAuthenticate object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kContactsManagerServiceDidAddContact object:nil];
@@ -64,6 +68,14 @@
 
 -(void) didLogin:(NSNotification *) notification {
     NSLog(@"Did login");
+    self.reconnecting = NO;
+}
+
+-(void) didReconnect:(NSNotification *) notification {
+    NSLog(@"Did reconnect");
+    self.reconnecting = YES;
+    [[ServicesManager sharedInstance].loginManager disconnect];
+    [[ServicesManager sharedInstance].loginManager connect];
 }
 
 -(void) didLogout:(NSNotification *) notification {
@@ -74,8 +86,9 @@
         return;
     }
     NSLog(@"Did logout");
-    [self performSegueWithIdentifier:@"BackToLoginSegue" sender:self];
-}
+    if(!self.reconnecting){
+        [self performSegueWithIdentifier:@"BackToLoginSegue" sender:self];
+    }}
 
 -(void)failedToAuthenticate:(NSNotification *) notification {
     if(![NSThread isMainThread]){
@@ -85,6 +98,7 @@
         return;
     }
     NSLog(@"Failed to login");
+    self.reconnecting = NO;
     [self performSegueWithIdentifier:@"BackToLoginSegue" sender:self];
 }
 
