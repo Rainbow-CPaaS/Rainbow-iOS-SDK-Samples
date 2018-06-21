@@ -354,4 +354,13 @@
     }
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSInteger row = self.messages.count - indexPath.row - 1;
+    if(self.messages[row].attachment && self.messages[row].attachment.thumbnailData){
+        return 60+80;
+    } else {
+        return 60;
+    }
+}
+
 @end

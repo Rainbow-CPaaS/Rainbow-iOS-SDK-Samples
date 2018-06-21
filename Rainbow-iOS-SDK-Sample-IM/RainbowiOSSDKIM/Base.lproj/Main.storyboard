@@ -181,7 +181,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Default_Avatar" translatesAutoresizingMaskIntoConstraints="NO" id="IUe-A8-Ipn">
-                                                    <rect key="frame" x="16" y="20" width="40" height="40"/>
+                                                    <rect key="frame" x="16" y="4" width="40" height="40"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="40" id="gaa-TP-SzS"/>
                                                         <constraint firstAttribute="width" constant="40" id="qKA-x8-WMN"/>
@@ -197,7 +197,7 @@
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                                 </textView>
-                                                <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="xCC-3w-yA1">
+                                                <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="xCC-3w-yA1">
                                                     <rect key="frame" x="64" y="68" width="215" height="12"/>
                                                 </imageView>
                                             </subviews>
@@ -207,8 +207,8 @@
                                                 <constraint firstItem="xCC-3w-yA1" firstAttribute="leading" secondItem="Ewi-3S-I9M" secondAttribute="leading" id="RPc-i4-duI"/>
                                                 <constraint firstItem="IUe-A8-Ipn" firstAttribute="leading" secondItem="jdV-6u-VtY" secondAttribute="leading" constant="16" id="Vc6-WD-hry"/>
                                                 <constraint firstItem="xCC-3w-yA1" firstAttribute="trailing" secondItem="Ewi-3S-I9M" secondAttribute="trailing" id="de7-xH-arW"/>
+                                                <constraint firstItem="Ewi-3S-I9M" firstAttribute="top" secondItem="IUe-A8-Ipn" secondAttribute="top" id="jvU-vi-79o"/>
                                                 <constraint firstItem="xCC-3w-yA1" firstAttribute="top" secondItem="Ewi-3S-I9M" secondAttribute="bottom" constant="4" id="na3-Lz-lxV"/>
-                                                <constraint firstItem="IUe-A8-Ipn" firstAttribute="centerY" secondItem="jdV-6u-VtY" secondAttribute="centerY" id="qOh-o8-gIc"/>
                                                 <constraint firstAttribute="bottom" secondItem="xCC-3w-yA1" secondAttribute="bottom" id="xo1-Tf-jyc"/>
                                                 <constraint firstItem="Ewi-3S-I9M" firstAttribute="leading" secondItem="IUe-A8-Ipn" secondAttribute="trailing" constant="8" id="zUI-ln-dbT"/>
                                             </constraints>
@@ -227,7 +227,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Default_Avatar" translatesAutoresizingMaskIntoConstraints="NO" id="8EW-uq-H9H">
-                                                    <rect key="frame" x="320" y="20" width="40" height="40"/>
+                                                    <rect key="frame" x="320" y="4" width="40" height="40"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="40" id="RMX-ah-nw2"/>
                                                         <constraint firstAttribute="height" constant="40" id="Uxq-mm-tGg"/>
@@ -243,7 +243,7 @@
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                                 </textView>
-                                                <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="vyq-jw-zqw">
+                                                <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="vyq-jw-zqw">
                                                     <rect key="frame" x="96" y="68" width="216" height="12"/>
                                                 </imageView>
                                             </subviews>
@@ -252,10 +252,10 @@
                                                 <constraint firstItem="vyq-jw-zqw" firstAttribute="top" secondItem="Ldg-ld-U9g" secondAttribute="bottom" constant="4" id="5PC-dv-BDP"/>
                                                 <constraint firstItem="vyq-jw-zqw" firstAttribute="leading" secondItem="Ldg-ld-U9g" secondAttribute="leading" id="7hZ-fI-omd"/>
                                                 <constraint firstItem="vyq-jw-zqw" firstAttribute="trailing" secondItem="Ldg-ld-U9g" secondAttribute="trailing" id="K67-r7-ma0"/>
+                                                <constraint firstItem="8EW-uq-H9H" firstAttribute="top" secondItem="Ldg-ld-U9g" secondAttribute="top" id="Xpa-I4-INn"/>
                                                 <constraint firstItem="8EW-uq-H9H" firstAttribute="trailing" secondItem="Smf-1S-MTg" secondAttribute="trailingMargin" id="auR-yz-FCg"/>
                                                 <constraint firstItem="Ldg-ld-U9g" firstAttribute="top" secondItem="Smf-1S-MTg" secondAttribute="top" constant="4" id="djU-qQ-Do1"/>
                                                 <constraint firstAttribute="bottom" secondItem="vyq-jw-zqw" secondAttribute="bottom" id="egs-57-jQo"/>
-                                                <constraint firstItem="8EW-uq-H9H" firstAttribute="centerY" secondItem="Smf-1S-MTg" secondAttribute="centerY" id="sqi-Ss-Xza"/>
                                                 <constraint firstItem="8EW-uq-H9H" firstAttribute="leading" secondItem="Ldg-ld-U9g" secondAttribute="trailing" constant="8" id="uho-rW-dr9"/>
                                             </constraints>
                                         </tableViewCellContentView>
