@@ -151,3 +151,47 @@ messagesBrowser.delegate = self;
      NSLog(@"ReceivedAllItemsDeleted!");
 }
 ```
+
+#### Dealing with attachments
+Optionally a file like a image, a video,... could be attached to messages. The file is uploaded in the cloud and a preview image is computed on the server if it is relevant.
+The thumbnail image might be retrieved like this,
+
+```objective-c
+if(message.attachment && message.attachment.thumbnailData){
+     UIImage image = [UIImage imageWithData:message.attachment.thumbnailData];
+}
+```
+
+The file itself may or may not be cached locally, if it is not already downloaded from the cloud, this could be done like this,
+
+```objective-c
+	File *file = message.attachment;
+	if(!file.data){
+        [[ServicesManager sharedInstance].fileSharingService downloadDataForFile:file withCompletionHandler:^(File *aFile, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if(!error){
+                ...
+                } else {
+                ...
+                }
+            }
+        }];
+    }       
+```
+
+The file type could be checked using `file.type` with value in 
+
+```objective-c
+typedef NS_ENUM(NSInteger, FileType) {
+    FileTypeImage,
+    FileTypePDF,
+    FileTypeDoc,
+    FileTypePPT,
+    FileTypeXLS,
+    FileTypeAudio,
+    FileTypeVideo,
+    FileTypeOther
+};
+```
+
+
