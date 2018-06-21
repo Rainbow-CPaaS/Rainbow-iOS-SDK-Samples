@@ -169,7 +169,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="80" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="hDV-J4-m5W">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" allowsSelection="NO" rowHeight="80" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="hDV-J4-m5W">
                                 <rect key="frame" x="0.0" y="64" width="375" height="495"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
@@ -188,23 +188,33 @@
                                                     </constraints>
                                                 </imageView>
                                                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Ewi-3S-I9M">
-                                                    <rect key="frame" x="64" y="4" width="215" height="72.5"/>
+                                                    <rect key="frame" x="64" y="4" width="215" height="60"/>
                                                     <color key="backgroundColor" red="0.92143100499999997" green="0.92145264149999995" blue="0.92144101860000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="60" id="f2i-TL-TMF"/>
+                                                    </constraints>
                                                     <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                                 </textView>
+                                                <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="xCC-3w-yA1">
+                                                    <rect key="frame" x="64" y="68" width="215" height="12"/>
+                                                </imageView>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstAttribute="trailing" secondItem="Ewi-3S-I9M" secondAttribute="trailing" constant="96" id="IY2-E7-tth"/>
                                                 <constraint firstItem="Ewi-3S-I9M" firstAttribute="top" secondItem="jdV-6u-VtY" secondAttribute="top" constant="4" id="Lqy-Rw-GxJ"/>
+                                                <constraint firstItem="xCC-3w-yA1" firstAttribute="leading" secondItem="Ewi-3S-I9M" secondAttribute="leading" id="RPc-i4-duI"/>
                                                 <constraint firstItem="IUe-A8-Ipn" firstAttribute="leading" secondItem="jdV-6u-VtY" secondAttribute="leading" constant="16" id="Vc6-WD-hry"/>
-                                                <constraint firstAttribute="bottom" secondItem="Ewi-3S-I9M" secondAttribute="bottom" constant="4" id="mmJ-3a-2Ci"/>
+                                                <constraint firstItem="xCC-3w-yA1" firstAttribute="trailing" secondItem="Ewi-3S-I9M" secondAttribute="trailing" id="de7-xH-arW"/>
+                                                <constraint firstItem="xCC-3w-yA1" firstAttribute="top" secondItem="Ewi-3S-I9M" secondAttribute="bottom" constant="4" id="na3-Lz-lxV"/>
                                                 <constraint firstItem="IUe-A8-Ipn" firstAttribute="centerY" secondItem="jdV-6u-VtY" secondAttribute="centerY" id="qOh-o8-gIc"/>
+                                                <constraint firstAttribute="bottom" secondItem="xCC-3w-yA1" secondAttribute="bottom" id="xo1-Tf-jyc"/>
                                                 <constraint firstItem="Ewi-3S-I9M" firstAttribute="leading" secondItem="IUe-A8-Ipn" secondAttribute="trailing" constant="8" id="zUI-ln-dbT"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
+                                            <outlet property="attachmentPreview" destination="xCC-3w-yA1" id="GNp-bc-0Ko"/>
                                             <outlet property="avatar" destination="IUe-A8-Ipn" id="3fJ-rp-QaL"/>
                                             <outlet property="message" destination="Ewi-3S-I9M" id="bFL-q3-Aij"/>
                                         </connections>
@@ -216,13 +226,6 @@
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="80"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Ldg-ld-U9g">
-                                                    <rect key="frame" x="96" y="4" width="216" height="72.5"/>
-                                                    <color key="backgroundColor" red="0.92143100499999997" green="0.92145264149999995" blue="0.92144101860000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                    <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                                                </textView>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Default_Avatar" translatesAutoresizingMaskIntoConstraints="NO" id="8EW-uq-H9H">
                                                     <rect key="frame" x="320" y="20" width="40" height="40"/>
                                                     <constraints>
@@ -230,17 +233,34 @@
                                                         <constraint firstAttribute="height" constant="40" id="Uxq-mm-tGg"/>
                                                     </constraints>
                                                 </imageView>
+                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Ldg-ld-U9g">
+                                                    <rect key="frame" x="96" y="4" width="216" height="60"/>
+                                                    <color key="backgroundColor" red="0.92143100499999997" green="0.92145264149999995" blue="0.92144101860000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="60" id="l4T-cO-0Be"/>
+                                                    </constraints>
+                                                    <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                                </textView>
+                                                <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="vyq-jw-zqw">
+                                                    <rect key="frame" x="96" y="68" width="216" height="12"/>
+                                                </imageView>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstAttribute="bottom" secondItem="Ldg-ld-U9g" secondAttribute="bottom" constant="4" id="37c-vW-3h0"/>
                                                 <constraint firstItem="Ldg-ld-U9g" firstAttribute="leading" secondItem="Smf-1S-MTg" secondAttribute="leading" constant="96" id="3b4-pf-pcn"/>
+                                                <constraint firstItem="vyq-jw-zqw" firstAttribute="top" secondItem="Ldg-ld-U9g" secondAttribute="bottom" constant="4" id="5PC-dv-BDP"/>
+                                                <constraint firstItem="vyq-jw-zqw" firstAttribute="leading" secondItem="Ldg-ld-U9g" secondAttribute="leading" id="7hZ-fI-omd"/>
+                                                <constraint firstItem="vyq-jw-zqw" firstAttribute="trailing" secondItem="Ldg-ld-U9g" secondAttribute="trailing" id="K67-r7-ma0"/>
                                                 <constraint firstItem="8EW-uq-H9H" firstAttribute="trailing" secondItem="Smf-1S-MTg" secondAttribute="trailingMargin" id="auR-yz-FCg"/>
                                                 <constraint firstItem="Ldg-ld-U9g" firstAttribute="top" secondItem="Smf-1S-MTg" secondAttribute="top" constant="4" id="djU-qQ-Do1"/>
+                                                <constraint firstAttribute="bottom" secondItem="vyq-jw-zqw" secondAttribute="bottom" id="egs-57-jQo"/>
                                                 <constraint firstItem="8EW-uq-H9H" firstAttribute="centerY" secondItem="Smf-1S-MTg" secondAttribute="centerY" id="sqi-Ss-Xza"/>
                                                 <constraint firstItem="8EW-uq-H9H" firstAttribute="leading" secondItem="Ldg-ld-U9g" secondAttribute="trailing" constant="8" id="uho-rW-dr9"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
+                                            <outlet property="attachmentPreview" destination="vyq-jw-zqw" id="Jde-hf-HuP"/>
                                             <outlet property="avatar" destination="8EW-uq-H9H" id="qdJ-IL-566"/>
                                             <outlet property="message" destination="Ldg-ld-U9g" id="BWI-Fj-2CV"/>
                                         </connections>

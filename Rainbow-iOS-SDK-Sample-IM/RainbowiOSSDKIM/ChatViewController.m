@@ -22,6 +22,7 @@
 @interface MessageItem : NSObject
 @property (strong, nonatomic) Contact *contact;
 @property (strong, nonatomic) NSString *text;
+@property (strong, nonatomic) File *attachment;
 @end
 
 @implementation MessageItem
@@ -171,6 +172,7 @@
                 item.contact = (Contact *)message.peer;
             }
             item.text = message.body;
+            item.attachment = message.attachment;
             [self.messages setObject:item atIndexedSubscript:idx];
             newItemIndex++;
         }];
@@ -219,6 +221,7 @@
                 item.contact = (Contact *)message.peer;
             }
             item.text = message.body;
+            item.attachment = message.attachment;
             [self.messages setObject:item atIndexedSubscript:idx];
             changedItemIndex++;
         }];
@@ -329,12 +332,25 @@
             myCell.avatar.image = self.myAvatar;
         }
         myCell.message.text = self.messages[row].text;
+        if(self.messages[row].attachment && self.messages[row].attachment.thumbnailData){
+            myCell.attachmentPreview.image = [UIImage imageWithData:self.messages[row].attachment.thumbnailData];
+            myCell.attachmentPreview.hidden = NO;
+        } else {
+            myCell.attachmentPreview.hidden = YES;
+        }
     } else {
         PeerTableViewCell *peerCell = (PeerTableViewCell *)cell;
         if(self.peerAvatar){
             peerCell.avatar.image = self.peerAvatar;
         }
         peerCell.message.text = self.messages[row].text;
+        peerCell.message.text = self.messages[row].text;
+        if(self.messages[row].attachment && self.messages[row].attachment.thumbnailData){
+            peerCell.attachmentPreview.image = [UIImage imageWithData:self.messages[row].attachment.thumbnailData];
+            peerCell.attachmentPreview.hidden = NO;
+        } else {
+            peerCell.attachmentPreview.hidden = YES;
+        }
     }
 }
 

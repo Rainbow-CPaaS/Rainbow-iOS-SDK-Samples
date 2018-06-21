@@ -18,4 +18,5 @@
 @interface PeerTableViewCell : UITableViewCell
 @property (weak, nonatomic) IBOutlet UIImageView *avatar;
 @property (weak, nonatomic) IBOutlet UITextView *message;
+@property (weak, nonatomic) IBOutlet UIImageView *attachmentPreview;
 @end
