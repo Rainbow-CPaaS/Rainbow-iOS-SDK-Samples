@@ -17,7 +17,6 @@
 @property (weak, nonatomic) IBOutlet UIButton *addVideoButton;
 
 @property (strong, nonatomic) RTCService *rtcService;
-@property (strong, nonatomic) RTCCall *currentCall;
 @property (strong, nonatomic) RTCVideoTrack *localVideoTrack;
 @property (strong, nonatomic) RTCVideoTrack *remoteVideoTrack;
 @property (nonatomic) BOOL isCallEtablished;
@@ -32,6 +31,7 @@
         _localVideoTrack = nil;
         _remoteVideoTrack = nil;
         _isCallEtablished = NO;
+        _isIncoming = NO;
         _rtcService = [ServicesManager sharedInstance].rtcService;
         
         // Register for Notifications
@@ -115,7 +115,11 @@
 
 
 -(void)viewDidAppear:(BOOL)animated {
-    [self makeCallTo:self.contact features:RTCCallFeatureAudio];
+    if(self.isIncoming){
+        [self.rtcService acceptIncomingCall:self.currentCall withFeatures:RTCCallFeatureAudio];
+    } else {
+        [self makeCallTo:self.contact features:RTCCallFeatureAudio];
+    }
 }
 
 -(void)showRemoteVideo {

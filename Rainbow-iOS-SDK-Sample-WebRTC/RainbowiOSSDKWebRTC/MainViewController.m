@@ -28,6 +28,7 @@
 @property (nonatomic, strong) NSMutableArray<Contact *> *allObjects;
 @property (nonatomic) BOOL populated;
 @property (nonatomic, strong) NSIndexPath *selectedIndex;
+@property (nonatomic, strong) RTCCall *call;
 @end
 
 @implementation MainViewController
@@ -47,6 +48,8 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didLogout:) name:kLoginManagerDidLogoutSucceeded object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(failedToAuthenticate:) name:kLoginManagerDidFailedToAuthenticate object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didEndPopulatingMyNetwork:) name:kContactsManagerServiceDidEndPopulatingMyNetwork object:nil];
+        // RTC call notifications
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didAddCall:) name:kRTCServiceDidAddCallNotification object:nil];
     }
     return self;
 }
@@ -59,6 +62,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kContactsManagerServiceDidAddContact object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kContactsManagerServiceDidUpdateContact object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kContactsManagerServiceDidEndPopulatingMyNetwork object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kRTCServiceDidAddCallNotification object:nil];
     _allObjects = nil;
     _serviceManager = nil;
     _contactsManager = nil;
@@ -212,14 +216,36 @@
 }
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    if(self.selectedIndex && [segue.identifier isEqualToString:@"CallInProgressSegue"]){
+    if( [segue.identifier isEqualToString:@"CallInProgressSegue"]){
         CallViewController *vc = segue.destinationViewController;
-        vc.contact = [self.allObjects objectAtIndex:self.selectedIndex.row];
-        vc.contactImage = ((ContactTableViewCell *)[self.tableView cellForRowAtIndexPath:self.selectedIndex]).avatar.image;
-        vc.contactImageTint = ((ContactTableViewCell *)[self.tableView cellForRowAtIndexPath:self.selectedIndex]).avatar.tintColor;
+        if(self.selectedIndex){
+            vc.contact = [self.allObjects objectAtIndex:self.selectedIndex.row];
+            vc.contactImage = ((ContactTableViewCell *)[self.tableView cellForRowAtIndexPath:self.selectedIndex]).avatar.image;
+            vc.contactImageTint = ((ContactTableViewCell *)[self.tableView cellForRowAtIndexPath:self.selectedIndex]).avatar.tintColor;
+            vc.isIncoming = NO;
+        } else {
+            vc.isIncoming = YES;
+            vc.currentCall = self.call;
+        }
     }
 }
 
+#pragma mark - RTC call handling
+
+-(void)didAddCall:(NSNotification *)notification {
+    if(![NSThread isMainThread]){
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self didAddCall:notification];
+        });
+        return;
+    }
+    
+    if([notification.object class] == [RTCCall class]){
+        NSLog(@"didAddCall notification");
+        self.call = (RTCCall *) notification.object;
+        [self performSegueWithIdentifier:@"CallInProgressSegue" sender:self];
+    }
+}
 
 #pragma mark - IBAction
 

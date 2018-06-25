@@ -13,4 +13,6 @@
 @property (nonatomic, strong) Contact *contact;
 @property (nonatomic, strong) UIImage *contactImage;
 @property (nonatomic, strong) UIColor *contactImageTint;
+@property (strong, nonatomic) RTCCall *currentCall;
+@property (nonatomic) BOOL isIncoming;
 @end
