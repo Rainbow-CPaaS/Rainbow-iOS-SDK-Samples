@@ -49,7 +49,7 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(failedToAuthenticate:) name:kLoginManagerDidFailedToAuthenticate object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didEndPopulatingMyNetwork:) name:kContactsManagerServiceDidEndPopulatingMyNetwork object:nil];
         // RTC call notifications
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didAddCall:) name:kRTCServiceDidAddCallNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didAddCall:) name:kTelephonyServiceDidAddCallNotification object:nil];
     }
     return self;
 }
@@ -62,7 +62,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kContactsManagerServiceDidAddContact object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kContactsManagerServiceDidUpdateContact object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kContactsManagerServiceDidEndPopulatingMyNetwork object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kRTCServiceDidAddCallNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kTelephonyServiceDidAddCallNotification object:nil];
     _allObjects = nil;
     _serviceManager = nil;
     _contactsManager = nil;

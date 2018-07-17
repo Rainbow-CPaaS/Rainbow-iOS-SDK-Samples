@@ -18,13 +18,13 @@ The aim of this sample project is to demonstrate WebRTC phone calls. After the l
 
 // Register for Notifications
 
-[[NSNotificationCenter defaultCenter] addObserver:viewController selector:@selector(didCallSuccess:) name:kRTCServiceDidAddCallNotification object:nil];
+[[NSNotificationCenter defaultCenter] addObserver:viewController selector:@selector(didCallSuccess:) name:kTelephonyServiceDidAddCallNotification object:nil];
  
-[[NSNotificationCenter defaultCenter] addObserver:viewController selector:@selector(didUpdateCall:) name:kRTCServiceDidUpdateCallNotification object:nil];
+[[NSNotificationCenter defaultCenter] addObserver:viewController selector:@selector(didUpdateCall:) name:kTelephonyServiceDidUpdateCallNotification object:nil];
+
+[[NSNotificationCenter defaultCenter] addObserver:viewController selector:@selector(didRemoveCall:) name:kTelephonyServiceDidRemoveCallNotification object:nil];
         
 [[NSNotificationCenter defaultCenter] addObserver:viewController selector:@selector(statusChanged:) name:kRTCServiceCallStatsNotification object:nil];
-        
-[[NSNotificationCenter defaultCenter] addObserver:viewController selector:@selector(didRemoveCall:) name:kRTCServiceDidRemoveCallNotification object:nil];
         
 [[NSNotificationCenter defaultCenter] addObserver:viewController selector:@selector(didAllowMicrophone:) name:kRTCServiceDidAllowMicrophoneNotification object:nil];
         
@@ -38,7 +38,7 @@ The aim of this sample project is to demonstrate WebRTC phone calls. After the l
 RTCCall *currentVideoCall = [[ServicesManager sharedInstance].rtcService beginNewOutgoingCallWithContact:_aContact withFeatures:(RTCCallFeatureAudio)];
 ```
 
- This will begin a new call with selected contact and notify **kRTCServiceDidAddCallNotification**
+ This will begin a new call with selected contact and notify **kTelephonyServiceDidAddCallNotification**
 
 ```objective-c
 -(void)didCallSuccess:(NSNotification *)notification {
@@ -146,15 +146,57 @@ Then to add the video track to a established audio conversation you should do,
 ```
 
 ### RTC Call Status
-The following Status are supported for current call,
+The following status are supported for current call in `didUpdateCall:` if registered for `kTelephonyServiceDidUpdateCallNotification`,
 
 | Presence constant | value | Meaning |
 |------------------ | ----- | ------- |
-| **`RTCCallStatusRinging`** | 0 | Call is ringing |
-| **`RTCCallStatusConnecting`** | 1 | Call is accepted, we can proceed and establish |
-| **`RTCCallStatusDeclined`** | 2 | Call is declined |
-| **`RTCCallStatusTimeout`** | 3 | Call has not been accepted/decline in time. |
-| **`RTCCallStatusCanceled`** | 4 | Call has been canceled |
-| **`RTCCallStatusEstablished`** | 5 |  Call has been established |
-| **`RTCCallStatusHangup`** | 6 |  Call has been hangup |
+| **`CallStatusRinging`** | 0 | Call is ringing |
+| **`CallStatusConnecting`** | 1 | Call is accepted, we can proceed and establish |
+| **`CallStatusDeclined`** | 2 | Call is declined |
+| **`CallStatusTimeout`** | 3 | Call has not been accepted/decline in time. |
+| **`CallStatusCanceled`** | 4 | Call has been canceled |
+| **`CallStatusEstablished`** | 5 |  Call has been established |
+| **`CallStatusHangup`** | 6 |  Call has been hangup |
+
+```objective-c
+-(void)didUpdateCall:(NSNotification *)notification {
+    if([notification.object class] == [RTCCall class]){
+        
+        RTCCall *call = (RTCCall *) notification.object;
+        switch (call.status) {
+            case CallStatusRinging: {
+                NSLog(@"didUpdateCall notification: ringing");
+                break;
+            }
+            case CallStatusConnecting: {
+                NSLog(@"didUpdateCall notification: connecting");
+                break;
+            }
+            case CallStatusDeclined: {
+                NSLog(@"didUpdateCall notification: declined");
+                break;
+            }
+            case CallStatusTimeout: {
+                NSLog(@"didUpdateCall notification: timeout");
+                break;
+            }
+            case CallStatusCanceled: {
+                NSLog(@"didUpdateCall notification: canceled");
+                break;
+            }
+            case CallStatusEstablished: {
+                NSLog(@"didUpdateCall notification: established");
+                break;
+            }
+            case CallStatusHangup: {
+                NSLog(@"didUpdateCall notification: hangup");
+                break;
+            }
+            default:
+                NSLog(@"didUpdateCall notification: unknown state");
+                break;
+        }
+    }
+}
+```
 

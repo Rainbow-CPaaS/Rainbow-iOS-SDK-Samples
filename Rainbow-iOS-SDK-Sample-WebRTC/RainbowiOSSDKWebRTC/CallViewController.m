@@ -34,11 +34,12 @@
         _isIncoming = NO;
         _rtcService = [ServicesManager sharedInstance].rtcService;
         
-        // Register for Notifications
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didCallSuccess:) name:kRTCServiceDidAddCallNotification object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didUpdateCall:) name:kRTCServiceDidUpdateCallNotification object:nil];
+        // Register for TelephonyService notifications
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didCallSuccess:) name:kTelephonyServiceDidAddCallNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didUpdateCall:) name:kTelephonyServiceDidUpdateCallNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didRemoveCall:) name:kTelephonyServiceDidRemoveCallNotification object:nil];
+        // Register for stats notifications
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statsUpdated:) name:kRTCServiceCallStatsNotification object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didRemoveCall:) name:kRTCServiceDidRemoveCallNotification object:nil];
         // Local video notifications
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didAddLocalVideoTrack:) name:kRTCServiceDidAddLocalVideoTrackNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didRemoveLocalVideoTrack:) name:kRTCServiceDidRemoveLocalVideoTrackNotification object:nil];
@@ -53,10 +54,10 @@
 }
 
 -(void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kRTCServiceDidAddCallNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kRTCServiceDidUpdateCallNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kTelephonyServiceDidAddCallNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kTelephonyServiceDidUpdateCallNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kTelephonyServiceDidRemoveCallNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kRTCServiceCallStatsNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kRTCServiceDidRemoveCallNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kRTCServiceDidAddLocalVideoTrackNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kRTCServiceDidAddRemoteVideoTrackNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kRTCServiceDidRemoveLocalVideoTrackNotification object:nil];
@@ -153,27 +154,27 @@
         
         RTCCall *call = (RTCCall *) notification.object;
         switch (call.status) {
-            case RTCCallStatusRinging: {
+            case CallStatusRinging: {
                 NSLog(@"didUpdateCall notification: ringing");
                 break;
             }
-            case RTCCallStatusConnecting: {
+            case CallStatusConnecting: {
                 NSLog(@"didUpdateCall notification: connecting");
                 break;
             }
-            case RTCCallStatusDeclined: {
+            case CallStatusDeclined: {
                 NSLog(@"didUpdateCall notification: declined");
                 break;
             }
-            case RTCCallStatusTimeout: {
+            case CallStatusTimeout: {
                 NSLog(@"didUpdateCall notification: timeout");
                 break;
             }
-            case RTCCallStatusCanceled: {
+            case CallStatusCanceled: {
                 NSLog(@"didUpdateCall notification: canceled");
                 break;
             }
-            case RTCCallStatusEstablished: {
+            case CallStatusEstablished: {
                 NSLog(@"didUpdateCall notification: established");
                 if(!self.isCallEtablished){
                     self.addVideoButton.enabled = YES;
@@ -181,7 +182,7 @@
                 self.isCallEtablished = YES;
                 break;
             }
-            case RTCCallStatusHangup: {
+            case CallStatusHangup: {
                 NSLog(@"didUpdateCall notification: hangup");
                 break;
             }
