@@ -115,10 +115,6 @@
     if(contact.isBot) {
         return;
     }
-    // Ignore contact without a phone number
-    if(contact.phoneNumbers.count == 0){
-        return;
-    }
     // Ignore contact not in the roster
     if(!contact.isInRoster){
         return;

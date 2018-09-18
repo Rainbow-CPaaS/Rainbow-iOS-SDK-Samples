@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
-        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -39,7 +37,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gCI-YX-Qfg">
-                                <rect key="frame" x="168" y="368" width="38" height="30"/>
+                                <rect key="frame" x="168.5" y="368" width="38" height="30"/>
                                 <state key="normal" title="Login"/>
                                 <connections>
                                     <segue destination="eXh-1j-6Zz" kind="show" id="xs8-7W-iWc"/>
@@ -164,14 +162,14 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Default_Avatar" translatesAutoresizingMaskIntoConstraints="NO" id="34y-BP-Bv3">
-                                <rect key="frame" x="127" y="120" width="120" height="120"/>
+                                <rect key="frame" x="127.5" y="120" width="120" height="120"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="120" id="LKr-mT-afu"/>
                                     <constraint firstAttribute="height" constant="120" id="vNc-Qs-yXG"/>
                                 </constraints>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="H0i-Zo-E5g">
-                                <rect key="frame" x="166" y="248" width="42" height="21"/>
+                                <rect key="frame" x="166.5" y="248" width="42" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -183,7 +181,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="O4v-fN-hag">
-                                <rect key="frame" x="159" y="613" width="56" height="34"/>
+                                <rect key="frame" x="159.5" y="613" width="56" height="34"/>
                                 <state key="normal" title="Cancel">
                                     <color key="titleColor" red="0.93451857569999996" green="0.3066485524" blue="0.27838009600000002" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 </state>
@@ -207,7 +205,7 @@
                                 </constraints>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Akc-bN-I2t">
-                                <rect key="frame" x="152.5" y="575" width="69" height="30"/>
+                                <rect key="frame" x="153" y="575" width="69" height="30"/>
                                 <state key="normal" title="Add video"/>
                                 <connections>
                                     <action selector="addVideo:" destination="UEs-5i-6et" eventType="touchUpInside" id="Tty-bi-VRa"/>
@@ -238,9 +236,9 @@
                         <outlet property="addVideoButton" destination="Akc-bN-I2t" id="5OM-fn-5r0"/>
                         <outlet property="avatar" destination="34y-BP-Bv3" id="MWH-Kz-xv1"/>
                         <outlet property="cancelButton" destination="O4v-fN-hag" id="3OF-an-ZFV"/>
-                        <outlet property="localVideoView" destination="yid-Jk-MgZ" id="kbR-hM-HQl"/>
+                        <outlet property="localVideoView" destination="yid-Jk-MgZ" id="NAC-Pw-bE6"/>
                         <outlet property="nameLabel" destination="H0i-Zo-E5g" id="0uT-Qa-xDR"/>
-                        <outlet property="remoteVideoView" destination="arH-4q-eg2" id="3ZF-5u-7FI"/>
+                        <outlet property="remoteVideoView" destination="arH-4q-eg2" id="CSl-4S-mJO"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lBi-9J-13f" userLabel="First Responder" sceneMemberID="firstResponder"/>

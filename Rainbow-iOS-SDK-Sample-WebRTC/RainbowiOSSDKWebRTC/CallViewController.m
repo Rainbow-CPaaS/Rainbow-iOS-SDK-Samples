@@ -7,6 +7,8 @@
 //
 
 #import "CallViewController.h"
+#import <WebRTC/WebRTC.h>
+
 
 @interface RTCCameraPreviewView (PreviewLayer)
 - (AVCaptureVideoPreviewLayer *)previewLayer;
@@ -126,12 +128,11 @@
     }
 }
 
-
 -(void)viewDidAppear:(BOOL)animated {
     if(self.isIncoming){
         [self.rtcService acceptIncomingCall:self.currentCall withFeatures:RTCCallFeatureAudio];
     } else {
-        [self makeCallTo:self.contact features:RTCCallFeatureAudio];
+        [self makeCallTo:self.contact features:RTCCallFeatureLocalVideo | RTCCallFeatureRemoteVideo];
     }
 }
 
@@ -155,8 +156,15 @@
 #pragma mark - RTCCall notifications
 
 -(void)didCallSuccess:(NSNotification *)notification {
+    if(![NSThread isMainThread]){
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self didCallSuccess:notification];
+        });
+        return;
+    }
     if([notification.object class] == [RTCCall class]){
         NSLog(@"didCallSuccess notification");
+        [_cancelButton setTitle:@"Hangup" forState:UIControlStateNormal];
     }
 }
 
@@ -224,6 +232,12 @@
 }
 
 -(void)didRemoveCall:(NSNotification *)notification {
+    if(![NSThread isMainThread]){
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self didRemoveCall:notification];
+        });
+        return;
+    }
     if([notification.object class] == [RTCCall class]){
         NSLog(@"didRemoveCall notification");
         [self dismissViewControllerAnimated:YES completion:nil];
@@ -232,7 +246,7 @@
 
 -(void)didAllowMicrophone:(NSNotification *)notification {
     if([notification.object class] == [RTCCall class]){
-       NSLog(@"didAllowMicrophone notification");
+        NSLog(@"didAllowMicrophone notification");
     }
 }
 
@@ -281,8 +295,8 @@
 - (AVCaptureDeviceFormat *)selectFormatForDevice:(AVCaptureDevice *)device {
     NSArray<AVCaptureDeviceFormat *> *formats =
     [RTCCameraVideoCapturer supportedFormatsForDevice:device];
-    int targetWidth = 320;
-    int targetHeight = 240;
+    int targetWidth = 640;
+    int targetHeight = 480;
     AVCaptureDeviceFormat *selectedFormat = nil;
     int currentDiff = INT_MAX;
     
@@ -328,6 +342,13 @@
 }
 
 -(void)didAddCaptureSession:(NSNotification *) notification {
+    if(![NSThread isMainThread]){
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self didAddCaptureSession:notification];
+        });
+        return;
+    }
+    
     self.cameraVideoCapturer = (RTCCameraVideoCapturer *) notification.object;
     [self startCapturer];
 }
@@ -360,6 +381,7 @@
     self.localVideoView.captureSession = self.cameraVideoCapturer.captureSession;
     self.localVideoView.previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
     
+    [self.addVideoButton setTitle:@"Stop video" forState:UIControlStateNormal];
     self.localVideoView.hidden = NO;
 }
 
