@@ -18,16 +18,20 @@ The aim of this sample project is to demonstrate the handling of push notificati
 
 // Register for Notifications
 
-[[ServicesManager sharedInstance].notificationsManager registerForUserNotificationsSettingsWithCompletionHandler:^(BOOL granted, NSError * _Nullable error) {
-    if(error){
-        NSLog(@"registerForUserNotificationsSettingsWithCompletionHandler returned a error: %@", [error localizedDescription]);
-    } else if(granted){
-        NSLog(@"Push notifications granted");
-    } else {
-        NSLog(@"Push notifications not granted");
-    }
-}];
+...
+    [[ServicesManager sharedInstance].notificationsManager registerForUserNotificationsSettingsWithCompletionHandler:^(BOOL granted, NSError * _Nullable error) {
+        if(error){
+            NSLog(@"registerForUserNotificationsSettingsWithCompletionHandler returned a error: %@", [error localizedDescription]);
+        } else if(granted){
+            NSLog(@"Push notifications granted");
+        } else {
+            NSLog(@"Push notifications not granted");
+        }
+    }];
+...
+```
 
+```objective-c
 -(void)application:(UIApplication *)app didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     NSLog(@"didRegisterForRemoteNotificationsWithDeviceToken");
     [[ServicesManager sharedInstance].notificationsManager didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
