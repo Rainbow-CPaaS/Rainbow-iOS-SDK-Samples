@@ -16,8 +16,9 @@
 #import "AppDelegate.h"
 #import "Rainbow/Rainbow.h"
 
-#define kAppID @""
-#define kSecretKey @""
+// Application ID and secret key
+#define kAppID @"Put here the application ID"
+#define kSecretKey @"Put here the secret key"
 
 @implementation AppDelegate
 
@@ -51,8 +52,19 @@
 
 // Push notifications
 
+- (NSString *)hexString:(NSData *)data {
+    NSMutableString *string = [NSMutableString stringWithCapacity:data.length * 3];
+    [data enumerateByteRangesUsingBlock:^(const void *bytes, NSRange byteRange, BOOL *stop){
+        for (NSUInteger offset = 0; offset < byteRange.length; ++offset) {
+            uint8_t byte = ((const uint8_t *)bytes)[offset];
+            [string appendFormat:@"%02X", byte];
+        }
+    }];
+    return string;
+}
+
 -(void)application:(UIApplication *)app didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
-    NSLog(@"[AppDelegate] didRegisterForRemoteNotificationsWithDeviceToken");
+    NSLog(@"[AppDelegate] didRegisterForRemoteNotificationsWithDeviceToken deviceToken='%@'", [self hexString:deviceToken]);
     [[ServicesManager sharedInstance].notificationsManager didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
 }
 
