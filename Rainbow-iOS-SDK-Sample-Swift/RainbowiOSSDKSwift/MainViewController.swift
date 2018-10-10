@@ -21,43 +21,9 @@ class MainViewController: UIViewController {
     @IBOutlet weak var conversationsButton: UIButton!
     @IBOutlet weak var unreadMessagesCountLabel: UILabel!
     
-    var reconnecting = false
-    
     var totalNbOfUnreadMessagesInAllConversations = 0
     var conversationsLoaded = false
     var contactsLoaded = false
-    
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        
-        // notifications related to the LoginManager
-        NotificationCenter.default.addObserver(self, selector: #selector(didLogin(notification:)), name: NSNotification.Name(kLoginManagerDidLoginSucceeded), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(didReconnect(notification:)), name: NSNotification.Name(kLoginManagerDidReconnect), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(didLogout(notification:)), name: NSNotification.Name(kLoginManagerDidLogoutSucceeded), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(failedToAuthenticate(notification:)), name: NSNotification.Name(kLoginManagerDidFailedToAuthenticate), object: nil)
-        
-        // notification related to the ContactManagerService
-        NotificationCenter.default.addObserver(self, selector: #selector(didEndPopulatingMyNetwork(notification:)), name: NSNotification.Name(kContactsManagerServiceDidEndPopulatingMyNetwork), object: nil)
-        
-        // notifications related to unread conversation count
-        NotificationCenter.default.addObserver(self, selector: #selector(didEndLoadingConversations(notification:)), name:NSNotification.Name(kConversationsManagerDidEndLoadingConversations), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(didUpdateMessagesUnreadCount(notification:)), name:NSNotification.Name(kConversationsManagerDidUpdateMessagesUnreadCount), object: nil)
-    }
-    
-    deinit {
-        // notifications related to the LoginManager
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kLoginManagerDidLoginSucceeded), object: nil)
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kLoginManagerDidReconnect), object: nil)
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kLoginManagerDidLogoutSucceeded), object: nil)
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kLoginManagerDidFailedToAuthenticate), object: nil)
-        
-        // notification related to the ContactManagerService
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kContactsManagerServiceDidEndPopulatingMyNetwork), object: nil)
-        
-        // notifications related to unread conversation count
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kConversationsManagerDidEndLoadingConversations), object: nil)
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kConversationsManagerDidUpdateMessagesUnreadCount), object: nil)
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -68,43 +34,24 @@ class MainViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         unreadMessagesCountLabel.text = "\(totalNbOfUnreadMessagesInAllConversations)"
+        
+        // notification related to the ContactManagerService
+        NotificationCenter.default.addObserver(self, selector: #selector(didEndPopulatingMyNetwork(notification:)), name: NSNotification.Name(kContactsManagerServiceDidEndPopulatingMyNetwork), object: nil)
+        
+        // notifications related to unread conversation count
+        NotificationCenter.default.addObserver(self, selector: #selector(didEndLoadingConversations(notification:)), name:NSNotification.Name(kConversationsManagerDidEndLoadingConversations), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didUpdateMessagesUnreadCount(notification:)), name:NSNotification.Name(kConversationsManagerDidUpdateMessagesUnreadCount), object: nil)
     }
     
-    // MARK: - LoginManager notifications
-    
-    @objc func didLogin(notification : NSNotification) {
-        NSLog("Did login")
-        self.reconnecting = false
-    }
-    
-    @objc func didReconnect(notification : NSNotification) {
-        NSLog("Did reconnect")
-        self.reconnecting = true
-        ServicesManager.sharedInstance().loginManager.disconnect()
-        ServicesManager.sharedInstance().loginManager.connect()
-    }
-    
-    @objc func didLogout(notification : NSNotification) {
-        if !Thread.isMainThread {
-            DispatchQueue.main.sync {
-                self.didLogout(notification: notification)
-            }
-            return
-        }
-        NSLog("Did logout")
-        if !self.reconnecting {
-            self.performSegue(withIdentifier: "BackToLoginSegue", sender:self)
-        }
-    }
-    
-    @objc func failedToAuthenticate(notification : NSNotification) {
-        if !Thread.isMainThread {
-            DispatchQueue.main.sync {
-                self.failedToAuthenticate(notification: notification)
-            }
-        }
-        NSLog("Failed to login")
-        self.performSegue(withIdentifier: "BackToLoginSegue", sender: self)
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        // notification related to the ContactManagerService
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kContactsManagerServiceDidEndPopulatingMyNetwork), object: nil)
+        
+        // notifications related to unread conversation count
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kConversationsManagerDidEndLoadingConversations), object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kConversationsManagerDidUpdateMessagesUnreadCount), object: nil)
     }
     
     // MARK: - ContactManagerService notifications
@@ -151,8 +98,7 @@ class MainViewController: UIViewController {
     // MARK: - IBAction
     
     @IBAction func logoutAction(_ sender: Any) {
-        ServicesManager.sharedInstance().loginManager.disconnect()
-        ServicesManager.sharedInstance().loginManager.resetAllCredentials()
+        performSegue(withIdentifier: "BackToLoginSegue", sender:self)
     }
     
 
