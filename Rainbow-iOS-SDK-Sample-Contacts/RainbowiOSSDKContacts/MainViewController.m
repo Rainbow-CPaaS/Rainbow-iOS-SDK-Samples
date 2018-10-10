@@ -24,7 +24,6 @@
 @interface MainViewController ()
 @property (nonatomic, strong) ServicesManager *serviceManager;
 @property (nonatomic, strong) ContactsManagerService *contactsManager;
-@property (nonatomic) BOOL reconnecting;
 @property (nonatomic, strong) NSMutableArray<Contact *> *allObjects;
 @property (nonatomic) BOOL populated;
 @property (nonatomic, strong) NSIndexPath *selectedIndex;
@@ -40,71 +39,37 @@
         _allObjects = [[NSMutableArray alloc] init];
         _populated = NO;
         _selectedIndex = nil;
-        _reconnecting = NO;
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didLogin:) name:kLoginManagerDidLoginSucceeded object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReconnect:) name:kLoginManagerDidReconnect object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didLogout:) name:kLoginManagerDidLogoutSucceeded object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(failedToAuthenticate:) name:kLoginManagerDidFailedToAuthenticate object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didEndPopulatingMyNetwork:) name:kContactsManagerServiceDidEndPopulatingMyNetwork object:nil];
     }
     return self;
 }
 
 -(void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kLoginManagerDidLoginSucceeded object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kLoginManagerDidReconnect object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kLoginManagerDidLogoutSucceeded object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kLoginManagerDidFailedToAuthenticate object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kContactsManagerServiceDidAddContact object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kContactsManagerServiceDidUpdateContact object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kContactsManagerServiceDidRemoveContact object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kContactsManagerServiceDidEndPopulatingMyNetwork object:nil];
     _allObjects = nil;
     _serviceManager = nil;
     _contactsManager = nil;
     _selectedIndex = nil;
 }
 
--(void) didLogin:(NSNotification *) notification {
-    NSLog(@"Did login");
-    self.reconnecting = NO;
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didEndPopulatingMyNetwork:) name:kContactsManagerServiceDidEndPopulatingMyNetwork object:nil];
 }
 
--(void) didReconnect:(NSNotification *) notification {
-    NSLog(@"Did reconnect");
-    self.reconnecting = YES;
-    [[ServicesManager sharedInstance].loginManager disconnect];
-    [[ServicesManager sharedInstance].loginManager connect];
-}
-
--(void) didLogout:(NSNotification *) notification {
-    if(![NSThread isMainThread]){
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self didLogout:notification];
-        });
-        return;
-    }
-    NSLog(@"Did logout");
-    if(!self.reconnecting){
-        [self performSegueWithIdentifier:@"BackToLoginSegue" sender:self];
-    }}
-
--(void)failedToAuthenticate:(NSNotification *) notification {
-    if(![NSThread isMainThread]){
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self failedToAuthenticate:notification];
-        });
-        return;
-    }
-    NSLog(@"Failed to login");
-    self.reconnecting = NO;
-    [self performSegueWithIdentifier:@"BackToLoginSegue" sender:self];
+-(void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kContactsManagerServiceDidAddContact object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kContactsManagerServiceDidUpdateContact object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kContactsManagerServiceDidEndPopulatingMyNetwork object:nil];
 }
 
 -(void) insertContact:(Contact *) contact {
     // Ignore myself
     if (contact == _serviceManager.myUser.contact) {
+        return;
+    }
+    // Ignore bots
+    if(contact.isBot) {
         return;
     }
     // Ignore contact not in roster
@@ -129,14 +94,11 @@
         return;
     }
     
-    NSLog(@"Did end populating my network");
+    NSLog(@"[MainViewController] Did end populating my network");
     
     // fill allObjects array with the contacts already loaded by the ContactsManager
     for(Contact *contact in _contactsManager.contacts){
-        // keep only contacts that are in the connected user roster
-        if(contact.isInRoster){
-            [_allObjects addObject:contact];
-        }
+        [self insertContact:contact];
     }
     
     // listen to update notifications
@@ -159,6 +121,7 @@
         return;
     }
     
+    NSLog(@"[MainViewController] Did add contact");
     Contact *contact = notification.object;
     [self insertContact:contact];
     
@@ -175,6 +138,7 @@
         return;
     }
     
+    NSLog(@"[MainViewController] Did remove contact");
     Contact *contact = notification.object;
     if([self.allObjects containsObject:contact]){
         [self.allObjects removeObject:contact];
@@ -193,6 +157,7 @@
         return;
     }
     
+    NSLog(@"[MainViewController] Did update contact");
     NSDictionary *userInfo = (NSDictionary *)notification.object;
     Contact *contact = [userInfo objectForKey:kContactKey];
     
@@ -211,14 +176,16 @@
         vc.contact = [self.allObjects objectAtIndex:self.selectedIndex.row];
         vc.contactImage = ((ContactTableViewCell *)[self.tableView cellForRowAtIndexPath:self.selectedIndex]).avatar.image;
         vc.contactImageTint = ((ContactTableViewCell *)[self.tableView cellForRowAtIndexPath:self.selectedIndex]).avatar.tintColor;
+    } else if ([segue.identifier isEqualToString: @"BackToLoginSegue"]){
+        LoginViewController *loginViewController = (LoginViewController *)segue.destinationViewController;
+        loginViewController.doLogout = YES;
     }
 }
 
 #pragma mark - IBAction
 
 - (IBAction)logout:(id)sender {
-    [[ServicesManager sharedInstance].loginManager disconnect];
-    [[ServicesManager sharedInstance].loginManager resetAllCredentials];
+    [self performSegueWithIdentifier:@"BackToLoginSegue" sender:self];
 }
 
 #pragma mark - UITableViewDataSource

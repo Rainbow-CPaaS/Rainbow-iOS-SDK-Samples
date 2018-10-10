@@ -20,5 +20,6 @@
 
 @interface LoginViewController : UIViewController
 @property (strong, nonatomic) NSString *server;
+@property (nonatomic) BOOL doLogout;
 @end
 

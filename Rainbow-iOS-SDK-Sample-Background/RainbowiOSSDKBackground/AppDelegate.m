@@ -36,6 +36,7 @@
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    self.isReconnecting = NO;
     [[ServicesManager sharedInstance] setAppID:kAppID secretKey:kSecretKey];
     [[ServicesManager sharedInstance].rtcService requestMicrophoneAccess];
     [[ServicesManager sharedInstance].rtcService startCallKitWithIncomingSoundName:@"incoming-call.mp3" iconTemplate:@"logo" appName:[self applicationName]];

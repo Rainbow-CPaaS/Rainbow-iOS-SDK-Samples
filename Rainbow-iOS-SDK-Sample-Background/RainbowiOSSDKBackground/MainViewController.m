@@ -14,17 +14,16 @@
  */
 
 #import "MainViewController.h"
+#import "LoginViewController.h"
 #import <Rainbow/Rainbow.h>
 #import <Contacts/Contacts.h>
 #import <Rainbow/ContactsManagerService.h>
 #import <Rainbow/NotificationsManager.h>
 #import "ContactTableViewCell.h"
-#import "LoginViewController.h"
 
 @interface MainViewController ()
 @property (nonatomic, strong) ServicesManager *serviceManager;
 @property (nonatomic, strong) ContactsManagerService *contactsManager;
-@property (nonatomic) BOOL reconnecting;
 @property (nonatomic, strong) NSMutableArray<Contact *> *allObjects;
 @property (nonatomic) BOOL populated;
 @property (nonatomic, strong) NSIndexPath *selectedIndex;
@@ -40,74 +39,20 @@
         _allObjects = [[NSMutableArray alloc] init];
         _populated = NO;
         _selectedIndex = nil;
-        _reconnecting = NO;
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didLogin:) name:kLoginManagerDidLoginSucceeded object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReconnect:) name:kLoginManagerDidReconnect object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didLogout:) name:kLoginManagerDidLogoutSucceeded object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(failedToAuthenticate:) name:kLoginManagerDidFailedToAuthenticate object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didEndPopulatingMyNetwork:) name:kContactsManagerServiceDidEndPopulatingMyNetwork object:nil];
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
     }
     return self;
 }
 
 -(void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kLoginManagerDidLoginSucceeded object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kLoginManagerDidReconnect object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kLoginManagerDidLogoutSucceeded object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kLoginManagerDidFailedToAuthenticate object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kContactsManagerServiceDidAddContact object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kContactsManagerServiceDidUpdateContact object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kContactsManagerServiceDidEndPopulatingMyNetwork object:nil];
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:nil];
     _allObjects = nil;
     _serviceManager = nil;
     _contactsManager = nil;
     _selectedIndex = nil;
 }
 
--(void) didLogin:(NSNotification *) notification {
-    NSLog(@"Did login");
-    self.reconnecting = NO;
-}
-
--(void) didReconnect:(NSNotification *) notification {
-    NSLog(@"Did reconnect");
-    self.reconnecting = YES;
-    [[ServicesManager sharedInstance].loginManager disconnect];
-    [[ServicesManager sharedInstance].loginManager connect];
-}
-
--(void) didLogout:(NSNotification *) notification {
-    if(![NSThread isMainThread]){
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self didLogout:notification];
-        });
-        return;
-    }
-    NSLog(@"Did logout");
-    if(!self.reconnecting){
-        [self performSegueWithIdentifier:@"BackToLoginSegue" sender:self];
-    }
-}
-
--(void)failedToAuthenticate:(NSNotification *) notification {
-    if(![NSThread isMainThread]){
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self failedToAuthenticate:notification];
-        });
-        return;
-    }
-    NSLog(@"Failed to login");
-    self.reconnecting = NO;
-    [self performSegueWithIdentifier:@"BackToLoginSegue" sender:self];
-}
-
--(void)viewDidAppear:(BOOL)animated{
-    [super viewDidAppear:animated];
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    
     [[ServicesManager sharedInstance].notificationsManager registerForUserNotificationsSettingsWithCompletionHandler:^(BOOL granted, NSError * _Nullable error) {
         if(error){
             NSLog(@"[MainViewController] registerForUserNotificationsSettingsWithCompletionHandler returned a error: %@", [error localizedDescription]);
@@ -117,6 +62,21 @@
             NSLog(@"[MainViewController] Push notifications not granted");
         }
     }];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didEndPopulatingMyNetwork:) name:kContactsManagerServiceDidEndPopulatingMyNetwork object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didAddContact:) name:kContactsManagerServiceDidAddContact object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didUpdateContact:) name:kContactsManagerServiceDidUpdateContact object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didRemoveContact:) name:kContactsManagerServiceDidRemoveContact object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
+}
+
+-(void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kContactsManagerServiceDidAddContact object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kContactsManagerServiceDidUpdateContact object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kContactsManagerServiceDidRemoveContact object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kContactsManagerServiceDidEndPopulatingMyNetwork object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:nil];
 }
 
 -(void)applicationDidEnterBackground:(NSNotification *) notification {
@@ -126,7 +86,7 @@
         });
         return;
     }
-    NSLog(@"Application did enter background");
+    NSLog(@"[MainViewController] Application did enter background");
 }
 
 -(void) insertContact:(Contact *) contact {
@@ -160,19 +120,6 @@
         return;
     }
     NSLog(@"Did end populating my network");
-    
-    // fill allObjects array with the contacts already loaded by the ContactsManager
-    for(Contact *contact in _contactsManager.contacts){
-        // keep only contacts that are in the connected user roster
-        if(contact.isInRoster){
-            [_allObjects addObject:contact];
-        }
-    }
-    
-    // listen to update notifications
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didAddContact:) name:kContactsManagerServiceDidAddContact object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didRemoveContact:) name:kContactsManagerServiceDidRemoveContact object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didUpdateContact:) name:kContactsManagerServiceDidUpdateContact object:nil];
     
     if([self isViewLoaded])
         [self.tableView reloadData];
@@ -234,17 +181,19 @@
     }
 }
 
+#pragma mark - Segue navigation
+
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if ([segue.identifier isEqualToString: @"BackToLoginSegue"]){
+        LoginViewController *loginViewController = (LoginViewController *)segue.destinationViewController;
+        loginViewController.doLogout = YES;
+    }
 }
 
 #pragma mark - IBAction
 
 - (IBAction)logout:(id)sender {
-    // disconnect should not be called on the Main thread
-    dispatch_async(dispatch_get_global_queue( QOS_CLASS_UTILITY, 0), ^{
-        [[ServicesManager sharedInstance].loginManager disconnect];
-        [[ServicesManager sharedInstance].loginManager resetAllCredentials];
-    });
+    [self performSegueWithIdentifier:@"BackToLoginSegue" sender:self];
 }
 
 #pragma mark - UITableViewDataSource

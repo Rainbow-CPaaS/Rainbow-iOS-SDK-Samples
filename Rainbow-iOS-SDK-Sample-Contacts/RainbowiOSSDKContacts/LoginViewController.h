@@ -16,9 +16,10 @@
 #import <UIKit/UIKit.h>
 
 // The Rainbow server instance to join, set to nil to connect to the official server
-#define RAINBOW_SERVER @"openrainbow.com"
+#define RAINBOW_SERVER @"sandbox.openrainbow.com"
 
 @interface LoginViewController : UIViewController
 @property (strong, nonatomic) NSString *server;
+@property (nonatomic) BOOL doLogout;
 @end
 

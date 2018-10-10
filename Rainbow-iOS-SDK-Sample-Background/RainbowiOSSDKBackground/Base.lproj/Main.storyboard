@@ -40,7 +40,7 @@
                                 <rect key="frame" x="168.5" y="368" width="38" height="30"/>
                                 <state key="normal" title="Login"/>
                                 <connections>
-                                    <segue destination="eXh-1j-6Zz" kind="show" id="xs8-7W-iWc"/>
+                                    <action selector="loginAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Hgu-Qt-SZ2"/>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="openrainbow.com" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VZ4-eu-HdC">
@@ -70,9 +70,11 @@
                     </view>
                     <nil key="simulatedTopBarMetrics"/>
                     <connections>
+                        <outlet property="loginButton" destination="gCI-YX-Qfg" id="L3P-8x-7Ph"/>
                         <outlet property="loginTextField" destination="s5h-Is-kro" id="LV8-rc-Tnh"/>
                         <outlet property="passwordTextField" destination="apZ-NV-At6" id="UoL-2E-EHH"/>
                         <outlet property="serverLabel" destination="VZ4-eu-HdC" id="hY8-JF-28g"/>
+                        <segue destination="eXh-1j-6Zz" kind="show" identifier="DidLoginSegue" id="t5J-MN-9Ui"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -82,7 +84,6 @@
         <!--Contacts-->
         <scene sceneID="6GK-18-QVc">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="7ah-ex-5H7" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <tableViewController id="Ubu-qr-Ynt" customClass="MainViewController" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="80" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="sLu-42-Rvz">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
@@ -149,6 +150,7 @@
                         <segue destination="BYZ-38-t0r" kind="show" identifier="BackToLoginSegue" id="ERa-qZ-dvo"/>
                     </connections>
                 </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="7ah-ex-5H7" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2060" y="125"/>
         </scene>

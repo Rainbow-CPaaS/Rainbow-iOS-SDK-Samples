@@ -60,8 +60,6 @@
 		E5D2BFAF2069314700EEDB5F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E5D2BFB12069314700EEDB5F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E5D2BFB22069314700EEDB5F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		E5D2BFBA206931BA00EEDB5F /* WebRTC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebRTC.framework; path = Frameworks/WebRTC.framework; sourceTree = "<group>"; };
-		E5D2BFBB206931BA00EEDB5F /* Rainbow.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Rainbow.framework; path = Frameworks/Rainbow.framework; sourceTree = "<group>"; };
 		E5D2BFC320693D3E00EEDB5F /* MainViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
 		E5D2BFC420693D3E00EEDB5F /* MainViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -82,8 +80,6 @@
 		E5D2BF972069314700EEDB5F = {
 			isa = PBXGroup;
 			children = (
-				964C4EC620974DC600F77507 /* Rainbow.framework */,
-				964C4EC520974DC600F77507 /* WebRTC.framework */,
 				E5D2BFA22069314700EEDB5F /* RainbowiOSSDKIM */,
 				E5D2BFA12069314700EEDB5F /* Products */,
 				E5D2BFB9206931B900EEDB5F /* Frameworks */,
@@ -127,8 +123,8 @@
 		E5D2BFB9206931B900EEDB5F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				E5D2BFBB206931BA00EEDB5F /* Rainbow.framework */,
-				E5D2BFBA206931BA00EEDB5F /* WebRTC.framework */,
+				964C4EC620974DC600F77507 /* Rainbow.framework */,
+				964C4EC520974DC600F77507 /* WebRTC.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
