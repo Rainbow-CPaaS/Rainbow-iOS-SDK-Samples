@@ -40,7 +40,7 @@
                                 <rect key="frame" x="168.5" y="368" width="38" height="30"/>
                                 <state key="normal" title="Login"/>
                                 <connections>
-                                    <segue destination="eXh-1j-6Zz" kind="show" id="xs8-7W-iWc"/>
+                                    <action selector="loginAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="M2X-an-Yx6"/>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="openrainbow.com" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VZ4-eu-HdC">
@@ -70,9 +70,11 @@
                     </view>
                     <nil key="simulatedTopBarMetrics"/>
                     <connections>
+                        <outlet property="loginButton" destination="gCI-YX-Qfg" id="zmD-Aq-Rvw"/>
                         <outlet property="loginTextField" destination="s5h-Is-kro" id="LV8-rc-Tnh"/>
                         <outlet property="passwordTextField" destination="apZ-NV-At6" id="UoL-2E-EHH"/>
                         <outlet property="serverLabel" destination="VZ4-eu-HdC" id="hY8-JF-28g"/>
+                        <segue destination="eXh-1j-6Zz" kind="show" identifier="DidLoginSegue" id="lMv-Tl-FE2"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

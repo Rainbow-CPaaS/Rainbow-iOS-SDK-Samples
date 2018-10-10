@@ -119,7 +119,7 @@
         });
         return;
     }
-    NSLog(@"Did end populating my network");
+    NSLog(@"[MainViewController] Did end populating my network");
     
     if([self isViewLoaded])
         [self.tableView reloadData];
