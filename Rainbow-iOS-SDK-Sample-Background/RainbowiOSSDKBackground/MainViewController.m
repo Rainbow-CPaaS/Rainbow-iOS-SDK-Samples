@@ -236,17 +236,26 @@
     [self sendIM:[NSString stringWithFormat:@"Hello at %@", [NSDate date]] to:contact];
 }
 
--(void)sendIM:(NSString *)message to:(Contact *)contact {
+#pragma mark - Sending IM
+
+-(void)sendIM:(NSString *)text to:(Contact *)contact {
     [[ServicesManager sharedInstance].conversationsManagerService startConversationWithPeer:contact withCompletionHandler:^(Conversation *conversation, NSError *error) {
         if(!error){
-            [[ServicesManager sharedInstance].conversationsManagerService sendMessage:message fileAttachment:nil to:conversation completionHandler:^(Message *message, NSError *error) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    if(!error){
-                        NSLog(@"[MainViewController] message '%@' sent to %@",message , contact.displayName);
-                    } else {
-                        NSLog(@"[MainViewController] Can't send message to the conversation error: %@",[error description]);
-                    }
-                });
+            [[ServicesManager sharedInstance].conversationsManagerService sendMessage:text fileAttachment:nil to:conversation completionHandler:^(Message *message, NSError *error) {
+                if(!error){
+                    NSLog(@"[MainViewController] message '%@' sent to %@, XMPP message [ %@ ]",text , contact.displayName, message);
+                    NSLog(@"[MainViewController] XMPP message [ %@ ]", [message debugDescription]);
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        __block UIAlertController *alert = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"Message to %@",contact.displayName]  message:text preferredStyle:UIAlertControllerStyleAlert];
+                        [self presentViewController:alert animated:YES completion:^{
+                            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                                [alert dismissViewControllerAnimated:YES completion:nil];
+                            });
+                        }];
+                    });
+                } else {
+                    NSLog(@"[MainViewController] Can't send message to the conversation error: %@",[error description]);
+                }
             } attachmentUploadProgressHandler:nil];
         } else {
             NSLog(@"[MainViewController] Can't create the new conversation, error: %@", [error description]);
