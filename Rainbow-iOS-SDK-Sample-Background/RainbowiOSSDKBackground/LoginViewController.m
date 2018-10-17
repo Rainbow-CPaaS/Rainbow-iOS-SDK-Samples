@@ -52,6 +52,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReconnect:) name:kLoginManagerDidReconnect object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(failedToAuthenticate:) name:kLoginManagerDidFailedToAuthenticate object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didLogout:) name:kLoginManagerDidLogoutSucceeded object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didLostConnection:) name:kLoginManagerDidLostConnection object:nil];
     if(self.doLogout){
         self.doLogout = NO;
         [self logoutAction:self];
@@ -64,6 +65,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kLoginManagerDidReconnect object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kLoginManagerDidFailedToAuthenticate object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kLoginManagerDidLogoutSucceeded object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kLoginManagerDidLostConnection object:nil];
 }
 
 #pragma mark - Notifications
@@ -95,6 +97,18 @@
         return;
     }
     NSLog(@"[LoginViewController] Failed to login");
+    self.loginButton.enabled = YES;
+    self.passwordTextField.text = @"";
+}
+
+-(void)didLostConnection:(NSNotification *) notification {
+    if(![NSThread isMainThread]){
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self didLostConnection:notification];
+        });
+        return;
+    }
+    NSLog(@"[LoginViewController] Did lost connection");
     self.loginButton.enabled = YES;
     self.passwordTextField.text = @"";
 }
