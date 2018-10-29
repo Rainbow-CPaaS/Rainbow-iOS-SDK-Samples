@@ -132,7 +132,7 @@
     if(self.isIncoming){
         [self.rtcService acceptIncomingCall:self.currentCall withFeatures:RTCCallFeatureAudio];
     } else {
-        [self makeCallTo:self.contact features:RTCCallFeatureLocalVideo | RTCCallFeatureRemoteVideo];
+        [self makeCallTo:self.contact features:(RTCCallFeatureAudio | RTCCallFeatureLocalVideo)];
     }
 }
 

@@ -35,7 +35,7 @@ The aim of this sample project is to demonstrate WebRTC phone calls. After the l
 #### Start Audio Call
 
 ```objective-c
-RTCCall *currentVideoCall = [[ServicesManager sharedInstance].rtcService beginNewOutgoingCallWithContact:_aContact withFeatures:(RTCCallFeatureAudio)];
+RTCCall *currentVideoCall = [[ServicesManager sharedInstance].rtcService beginNewOutgoingCallWithPeer:_aContact withFeatures:(RTCCallFeatureAudio)];
 ```
 
  This will begin a new call with selected contact and notify **kTelephonyServiceDidAddCallNotification**
@@ -90,7 +90,7 @@ RTCCall *currentVideoCall = [[ServicesManager sharedInstance].rtcService beginNe
 To start a video call you should pass the `RTCCallFeatureLocalVideo` feature like this,
 
 ```objective-c
-RTCCall * currentCall = [[ServicesManager sharedInstance].rtcService beginNewOutgoingCallWithContact:_aContact withFeatures:(RTCCallFeatureLocalVideo)];
+RTCCall * currentCall = [[ServicesManager sharedInstance].rtcService beginNewOutgoingCallWithPeer:_aContact withFeatures:(RTCCallFeatureAudio|RTCCallFeatureLocalVideo)];
 ```
 
 You may also add a video stream to a established audio call, first declare some properties and listen to video track notifications,
