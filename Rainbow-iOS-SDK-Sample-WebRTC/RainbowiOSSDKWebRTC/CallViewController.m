@@ -17,6 +17,7 @@
 @interface CallViewController ()
 @property (weak, nonatomic) IBOutlet UIImageView *avatar;
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
+@property (weak, nonatomic) IBOutlet UIButton *answerButton;
 @property (weak, nonatomic) IBOutlet UIButton *cancelButton;
 @property (weak, nonatomic) IBOutlet UIButton *addVideoButton;
 
@@ -104,13 +105,9 @@
     self.isCallEtablished = NO;
 }
 
--(void) makeCallTo:(Contact *) contact features:(RTCCallFeatureFlags) features {
+-(BOOL) checkMicrophoneAccess {
     if(self.rtcService.microphoneAccessGranted){
-        // Starting with SDK release 1.0.16 a call subject could also be provided
-        self.currentCall = [self.rtcService beginNewOutgoingCallWithPeer:contact withFeatures:features /* andSubject:@"RainbowiOSSDKWebRTC calling !" */];
-        if(!self.currentCall){
-            NSLog(@"Error making WebRTC call");
-        }
+        return YES;
     } else {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Access to microphone" message:@"Without your auhtorisation to use microphone, the callee will not be able to hear you during call." preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction* okAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
@@ -126,13 +123,38 @@
         [alert addAction:okAction];
         [self presentViewController:alert animated:YES completion:nil];
     }
+    return NO;
+}
+
+-(void) makeCallTo:(Contact *) contact features:(RTCCallFeatureFlags) features {
+    if([self checkMicrophoneAccess]){
+        // Starting with SDK release 1.0.16 a call subject could also be provided
+        self.currentCall = [self.rtcService beginNewOutgoingCallWithPeer:contact withFeatures:features /* andSubject:@"RainbowiOSSDKWebRTC calling !" */];
+        if(!self.currentCall){
+            NSLog(@"Error making WebRTC call");
+        }
+    }
+    
+}
+
+-(void) makeMPCallTo:(Contact *) contact {
+    if([self checkMicrophoneAccess]){
+        self.currentCall = [_rtcService beginNewOutgoingCallWithWebRTCGatewayToNumber:contact.phoneNumbers[0].numberE164];
+        if(!self.currentCall){
+            NSLog(@"Error making MP call");
+        }
+    }
 }
 
 -(void)viewDidAppear:(BOOL)animated {
     if(self.isIncoming){
-        [self.rtcService acceptIncomingCall:self.currentCall withFeatures:RTCCallFeatureAudio];
+        self.answerButton.enabled = YES;
     } else {
-        [self makeCallTo:self.contact features:(RTCCallFeatureAudio | RTCCallFeatureLocalVideo)];
+        if(self.isMPCall){
+            [self makeMPCallTo:self.contact];
+        } else {
+            [self makeCallTo:self.contact features:(RTCCallFeatureAudio | RTCCallFeatureLocalVideo)];
+        }
     }
 }
 
@@ -151,6 +173,13 @@
             [self.view setNeedsLayout];
         }
     }
+}
+
+-(void) removeLocalVideoTrack {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:AVCaptureSessionDidStartRunningNotification object:nil];
+    self.localVideoTrack = nil;
+    self.localVideoView.captureSession = nil;
+    self.localVideoView.hidden = YES;
 }
 
 #pragma mark - RTCCall notifications
@@ -202,7 +231,11 @@
             case CallStatusEstablished: {
                 NSLog(@"didUpdateCall notification: established");
                 if(!self.isCallEtablished){
-                    self.addVideoButton.enabled = YES;
+                    if(call.isLocalVideoEnabled){
+                        self.addVideoButton.enabled = NO;
+                    } else {
+                        self.addVideoButton.enabled = YES;
+                    }
                 }
                 self.isCallEtablished = YES;
                 break;
@@ -394,10 +427,7 @@
     }
     
     NSLog(@"didRemoveLocalVideoTrack notification");
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:AVCaptureSessionDidStartRunningNotification object:nil];
-    self.localVideoTrack = nil;
-    self.localVideoView.captureSession = nil;
-    self.localVideoView.hidden = YES;
+    [self removeLocalVideoTrack];
 }
 
 -(void) didStartCaptureSession:(NSNotification *) notification {
@@ -452,6 +482,11 @@
     } else {
         [self dismissViewControllerAnimated:YES completion:nil];
     }
+}
+
+- (IBAction)answerCall:(id)sender {
+    [self.rtcService acceptIncomingCall:self.currentCall withFeatures:RTCCallFeatureAudio];
+    self.answerButton.enabled = NO;
 }
 
 - (IBAction)addVideo:(id)sender {

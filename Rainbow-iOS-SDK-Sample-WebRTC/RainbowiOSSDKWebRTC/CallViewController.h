@@ -15,4 +15,5 @@
 @property (nonatomic, strong) UIColor *contactImageTint;
 @property (strong, nonatomic) RTCCall *currentCall;
 @property (nonatomic) BOOL isIncoming;
+@property (nonatomic) BOOL isMPCall;
 @end

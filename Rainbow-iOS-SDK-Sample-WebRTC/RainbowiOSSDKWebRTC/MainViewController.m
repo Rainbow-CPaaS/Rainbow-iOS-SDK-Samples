@@ -27,6 +27,7 @@
 @property (nonatomic, strong) NSMutableArray<Contact *> *allObjects;
 @property (nonatomic) BOOL populated;
 @property (nonatomic, strong) NSIndexPath *selectedIndex;
+@property (nonatomic) BOOL isMPCall;
 @property (nonatomic, strong) RTCCall *call;
 @end
 
@@ -171,6 +172,7 @@
             vc.contactImage = ((ContactTableViewCell *)[self.tableView cellForRowAtIndexPath:self.selectedIndex]).avatar.image;
             vc.contactImageTint = ((ContactTableViewCell *)[self.tableView cellForRowAtIndexPath:self.selectedIndex]).avatar.tintColor;
             vc.isIncoming = NO;
+            vc.isMPCall = self.isMPCall;
         } else {
             vc.isIncoming = YES;
             vc.currentCall = self.call;
@@ -194,6 +196,7 @@
     if([notification.object class] == [RTCCall class]){
         NSLog(@"didAddCall notification");
         self.call = (RTCCall *) notification.object;
+        self.isMPCall = NO;
         [self performSegueWithIdentifier:@"CallInProgressSegue" sender:self];
     }
 }
@@ -240,7 +243,23 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     self.selectedIndex = indexPath;
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    [self performSegueWithIdentifier:@"CallInProgressSegue" sender:self];
+    UIAlertController *menu = [UIAlertController alertControllerWithTitle:@"Dial" message:@"" preferredStyle:UIAlertControllerStyleActionSheet];
+    UIAlertAction *standardCall = [UIAlertAction actionWithTitle:@"Standard call" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        self.isMPCall = NO;
+        [self performSegueWithIdentifier:@"CallInProgressSegue" sender:self];
+    }];
+    
+    UIAlertAction *mpCall = [UIAlertAction actionWithTitle:@"MP call" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        self.isMPCall = YES;
+        [self performSegueWithIdentifier:@"CallInProgressSegue" sender:self];
+    }];
+    
+    UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
+    
+    [menu addAction:standardCall];
+    [menu addAction:mpCall];
+    [menu addAction:cancel];
+    [self presentViewController:menu animated:YES completion:nil];
 }
 
 @end

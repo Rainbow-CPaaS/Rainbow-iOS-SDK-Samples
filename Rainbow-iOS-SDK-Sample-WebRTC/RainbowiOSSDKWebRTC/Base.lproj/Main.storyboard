@@ -213,18 +213,28 @@
                                     <action selector="addVideo:" destination="UEs-5i-6et" eventType="touchUpInside" id="Tty-bi-VRa"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dZm-QT-bM3">
+                                <rect key="frame" x="107.5" y="613" width="60" height="34"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                <state key="normal" title="Answer"/>
+                                <connections>
+                                    <action selector="answerCall:" destination="UEs-5i-6et" eventType="touchUpInside" id="9za-w2-LNQ"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="Akc-bN-I2t" firstAttribute="centerX" secondItem="2MA-aW-BRU" secondAttribute="centerX" id="5Uc-a8-MaH"/>
+                            <constraint firstItem="A4o-uv-uPG" firstAttribute="bottom" secondItem="dZm-QT-bM3" secondAttribute="bottom" constant="20" id="8hR-IR-EEX"/>
                             <constraint firstItem="yid-Jk-MgZ" firstAttribute="top" secondItem="H0i-Zo-E5g" secondAttribute="bottom" constant="16" id="8mE-8E-8ez"/>
-                            <constraint firstItem="O4v-fN-hag" firstAttribute="centerX" secondItem="2MA-aW-BRU" secondAttribute="centerX" id="DrU-Uq-R54"/>
+                            <constraint firstItem="O4v-fN-hag" firstAttribute="centerX" secondItem="2MA-aW-BRU" secondAttribute="centerX" constant="50" id="DrU-Uq-R54"/>
                             <constraint firstItem="A4o-uv-uPG" firstAttribute="trailing" secondItem="arH-4q-eg2" secondAttribute="trailing" constant="16" id="DzG-C6-F8A"/>
                             <constraint firstItem="34y-BP-Bv3" firstAttribute="centerX" secondItem="2MA-aW-BRU" secondAttribute="centerX" id="Fxf-5x-phr"/>
                             <constraint firstItem="H0i-Zo-E5g" firstAttribute="centerX" secondItem="2MA-aW-BRU" secondAttribute="centerX" id="I3k-GP-GQJ"/>
                             <constraint firstItem="mhp-2t-CL7" firstAttribute="centerX" secondItem="2MA-aW-BRU" secondAttribute="centerX" id="IM6-bq-sXI"/>
                             <constraint firstItem="34y-BP-Bv3" firstAttribute="top" secondItem="A4o-uv-uPG" secondAttribute="top" constant="100" id="JzM-fu-kJw"/>
                             <constraint firstItem="mhp-2t-CL7" firstAttribute="top" secondItem="A4o-uv-uPG" secondAttribute="top" constant="28" id="K1R-6D-nmv"/>
+                            <constraint firstItem="dZm-QT-bM3" firstAttribute="centerX" secondItem="2MA-aW-BRU" secondAttribute="centerX" constant="-50" id="MJr-dM-9me"/>
                             <constraint firstItem="arH-4q-eg2" firstAttribute="leading" secondItem="A4o-uv-uPG" secondAttribute="leading" constant="16" id="PI2-ph-Jjl"/>
                             <constraint firstItem="A4o-uv-uPG" firstAttribute="trailing" secondItem="yid-Jk-MgZ" secondAttribute="trailing" constant="24" id="Sbr-dV-qvY"/>
                             <constraint firstItem="A4o-uv-uPG" firstAttribute="bottom" secondItem="O4v-fN-hag" secondAttribute="bottom" constant="20" id="URX-cn-7yS"/>
@@ -236,6 +246,7 @@
                     </view>
                     <connections>
                         <outlet property="addVideoButton" destination="Akc-bN-I2t" id="5OM-fn-5r0"/>
+                        <outlet property="answerButton" destination="dZm-QT-bM3" id="bdV-g6-9p0"/>
                         <outlet property="avatar" destination="34y-BP-Bv3" id="MWH-Kz-xv1"/>
                         <outlet property="cancelButton" destination="O4v-fN-hag" id="3OF-an-ZFV"/>
                         <outlet property="localVideoView" destination="yid-Jk-MgZ" id="NAC-Pw-bE6"/>
