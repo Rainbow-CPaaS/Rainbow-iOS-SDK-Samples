@@ -229,11 +229,7 @@
             case CallStatusEstablished: {
                 NSLog(@"didUpdateCall notification: established");
                 if(!self.isCallEtablished){
-                    if(call.isLocalVideoEnabled){
-                        self.addVideoButton.enabled = NO;
-                    } else {
-                        self.addVideoButton.enabled = YES;
-                    }
+                    self.addVideoButton.enabled = YES;
                 }
                 self.isCallEtablished = YES;
                 break;
