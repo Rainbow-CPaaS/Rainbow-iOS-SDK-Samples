@@ -16,7 +16,7 @@
 #import "LoginViewController.h"
 #import <Rainbow/Rainbow.h>
 
-@interface LoginViewController ()
+@interface LoginViewController () <UITextFieldDelegate>
 @property (weak, nonatomic) IBOutlet UITextField *loginTextField;
 @property (weak, nonatomic) IBOutlet UITextField *passwordTextField;
 @property (weak, nonatomic) IBOutlet UILabel *serverLabel;
@@ -41,6 +41,14 @@
     if(self.server){
         [[NSNotificationCenter defaultCenter] postNotificationName:kChangeServerURLNotification object:@{ @"serverURL": self.server}];
     }
+    
+    if ([ServicesManager sharedInstance].myUser.username && [ServicesManager sharedInstance].myUser.password) {
+        self.loginTextField.text = [ServicesManager sharedInstance].myUser.username;
+        self.passwordTextField.text = [ServicesManager sharedInstance].myUser.password;
+    }
+    
+    self.loginTextField.delegate = self;
+    self.passwordTextField.delegate = self;
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -131,6 +139,12 @@
         [[ServicesManager sharedInstance].loginManager setUsername:login andPassword:passwd];
         [[ServicesManager sharedInstance].loginManager connect];
     }
+}
+
+#pragma mark - UITextFieldDelegate
+-(BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [textField resignFirstResponder];
+    return YES;
 }
 
 @end

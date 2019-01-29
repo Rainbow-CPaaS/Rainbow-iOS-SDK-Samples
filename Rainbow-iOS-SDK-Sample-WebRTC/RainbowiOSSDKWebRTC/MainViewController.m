@@ -197,8 +197,15 @@
         NSLog(@"didAddCall notification");
         self.call = (RTCCall *) notification.object;
         self.isMPCall = NO;
-        [self performSegueWithIdentifier:@"CallInProgressSegue" sender:self];
+        [self showCallView:self.call];
     }
+}
+
+-(void)showCallView:(RTCCall *)call {
+    CallViewController *callViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"CallViewController"];
+    callViewController.currentCall = call;
+    callViewController.isIncoming = YES;
+    [self presentViewController:callViewController animated:YES completion:nil];    
 }
 
 #pragma mark - IBAction
@@ -257,7 +264,8 @@
     UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
     
     [menu addAction:standardCall];
-    [menu addAction:mpCall];
+    // MP call disabled
+    //[menu addAction:mpCall];
     [menu addAction:cancel];
     [self presentViewController:menu animated:YES completion:nil];
 }

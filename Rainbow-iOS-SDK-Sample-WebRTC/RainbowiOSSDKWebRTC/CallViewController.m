@@ -39,7 +39,6 @@
 -(instancetype) initWithCoder:(NSCoder *)aDecoder {
     self = [super initWithCoder:aDecoder];
     if(self){
-        _currentCall = nil;
         _localVideoTrack = nil;
         _remoteVideoTrack = nil;
         _isCallEtablished = NO;
@@ -87,7 +86,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    _currentCall = nil;
     _localVideoTrack = nil;
     _remoteVideoTrack = nil;
     
