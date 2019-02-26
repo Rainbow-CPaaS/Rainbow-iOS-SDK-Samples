@@ -16,7 +16,8 @@
 #import <UIKit/UIKit.h>
 #import <Rainbow/Rainbow.h>
 
-@interface ChatViewController : UIViewController<UITableViewDelegate, UITableViewDataSource, UITextViewDelegate, CKItemsBrowserDelegate>
+@interface ChatViewController : UIViewController<UITableViewDelegate, UITableViewDataSource, UITextViewDelegate, CKItemsBrowserDelegate,
+    UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 @property (nonatomic, strong) Contact *contact;
 @property (nonatomic, strong) UIImage *contactImage;
 @property (nonatomic, strong) UIColor *contactImageTint;

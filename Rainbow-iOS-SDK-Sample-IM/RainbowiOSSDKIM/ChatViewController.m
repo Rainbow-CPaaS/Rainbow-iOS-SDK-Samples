@@ -17,6 +17,9 @@
 #import "MyUserTableViewCell.h"
 #import "PeerTableViewCell.h"
 
+#import <Photos/Photos.h>
+#import <MobileCoreServices/MobileCoreServices.h>
+
 #define kPageSize 50
 
 @interface MessageItem : NSObject
@@ -40,6 +43,7 @@
 @property (strong, nonatomic) UIImage *myAvatar;
 @property (strong, nonatomic) UIImage *peerAvatar;
 @property (strong, nonatomic) Conversation *theConversation;
+@property (strong, nonatomic) File *attachmentFileToSend;
 @end
 
 @implementation ChatViewController
@@ -62,6 +66,7 @@
     [super viewDidLoad];
     self.textInput.delegate = self;
     self.messages = [[NSMutableArray alloc] init];
+    self.attachmentFileToSend = nil;
     if(self.contact.photoData){
         self.peerAvatar = [UIImage imageWithData: self.contact.photoData];
     } else {
@@ -137,7 +142,7 @@
     if(self.theConversation){
         self.sendButton.enabled = NO;
         self.textInput.editable = NO;
-        [self.conversationsManager sendMessage:self.textInput.text fileAttachment:nil to:self.theConversation completionHandler:^(Message *message, NSError *error) {
+        [self.conversationsManager sendMessage:self.textInput.text fileAttachment:self.attachmentFileToSend to:self.theConversation completionHandler:^(Message *message, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 if(!error){
                     self.textInput.text = @"";
@@ -146,9 +151,133 @@
                     self.sendButton.enabled = YES;
                 }
                 self.textInput.editable = YES;
+                self.attachmentFileToSend = nil;
             });
-        } attachmentUploadProgressHandler:nil];
+        } attachmentUploadProgressHandler:^(Message *message, double totalBytesSent, double totalBytesExpectedToSend) {
+            NSLog(@"total byte send  : %f",totalBytesSent);
+            NSLog(@"total byte expected to send  : %f",totalBytesExpectedToSend);
+        }];
     }
+}
+
+- (IBAction)addAttachment:(id)sender {
+    UIAlertController *actionSheet = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    __weak __typeof__(self) weakSelf = self;
+ 
+    UIAlertAction* uploadImageFromLibraryAction = [UIAlertAction actionWithTitle: @"Gallery" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+        [weakSelf didTapUploadImageAction:action];
+    }];
+    [uploadImageFromLibraryAction setValue:[[UIImage imageNamed:@"folder"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forKey:@"image"];
+    [actionSheet addAction:uploadImageFromLibraryAction];
+    
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
+    [actionSheet addAction:cancelAction];
+    
+    // show the menu.
+    [self presentViewController:actionSheet animated:YES completion:nil];
+}
+
+-(void) showAllowAccessPhotoAndCameraPopup {
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction* gotoSettingsAction = [UIAlertAction actionWithTitle:@"Go to Settings" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString] options:@{} completionHandler:nil];
+    }];
+    [alert addAction:gotoSettingsAction];
+    
+    // show the alert.
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+- (void)didTapUploadImageAction:(UIAlertAction *)sender {
+    [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if(status == PHAuthorizationStatusAuthorized) {
+                // Already authorized
+                UIImagePickerController *imagePickerController = [[UIImagePickerController alloc] init];
+                imagePickerController.delegate = self;
+                imagePickerController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+                if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary])
+                    imagePickerController.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+                else
+                    imagePickerController.sourceType = UIImagePickerControllerSourceTypeSavedPhotosAlbum;
+                
+                imagePickerController.mediaTypes = [NSArray arrayWithObjects:(NSString *)kUTTypeMovie, (NSString *)kUTTypeImage, nil];
+                
+                [self presentViewController:imagePickerController animated:YES completion:nil];
+                
+            } else {
+                [self showAllowAccessPhotoAndCameraPopup];
+            }
+        });
+    }];
+}
+
+#pragma mark - UIImagePickerControllerDelegate protocol
+
+- (void)downloadAsset:(PHAsset *)asset toURL:(NSURL *)url completion:(void(^)(NSURL *assetVideoUrl, NSData *data))completion {
+    if (asset.mediaType == PHAssetMediaTypeImage) {
+        PHImageRequestOptions *options = [PHImageRequestOptions new];
+        options.networkAccessAllowed = YES;
+        options.version = PHImageRequestOptionsVersionCurrent;
+        options.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
+        options.synchronous = YES;
+        [[PHImageManager defaultManager] requestImageDataForAsset:asset options:options resultHandler:^(NSData * _Nullable imageData, NSString * _Nullable dataUTI, UIImageOrientation orientation, NSDictionary * _Nullable info) {
+            // Convert HEIC to JPEG for not iOS device compatibility
+            if( [[url pathExtension] isEqualToString:@"HEIC"] || [[url pathExtension] isEqualToString:@"HEIF"]) {
+                UIImage *im = [UIImage imageWithData:imageData];
+                imageData = UIImageJPEGRepresentation(im, 0.9);
+            }
+            
+            if ([info objectForKey:PHImageErrorKey] == nil && [[NSFileManager defaultManager] createFileAtPath:url.path contents:imageData attributes:nil]) {
+                NSLog(@"downloaded photo:%@", url.path);
+            }
+            completion(nil, imageData);
+        }];
+    } else if (asset.mediaType == PHAssetMediaTypeVideo) {
+        [[NSFileManager defaultManager] removeItemAtPath:url.path error:nil];
+        PHVideoRequestOptions *options = [PHVideoRequestOptions new];
+        options.networkAccessAllowed = YES;
+        options.version = PHVideoRequestOptionsVersionCurrent;
+        options.deliveryMode = PHVideoRequestOptionsDeliveryModeAutomatic;
+        [[PHImageManager defaultManager] requestAVAssetForVideo:asset options:options resultHandler:^(AVAsset * _Nullable asset, AVAudioMix * _Nullable audioMix, NSDictionary * _Nullable info) {
+            NSURL *videoUrl = [(AVURLAsset *)asset URL];
+            NSData *videoData = [NSData dataWithContentsOfURL:videoUrl options:0 error:nil];
+            [videoData writeToFile:url.path atomically:YES];
+            completion(videoUrl, videoData);
+        }];
+    }
+}
+
+-(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info{
+    NSURL *assetURL;
+    if([info objectForKey:UIImagePickerControllerReferenceURL])
+        assetURL = info[UIImagePickerControllerReferenceURL];
+    else if([info objectForKey:UIImagePickerControllerMediaURL])
+        assetURL = info[UIImagePickerControllerMediaURL];
+    
+    PHFetchResult<PHAsset *> *asset = nil;
+    __block NSData *dataToSend = nil;
+    __block NSURL *assetUrl = nil;
+    
+    if(assetURL){
+        asset = [PHAsset fetchAssetsWithALAssetURLs:@[assetURL] options:nil];
+        if(asset.count > 0){
+            __block NSString *fileName = [asset.firstObject valueForKey:@"filename"];
+            NSURL *cacheURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@/%@",
+                                                      [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) firstObject], [[NSUUID UUID] UUIDString]]];
+            dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+            [self downloadAsset:asset.firstObject toURL:cacheURL completion:^(NSURL *url, NSData *data) {
+                assetUrl = url;
+                dataToSend = data;
+                dispatch_semaphore_signal(semaphore);
+            }];
+            dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+            
+            self.attachmentFileToSend = [[ServicesManager sharedInstance].fileSharingService createTemporaryFileWithFileName:fileName andData:dataToSend andURL:cacheURL];
+        }
+    }
+    
+    [picker dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - Browsing delegate
@@ -335,8 +464,10 @@
         if(self.messages[row].attachment && self.messages[row].attachment.thumbnailData){
             myCell.attachmentPreview.image = [UIImage imageWithData:self.messages[row].attachment.thumbnailData];
             myCell.attachmentPreview.hidden = NO;
+            myCell.attachmentHeight.constant = 80;
         } else {
             myCell.attachmentPreview.hidden = YES;
+            myCell.attachmentHeight.constant = 0;
         }
     } else {
         PeerTableViewCell *peerCell = (PeerTableViewCell *)cell;
@@ -348,8 +479,10 @@
         if(self.messages[row].attachment && self.messages[row].attachment.thumbnailData){
             peerCell.attachmentPreview.image = [UIImage imageWithData:self.messages[row].attachment.thumbnailData];
             peerCell.attachmentPreview.hidden = NO;
+            peerCell.attachmentHeight.constant = 80;
         } else {
             peerCell.attachmentPreview.hidden = YES;
+            peerCell.attachmentHeight.constant = 0;
         }
     }
 }

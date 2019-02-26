@@ -19,4 +19,5 @@
 @property (weak, nonatomic) IBOutlet UIImageView *avatar;
 @property (weak, nonatomic) IBOutlet UITextView *message;
 @property (weak, nonatomic) IBOutlet UIImageView *attachmentPreview;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *attachmentHeight;
 @end
