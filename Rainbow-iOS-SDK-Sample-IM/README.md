@@ -181,21 +181,6 @@ attachmentFileToSend = [[ServicesManager sharedInstance].fileSharingService crea
 }];
 ```
 
-The recognized file types are the following:
-
-```
-typedef NS_ENUM(NSInteger, FileType) {
-    FileTypeImage,
-    FileTypePDF,
-    FileTypeDoc,
-    FileTypePPT,
-    FileTypeXLS,
-    FileTypeAudio,
-    FileTypeVideo,
-    FileTypeOther
-};
-```
-
 ##### Attachments
 Optionally a file like a image, a video,... could be attached to messages. The file is uploaded in the cloud and a preview image is computed on the server if it is relevant.
 The thumbnail image might be retrieved like this,
@@ -238,40 +223,4 @@ typedef NS_ENUM(NSInteger, FileType) {
 };
 ```
 
-#### Last Message Correction
-
-The Rainbow SDK since release 1.54.x support the IM message correction as described in 
-[XEP-0308: Last Message Correction](https://xmpp.org/extensions/xep-0308.html). This provide the ability to the users to correct or suppress the last message sent to a IM conversation. The correction is done sending a new message with the corrected message or none for suppression, using:
-
-```objective-c
-/**
- *  replace the last recently sent message with a corrected one
- *
- *  @param message           message to replace
- *  @param text              new message text, if nil this would remove the last message
- *  @param conversation      conversation object in which you want to send the message
- *  @param completionHandler method to invoke when send action is completed
- *  @return message          return the message.
- */
--(Message *) sendReplacementMessageForMessage:(Message *)message replacementText:(NSString *)text to:(Conversation *) conversation completionHandler:(ConversationsManagerServiceSendMessageCompletionHandler) completionHandler;
-
-```
-
-After sending the correction message, the original message is not modified or suppressed, both messages are still sent when browsing the conversation, it is the responsability of the UI part of the application using the Rainbow SDK to deal with the correction/removing. 
-The correction message has new attributes set to reference the corrected one:
-
-```objective-c
-/**
- * The message ID of the replaced message if this message is a replacement message
- * for a previously sent message in the XEP-0308 sense
- */
-@property (nonatomic, readonly) NSString *replacedMessageID;
-
-/**
- * The date of the replacement message if this one has been edited
- * See XEP-0308 for more details
- */
-@property (nonatomic, readonly) NSDate *replacedDate;
-
-```
 
