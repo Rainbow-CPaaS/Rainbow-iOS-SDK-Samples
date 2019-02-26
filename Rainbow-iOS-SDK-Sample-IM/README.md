@@ -153,6 +153,50 @@ messagesBrowser.delegate = self;
 ```
 
 #### Dealing with attachments
+
+##### Sending a file in attachment
+Along the text message itself a file could be attached to a message and uploaded to the cloud.
+
+Here follow a sample code that send a message with a UIImage as a attached jpeg file:  
+
+```objective-c
+File *attachmentFileToSend = nil;
+UIImage *image = ...;
+NSString *fileName = @"image.jpg";
+NSData *dataToSend = UIImageJPEGRepresentation(image, 0.7);
+NSURL *cacheURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@/%@",
+	[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) firstObject], fileName]];
+
+attachmentFileToSend = [[ServicesManager sharedInstance].fileSharingService createTemporaryFileWithFileName:fileName andData:dataToSend andURL:cacheURL];
+
+[[ServicesManager sharedInstance].conversationsManagerService sendMessage:@"Message to send" fileAttachment:attachmentFileToSend to:conversation completionHandler:^(Message *message, NSError *error) {
+        // do something with **message**
+        ...
+        
+        });
+} attachmentUploadProgressHandler:^(Message *message, double totalBytesSent, double totalBytesExpectedToSend) {
+        NSLog(@"total byte send  : %f",totalBytesSent);
+        NSLog(@"total byte expected to send  : %f",totalBytesExpectedToSend);
+      
+}];
+```
+
+The recognized file types are the following:
+
+```
+typedef NS_ENUM(NSInteger, FileType) {
+    FileTypeImage,
+    FileTypePDF,
+    FileTypeDoc,
+    FileTypePPT,
+    FileTypeXLS,
+    FileTypeAudio,
+    FileTypeVideo,
+    FileTypeOther
+};
+```
+
+##### Attachments
 Optionally a file like a image, a video,... could be attached to messages. The file is uploaded in the cloud and a preview image is computed on the server if it is relevant.
 The thumbnail image might be retrieved like this,
 
