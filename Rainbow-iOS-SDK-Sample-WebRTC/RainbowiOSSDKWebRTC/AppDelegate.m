@@ -46,7 +46,6 @@
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     [[ServicesManager sharedInstance].loginManager disconnect];
-    [[ServicesManager sharedInstance].loginManager resetAllCredentials];
 }
 
 @end

@@ -54,6 +54,9 @@
     [super viewWillAppear:animated];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didEndPopulatingMyNetwork:) name:kContactsManagerServiceDidEndPopulatingMyNetwork object:nil];
+    if(!_populated) {
+        [self didEndPopulatingMyNetwork:nil];
+    }
 }
 
 -(void)viewWillDisappear:(BOOL)animated{
@@ -81,7 +84,9 @@
         [_allObjects addObject:contact];
     } else {
         NSUInteger index =  [_allObjects indexOfObjectIdenticalTo:contact];
-        [_allObjects replaceObjectAtIndex:index withObject:contact];
+        if (index != NSNotFound) {
+            [_allObjects replaceObjectAtIndex:index withObject:contact];
+        }
     }
 }
 
