@@ -56,7 +56,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didLostConnection:) name:kLoginManagerDidLostConnection object:nil];
     
     if ([[ServicesManager sharedInstance].myUser username] &&[[ServicesManager sharedInstance].myUser password]) {
-        [self.loginTextField setText:[[ServicesManager sharedInstance].myUser username];
+        [self.loginTextField setText:[[ServicesManager sharedInstance].myUser username]];
         [self.passwordTextField setText:[[ServicesManager sharedInstance].myUser password]];
         [[ServicesManager sharedInstance].loginManager disconnect];
         [[ServicesManager sharedInstance].loginManager connect];

@@ -63,7 +63,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didLogout:) name:kLoginManagerDidLogoutSucceeded object:nil];
     
     if ([[ServicesManager sharedInstance].myUser username] &&[[ServicesManager sharedInstance].myUser password]) {
-        [self.loginTextField setText:[[ServicesManager sharedInstance].myUser username];
+        [self.loginTextField setText:[[ServicesManager sharedInstance].myUser username]];
          [self.passwordTextField setText:[[ServicesManager sharedInstance].myUser password]];
          [[ServicesManager sharedInstance].loginManager disconnect];
          [[ServicesManager sharedInstance].loginManager connect];
@@ -128,6 +128,7 @@
     }
     NSLog(@"[LoginViewController] Did logout");
     [self.activityIndicatorView stopAnimating];
+    self.loginButton.enabled = YES;
 }
 
 -(void)didChangeServer:(NSNotification *) notification {
