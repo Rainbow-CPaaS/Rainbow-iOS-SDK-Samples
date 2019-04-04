@@ -35,7 +35,7 @@ Once connected, you can get the list of your contact when the `ContactsManagerSe
      }
      ...
      }
-     ```
+```objective-c 
  -(void) didEndPopulatingMyNetwork:(NSNotification *) notification {
 	// the roster update is terminated, we can filter the contact from ContactsManager service
 	// and fill our local array
