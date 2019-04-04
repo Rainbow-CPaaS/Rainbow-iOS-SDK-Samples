@@ -29,13 +29,11 @@ Once connected, you can get the list of your contact when the `ContactsManagerSe
 	// and fill our local array
 	self.contactsArray = [[NSMutableArray alloc] init];
 	
-	// fill contactsArray with the contacts already loaded by the ContactsManager
-	for(Contact *contact in [ServicesManager sharedInstance].contactsManagerService.contacts){
-        // keep only contacts that are in the connected user's roster
-        if(contact.isInRoster){
-            [self.contactsArray addObject:contact];
+	
+    // fill contactsArray with the contacts already loaded by the ContactsManager
+        for(Contact *contact in _contactsManager.contacts){
+            [self insertContact:contact];
         }
-    }
 	
 	// listen to further update notifications
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didAddContact:) name:kContactsManagerServiceDidAddContact object:nil];
@@ -43,7 +41,18 @@ Once connected, you can get the list of your contact when the `ContactsManagerSe
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didUpdateContact:) name:kContactsManagerServiceDidUpdateContact object:nil];
 }
 ```
+### Retrieve the list of contacts when the user is already logged in 
+At view appearance and when and when the contacts list has not yet populated we request to populate all contacts which are in the user network
 
+```objective-c 
+-(void) viewWillAppear { 
+...
+    if(!_populated) {
+        [self didEndPopulatingMyNetwork:nil];
+    }
+...
+}
+```
 Then you should listen to the contact update notifications and take actions accordingly,
 
 ```objective-c
@@ -81,4 +90,32 @@ The SDK retrieve and cache some informations about the connected user contacts b
 -(void) didGetInfo:(NSNotification *) notification {
      Contact *contact = (Contact *)[notification.object objectForKey:@"contact"];  
 }
+```
+### Insert a contact in contacts list
+when the app receives `kContactsManagerServiceDidEndPopulatingMyNetwork`  notification from server the contact  should be added to contacts list only if it is a not bot contact and if the contact is in the user network so we could use the following code,
+
+```objective-c
+    -(void) insertContact:(Contact *) contact {
+    // Ignore myself
+    if (contact == _serviceManager.myUser.contact) {
+        return;
+    }
+    // Ignore bots
+    if(contact.isBot) {
+        return;
+    }
+    // Ignore contact not in roster
+    if(!contact.isInRoster) {
+        return;
+    }
+
+    if (![_allObjects containsObject:contact]) {
+        [_allObjects addObject:contact];
+    } else {
+        NSUInteger index =  [_allObjects indexOfObjectIdenticalTo:contact];
+        if (index != NSNotFound) {
+        [_allObjects replaceObjectAtIndex:index withObject:contact];
+        }
+    }
+ }
 ```
