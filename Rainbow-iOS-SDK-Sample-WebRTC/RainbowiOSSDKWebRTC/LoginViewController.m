@@ -21,6 +21,7 @@
 @property (weak, nonatomic) IBOutlet UITextField *passwordTextField;
 @property (weak, nonatomic) IBOutlet UILabel *serverLabel;
 @property (weak, nonatomic) IBOutlet UIButton *loginButton;
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicatorView;
 @end
 
 @implementation LoginViewController
@@ -60,6 +61,15 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReconnect:) name:kLoginManagerDidReconnect object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(failedToAuthenticate:) name:kLoginManagerDidFailedToAuthenticate object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didLogout:) name:kLoginManagerDidLogoutSucceeded object:nil];
+    
+    if ([[ServicesManager sharedInstance].myUser username] &&[[ServicesManager sharedInstance].myUser password]) {
+        [self.loginTextField setText:[[ServicesManager sharedInstance].myUser username]];
+         [self.passwordTextField setText:[[ServicesManager sharedInstance].myUser password]];
+         [[ServicesManager sharedInstance].loginManager disconnect];
+         [[ServicesManager sharedInstance].loginManager connect];
+         self.loginButton.enabled = NO;
+         [self.activityIndicatorView startAnimating];
+         }
     if(self.doLogout){
         self.doLogout = NO;
         [self logoutAction:self];
@@ -85,6 +95,7 @@
     }
     NSLog(@"[LoginViewController] Did login");
     self.loginButton.enabled = YES;
+    [self.activityIndicatorView stopAnimating];
     [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
     [self performSegueWithIdentifier:@"DidLoginSegue" sender:self];
 }
@@ -105,6 +116,7 @@
     NSLog(@"[LoginViewController] Failed to login");
     self.loginButton.enabled = YES;
     self.passwordTextField.text = @"";
+    [self.activityIndicatorView stopAnimating];
 }
 
 -(void) didLogout:(NSNotification *) notification {
@@ -115,6 +127,8 @@
         return;
     }
     NSLog(@"[LoginViewController] Did logout");
+    [self.activityIndicatorView stopAnimating];
+    self.loginButton.enabled = YES;
 }
 
 -(void)didChangeServer:(NSNotification *) notification {
@@ -135,9 +149,11 @@
     NSString *login = self.loginTextField.text;
     NSString *passwd = self.passwordTextField.text;
     if([login length]>0 && [passwd length]>0){
-        self.loginButton.enabled = NO;
         [[ServicesManager sharedInstance].loginManager setUsername:login andPassword:passwd];
         [[ServicesManager sharedInstance].loginManager connect];
+        [self.activityIndicatorView startAnimating];
+        self.loginButton.enabled = NO;
+
     }
 }
 
