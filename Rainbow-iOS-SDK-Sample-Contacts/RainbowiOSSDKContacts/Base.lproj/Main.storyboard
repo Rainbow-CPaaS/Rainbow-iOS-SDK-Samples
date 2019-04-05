@@ -49,6 +49,10 @@
                                 <color key="textColor" red="0.99536854029999999" green="0.34165322780000001" blue="0.3435857296" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="pBU-df-abz">
+                                <rect key="frame" x="177" y="406" width="20" height="20"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
@@ -70,6 +74,7 @@
                     </view>
                     <nil key="simulatedTopBarMetrics"/>
                     <connections>
+                        <outlet property="activityIndicatorView" destination="pBU-df-abz" id="gMD-qj-MBW"/>
                         <outlet property="loginButton" destination="gCI-YX-Qfg" id="Bvk-ER-r9M"/>
                         <outlet property="loginTextField" destination="s5h-Is-kro" id="LV8-rc-Tnh"/>
                         <outlet property="passwordTextField" destination="apZ-NV-At6" id="UoL-2E-EHH"/>

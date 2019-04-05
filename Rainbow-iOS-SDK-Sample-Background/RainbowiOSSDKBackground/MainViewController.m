@@ -68,6 +68,9 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didUpdateContact:) name:kContactsManagerServiceDidUpdateContact object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didRemoveContact:) name:kContactsManagerServiceDidRemoveContact object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
+    if(!_populated) {
+        [self didEndPopulatingMyNetwork:nil];
+    }
 }
 
 -(void)viewWillDisappear:(BOOL)animated{
@@ -107,7 +110,9 @@
         [_allObjects addObject:contact];
     } else {
         NSUInteger index =  [_allObjects indexOfObjectIdenticalTo:contact];
-        [_allObjects replaceObjectAtIndex:index withObject:contact];
+        if(index != NSNotFound) {
+            [_allObjects replaceObjectAtIndex:index withObject:contact];
+        }
     }
 }
 
@@ -120,7 +125,9 @@
         return;
     }
     NSLog(@"[MainViewController] Did end populating my network");
-    
+    for(Contact *contact in [ServicesManager sharedInstance].contactsManagerService.contacts) {
+        [self insertContact:contact];
+    }
     if([self isViewLoaded])
         [self.tableView reloadData];
     _populated = YES;
