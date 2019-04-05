@@ -23,19 +23,30 @@ Once connected, you can get the list of your contact when the `ContactsManagerSe
  	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didEndPopulatingMyNetwork:) name:kContactsManagerServiceDidEndPopulatingMyNetwork object:nil];
  	...
  }
+  ```
+ ### Retrieve the list of contacts when the user is already logged in 
+ At view appearance and when and when the contacts list has not yet populated we request to populate all contacts which are in the user network
  
+     ```objective-c 
+     -(void) viewWillAppear { 
+     ...
+     if(!_populated) {
+     [self didEndPopulatingMyNetwork:nil];
+     }
+     ...
+     }
+```objective-c 
  -(void) didEndPopulatingMyNetwork:(NSNotification *) notification {
 	// the roster update is terminated, we can filter the contact from ContactsManager service
 	// and fill our local array
 	self.contactsArray = [[NSMutableArray alloc] init];
 	
-	// fill contactsArray with the contacts already loaded by the ContactsManager
-	for(Contact *contact in [ServicesManager sharedInstance].contactsManagerService.contacts){
-        // keep only contacts that are in the connected user's roster
-        if(contact.isInRoster){
-            [self.contactsArray addObject:contact];
+	
+    // fill contactsArray with the contacts already loaded by the ContactsManager
+    // should use the insert method for each contact to make sure add contacts in user network and not a bot contact
+        for(Contact *contact in _contactsManager.contacts){
+            [self insertContact:contact];
         }
-    }
 	
 	// listen to further update notifications
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didAddContact:) name:kContactsManagerServiceDidAddContact object:nil];
@@ -43,7 +54,6 @@ Once connected, you can get the list of your contact when the `ContactsManagerSe
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didUpdateContact:) name:kContactsManagerServiceDidUpdateContact object:nil];
 }
 ```
-
 Then you should listen to the contact update notifications and take actions accordingly,
 
 ```objective-c
@@ -81,4 +91,24 @@ The SDK retrieve and cache some informations about the connected user contacts b
 -(void) didGetInfo:(NSNotification *) notification {
      Contact *contact = (Contact *)[notification.object objectForKey:@"contact"];  
 }
+```
+### Insert a contact in contacts list
+if we need to add a contact  to contacts list it should only be added ,if it is a not bot contact and if the contact is in the user network so we could use the following code,
+
+```objective-c
+    -(void) insertContact:(Contact *) contact {
+    // Ignore myself
+    if (contact == _serviceManager.myUser.contact) {
+        return;
+    }
+    // Ignore bots
+    if(contact.isBot) {
+        return;
+    }
+    // Ignore contact not in roster
+    if(!contact.isInRoster) {
+        return;
+    }
+    ...
+ }
 ```

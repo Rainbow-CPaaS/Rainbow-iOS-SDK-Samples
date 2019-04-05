@@ -61,6 +61,9 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didRemoveContact:) name:kContactsManagerServiceDidRemoveContact object:nil];
     // RTC call notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didAddCall:) name:kTelephonyServiceDidAddCallNotification object:nil];
+    if(!_populated) {
+        [self didEndPopulatingMyNetwork:nil];
+    }
 }
 
 -(void)viewWillDisappear:(BOOL)animated{
@@ -90,7 +93,9 @@
         [_allObjects addObject:contact];
     } else {
         NSUInteger index =  [_allObjects indexOfObjectIdenticalTo:contact];
-        [_allObjects replaceObjectAtIndex:index withObject:contact];
+        if (index != NSNotFound) {
+            [_allObjects replaceObjectAtIndex:index withObject:contact];
+        }
     }
 }
 
@@ -104,6 +109,9 @@
     }
     NSLog(@"[MainViewController] Did end populating my network");
     
+    for(Contact *contact in _contactsManager.contacts) {
+        [self insertContact:contact];
+    }
     if([self isViewLoaded])
         [self.tableView reloadData];
     _populated = YES;
