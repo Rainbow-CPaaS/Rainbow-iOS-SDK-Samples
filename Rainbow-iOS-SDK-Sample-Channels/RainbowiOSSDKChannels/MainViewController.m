@@ -30,6 +30,7 @@
 @property (nonatomic, strong) ServicesManager *serviceManager;
 @property (nonatomic, strong) ChannelsService *channelsManager;
 @property (nonatomic, strong) NSIndexPath *selectedIndex;
+@property (nonatomic, strong) NSMutableArray<ChannelItem *> *itemsInChannel;
 @end
 
 @implementation MainViewController
@@ -40,6 +41,7 @@
         _serviceManager = [ServicesManager sharedInstance];
         _channelsManager = _serviceManager.channelsService;
         _selectedIndex = nil;
+        _itemsInChannel = [NSMutableArray new];
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didAddChannel:) name:kChannelsServiceDidAddChannel object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didRemoveChannel:) name:kChannelsServiceDidRemoveChannel object:nil];
@@ -52,6 +54,7 @@
     _serviceManager = nil;
     _channelsManager = nil;
     _selectedIndex = nil;
+    _itemsInChannel = nil;
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kChannelsServiceDidAddChannel object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kChannelsServiceDidRemoveChannel object:nil];
@@ -114,11 +117,25 @@
     return 1;
 }
 
+-(void)getItemsInSelectedChannel {
+    @synchronized (self) {
+        [self.itemsInChannel removeAllObjects];
+        if(_selectedIndex){
+            Channel *channel = [_channelsManager.channels objectAtIndex:self.selectedIndex.row];
+            for(ChannelItem *item in _channelsManager.channelsItems){
+                if([item.channelId isEqualToString:channel.id]){
+                    [_itemsInChannel addObject:item];
+                }
+            }
+        }
+    }
+}
+
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if(tableView == self.channelsListView){
         return _channelsManager.channels.count;
     } else if(tableView == self.itemsListView){
-        return 0;
+        return _itemsInChannel.count;
     }
     return 0;
 }
@@ -128,7 +145,7 @@
     if(tableView == self.channelsListView){
         cell = [self.channelsListView dequeueReusableCellWithIdentifier:@"ChannelTableViewCell" forIndexPath:indexPath];
     } else if(tableView == self.itemsListView){
-        cell = [self.channelsListView dequeueReusableCellWithIdentifier:@"ItemTableViewCell" forIndexPath:indexPath];
+        cell = [self.itemsListView dequeueReusableCellWithIdentifier:@"ItemTableViewCell" forIndexPath:indexPath];
     }
     return cell;
 }
@@ -152,30 +169,18 @@
     }  else if(tableView == self.itemsListView){
         ItemTableViewCell *itemCell = (ItemTableViewCell *)cell;
         if(self.selectedIndex){
-            Channel *channel = [_channelsManager.channels objectAtIndex:self.selectedIndex.row];
-            if(channel){
-                ChannelItem *foundItem = nil;
-                int count = 0;
-                for(ChannelItem *item in _channelsManager.channelsItems){
-                    if([item.channelId isEqualToString:channel.id]){
-                        count++;
-                        if(count == indexPath.row){
-                            foundItem = item;
-                        }
-                    }
-                }
-                if(foundItem){
-                    itemCell.text.text = foundItem.description;
-                }
+            ChannelItem *item = [_itemsInChannel objectAtIndex:indexPath.row];
+            if(item){
+                itemCell.text.text = item.message;
             }
         }
-        
     }
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if(tableView == self.itemsListView){
+    if(tableView == self.channelsListView){
         self.selectedIndex = indexPath;
+        [self getItemsInSelectedChannel];
         [_itemsListView reloadData];
     }
 }

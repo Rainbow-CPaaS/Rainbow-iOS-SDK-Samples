@@ -16,8 +16,8 @@
 #import "AppDelegate.h"
 #import "Rainbow/Rainbow.h"
 
-#define kAppID @"450ed8a039dc11e9a7c0997308051c7d"
-#define kSecretKey @"hb2XFta94gsoOsKKqR5gSic9vbDJIArbkmee6sHpo0pEzQuTAlts8j5I2cAeBxW3"
+#define kAppID @""
+#define kSecretKey @""
 
 @implementation AppDelegate
 
@@ -28,7 +28,6 @@
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     [[ServicesManager sharedInstance].loginManager disconnect];
-    [[ServicesManager sharedInstance].loginManager resetAllCredentials];
 }
 
 @end
