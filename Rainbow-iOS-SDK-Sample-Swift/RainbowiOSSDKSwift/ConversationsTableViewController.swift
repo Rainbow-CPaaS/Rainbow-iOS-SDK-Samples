@@ -20,15 +20,18 @@ class ConversationsTableViewController: UITableViewController {
     let serviceManager : ServicesManager
     let conversationsManager : ConversationsManagerService
     var selectedIndex : IndexPath? = nil
-
+    var totalNbOfUnreadMessagesInAllConversations = 0
     
+    @IBOutlet weak var logout: UIBarButtonItem!
+    @IBOutlet weak var peerName: UILabel!
     required init?(coder aDecoder: NSCoder) {
         serviceManager = ServicesManager.sharedInstance()
-         conversationsManager = serviceManager.conversationsManagerService
+        conversationsManager = serviceManager.conversationsManagerService
         super.init(coder: aDecoder)
         NotificationCenter.default.addObserver(self, selector:#selector(didReceiveNewMessageForConversation(notification:)), name:NSNotification.Name(kConversationsManagerDidReceiveNewMessageForConversation), object:nil)
         NotificationCenter.default.addObserver(self, selector:#selector(didAddConversation(notification:)), name:NSNotification.Name(kConversationsManagerDidAddConversation), object:nil)
         NotificationCenter.default.addObserver(self, selector:#selector(didRemoveConversation(notification:)), name:NSNotification.Name(kConversationsManagerDidRemoveConversation), object:nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didUpdateMessagesUnreadCount(notification:)), name:NSNotification.Name(kConversationsManagerDidUpdateMessagesUnreadCount), object: nil)
     }
     
     deinit {
@@ -40,13 +43,26 @@ class ConversationsTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.tableView.reloadData()
+        self.totalNbOfUnreadMessagesInAllConversations = ServicesManager.sharedInstance()?.conversationsManagerService.totalNbOfUnreadMessagesInAllConversations ?? 0
+        if(self.totalNbOfUnreadMessagesInAllConversations == 0) {
+            self.tabBarController?.tabBar.items?[1].badgeValue  = nil;
+        }
+        else {
+            self.tabBarController?.tabBar.items?[1].badgeValue = "\(self.totalNbOfUnreadMessagesInAllConversations)"
+            
+        }
     }
 
+    @IBAction func doLogout(_ sender: Any) {
+        ServicesManager.sharedInstance()?.loginManager.disconnect()
+        ServicesManager.sharedInstance().loginManager.resetAllCredentials()
+        self.dismiss(animated: false, completion: nil)
+    }
     // MARK: - conversation notifications
     
     @objc func didReceiveNewMessageForConversation(notification : Notification) {
         if !Thread.isMainThread {
-            DispatchQueue.main.sync {
+            DispatchQueue.main.async {
                 self.didReceiveNewMessageForConversation(notification: notification)
             }
             return
@@ -84,8 +100,7 @@ class ConversationsTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let count = conversationsManager.conversations.count
-        return count
+        return conversationsManager.conversations.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -109,11 +124,16 @@ class ConversationsTableViewController: UITableViewController {
                 conversationsCell.avatar.image = UIImage(named: "Default_Avatar")
                 conversationsCell.avatar.tintColor = UIColor(hue:CGFloat(indexPath.row*36%100)/100.0, saturation:1.0, brightness:1.0, alpha:1.0)
             }
+            
+            let contact = conversationsManager.conversations[indexPath.row].peer as? Contact
+            conversationsCell.peerName.text = contact?.fullName
         }
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.selectedIndex = indexPath
+        let conversation = conversationsManager.conversations[indexPath.row]
+        conversationsManager.sendMarkAllMessagesAsRead(from: conversation)
         tableView.deselectRow(at: indexPath, animated: true)
         performSegue(withIdentifier: "ChatWithSegue", sender: self)
     }
@@ -133,5 +153,20 @@ class ConversationsTableViewController: UITableViewController {
             }
         }
     }
-
+    @objc func didUpdateMessagesUnreadCount(notification : Notification) {
+        if !Thread.isMainThread {
+            DispatchQueue.main.async {
+                self.totalNbOfUnreadMessagesInAllConversations = ServicesManager.sharedInstance()?.conversationsManagerService.totalNbOfUnreadMessagesInAllConversations ?? 0
+                if(self.totalNbOfUnreadMessagesInAllConversations == 0) {
+                    self.tabBarController?.tabBar.items?[1].badgeValue  = nil;
+                }
+                else {
+                    self.tabBarController?.tabBar.items?[1].badgeValue = "\(self.totalNbOfUnreadMessagesInAllConversations)"
+                }
+                
+            }
+        }
+        
+    }
+    
 }

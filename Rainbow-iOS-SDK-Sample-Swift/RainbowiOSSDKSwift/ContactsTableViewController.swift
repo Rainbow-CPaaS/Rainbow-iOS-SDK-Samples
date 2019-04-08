@@ -22,6 +22,7 @@ class ContactsTableViewController: UITableViewController {
     var populated = false
     var selectedIndex : IndexPath? = nil
     var allObjects : [Contact] = []
+    @IBOutlet weak var logout: UIBarButtonItem!
     
     required init?(coder aDecoder: NSCoder) {
         serviceManager = ServicesManager.sharedInstance()
@@ -59,6 +60,11 @@ class ContactsTableViewController: UITableViewController {
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kContactsManagerServiceDidRemoveContact), object: nil)
     }
     
+    @IBAction func logoutAction(_ sender: Any) {
+        ServicesManager.sharedInstance()?.loginManager.disconnect()
+        ServicesManager.sharedInstance().loginManager.resetAllCredentials()
+        self.dismiss(animated: false, completion: nil)
+    }
     func insert(_ contact : Contact) {
         // Ignore myself
         if contact == serviceManager.myUser.contact {
@@ -182,5 +188,4 @@ class ContactsTableViewController: UITableViewController {
             }
         }
     }
-    
 }

@@ -106,7 +106,14 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
         }
     }
     
-    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.tabBarController?.tabBar.isHidden = true
+    }
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.tabBarController?.tabBar.isHidden = false
+    }
     // Scroll the message list to the latest one when the reloadData has finished
     func reloadAndScrollToBottom() {
         if self.messageList.dataSource == nil {
@@ -170,7 +177,7 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
                         item.contact = message.peer as? Contact
                     }
                     item.text = message.body
-                    self.messages[idxValue] = item
+                    self.messages[idx] = item
                 }
             }
         }
@@ -203,7 +210,7 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
         
         NSLog("CKItemsBrowser didUpdateCacheItems")
         synchronized(self.messages as AnyObject){
-            for (idx, idxValue) in indexes.enumerated() {
+            for (idx, idxValue) in indexes.sorted().enumerated() {
                 if let message = changedItems[idx] as? Message {
                     let item = MessageItem()
                     if message.isOutgoing {
@@ -212,7 +219,7 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
                         item.contact = message.peer as? Contact
                     }
                     item.text = message.body
-                    self.messages[idxValue] = item
+                    self.messages[idx] = item
                 }
             }
         }
@@ -243,6 +250,7 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
                 NSLog("did received new message for the conversation")
                 let lastRow = IndexPath(row:  messageList.numberOfRows(inSection: 0) - 1, section: 0)
                 messageList.scrollToRow(at: lastRow, at: .bottom, animated: true)
+                messageList.reloadData()
             }
         }
     }
@@ -304,11 +312,15 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
         if let myCell = cell as? MyUserTableViewCell {
             if myAvatar != nil {
                 myCell.avatar.image = myAvatar
+            }
+            if (messages[row].text != nil) {
                 myCell.message.text = messages[row].text
             }
         } else if let peerCell = cell as? PeerTableViewCell {
             if self.peerAvatar != nil {
                 peerCell.avatar.image = peerAvatar
+            }
+            if (messages[row].text != nil) {
                 peerCell.message.text = messages[row].text
             }
         }
