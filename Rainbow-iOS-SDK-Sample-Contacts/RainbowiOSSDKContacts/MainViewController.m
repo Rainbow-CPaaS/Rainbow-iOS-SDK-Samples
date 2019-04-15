@@ -161,12 +161,16 @@
     NSDictionary *userInfo = (NSDictionary *)notification.object;
     Contact *contact = [userInfo objectForKey:kContactKey];
     
-    if(contact){
+    if (contact.isInRoster){
         [self insertContact:contact];
-        
-        if([self isViewLoaded] && _populated){
-            [self.tableView reloadData];
+    }
+    else {
+        if ([self.allObjects containsObject:contact]) {
+            [self.allObjects removeObject:contact];
         }
+    }
+    if([self isViewLoaded] && _populated){
+        [self.tableView reloadData];
     }
 }
 

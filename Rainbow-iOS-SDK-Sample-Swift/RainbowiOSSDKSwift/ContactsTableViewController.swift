@@ -102,12 +102,20 @@ class ContactsTableViewController: UITableViewController {
             return
         }
         
-        if let userInfo = notification.object as? Dictionary<String, Contact> {
-            if let contact = userInfo[kContactKey] {
+        if let userInfo = notification.object as? Dictionary<String,AnyObject> {
+            let contact = userInfo[kContactKey]! as! Contact
+            if contact.isInRoster {
                 self.insert(contact)
-                if self.isViewLoaded && populated {
-                    self.tableView.reloadData()
+            }
+            else {
+                if let index = allObjects.index(of: contact) {
+                    if (index != NSNotFound) {
+                        self.allObjects.remove(at: index)
+                    }
                 }
+            }
+            if self.isViewLoaded && populated {
+                self.tableView.reloadData()
             }
         }
     }
