@@ -74,6 +74,9 @@ class ContactsTableViewController: UITableViewController {
         if !contact.isInRoster {
             return
         }
+        if !contact.isBot {
+            return
+        }
         
         if let index = allObjects.index(of: contact) {
             allObjects[index] = contact

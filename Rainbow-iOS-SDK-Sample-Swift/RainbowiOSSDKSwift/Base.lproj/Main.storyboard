@@ -188,7 +188,7 @@
                     </tableView>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="crV-eY-BnZ">
-                        <barButtonItem key="rightBarButtonItem" title="logout" id="hbI-Y6-tjT">
+                        <barButtonItem key="rightBarButtonItem" title="Logout" id="hbI-Y6-tjT">
                             <connections>
                                 <action selector="logoutAction:" destination="AKG-5M-hBw" id="Z20-i3-2js"/>
                             </connections>
@@ -268,7 +268,7 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Conversations" id="6Kk-aP-ah1">
-                        <barButtonItem key="rightBarButtonItem" title="logout" id="JqQ-ik-lWU">
+                        <barButtonItem key="rightBarButtonItem" title="Logout" id="JqQ-ik-lWU">
                             <connections>
                                 <action selector="doLogout:" destination="zNh-EE-6jG" id="Kqm-aG-Y2T"/>
                             </connections>
