@@ -152,8 +152,8 @@
     }
     
     Contact *contact = notification.object;
-    if([self.allObjects containsObject:contact]){
-        [self.allObjects removeObject:contact];
+    if([_allObjects containsObject:contact]){
+        [_allObjects removeObject:contact];
         
         if([self isViewLoaded] && _populated)
             [self.tableView reloadData];
@@ -176,8 +176,8 @@
         [self insertContact:contact];
     }
     else {
-        if ([self.allObjects containsObject:contact]) {
-            [self.allObjects removeObject:contact];
+        if ([_allObjects containsObject:contact]) {
+            [_allObjects removeObject:contact];
         }
     }
     if([self isViewLoaded] && _populated){

@@ -63,6 +63,7 @@ Then you should listen to the contact update notifications and take actions acco
     Contact *contact = [userInfo objectForKey:kContactKey];
     // update the contact object in your contactsArray, new informations like the contact
     // avatar image might be sent by the server after the initial addContact.
+    // update contacts list when contact is removed from user network using other clients 
 }
 
 

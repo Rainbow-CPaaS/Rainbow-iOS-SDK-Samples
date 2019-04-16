@@ -102,7 +102,7 @@ class ContactsTableViewController: UITableViewController {
             return
         }
         
-        if let userInfo = notification.object as? Dictionary<String,AnyObject> {
+        if let userInfo = notification.object as? Dictionary<String, AnyObject> {
             let contact = userInfo[kContactKey]! as! Contact
             if contact.isInRoster {
                 self.insert(contact)
