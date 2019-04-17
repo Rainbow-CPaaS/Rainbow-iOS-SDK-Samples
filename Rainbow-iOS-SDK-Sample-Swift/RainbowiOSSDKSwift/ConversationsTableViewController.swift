@@ -21,6 +21,7 @@ class ConversationsTableViewController: UITableViewController {
     let conversationsManager : ConversationsManagerService
     var selectedIndex : IndexPath? = nil
     var totalNbOfUnreadMessagesInAllConversations = 0
+    var allConversations : [Conversation] = []
     
     @IBOutlet weak var logout: UIBarButtonItem!
     @IBOutlet weak var peerName: UILabel!
@@ -31,6 +32,7 @@ class ConversationsTableViewController: UITableViewController {
         NotificationCenter.default.addObserver(self, selector:#selector(didReceiveNewMessageForConversation(notification:)), name:NSNotification.Name(kConversationsManagerDidReceiveNewMessageForConversation), object:nil)
         NotificationCenter.default.addObserver(self, selector:#selector(didAddConversation(notification:)), name:NSNotification.Name(kConversationsManagerDidAddConversation), object:nil)
         NotificationCenter.default.addObserver(self, selector:#selector(didRemoveConversation(notification:)), name:NSNotification.Name(kConversationsManagerDidRemoveConversation), object:nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didUpdateConversation(notification:)), name:NSNotification.Name(kConversationsManagerDidUpdateConversation), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(didUpdateMessagesUnreadCount(notification:)), name:NSNotification.Name(kConversationsManagerDidUpdateMessagesUnreadCount), object: nil)
     }
     
@@ -38,19 +40,16 @@ class ConversationsTableViewController: UITableViewController {
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kConversationsManagerDidReceiveNewMessageForConversation), object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kConversationsManagerDidAddConversation), object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kConversationsManagerDidRemoveConversation), object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kConversationsManagerDidUpdateConversation), object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kConversationsManagerDidUpdateMessagesUnreadCount), object: nil)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.tableView.reloadData()
-        self.totalNbOfUnreadMessagesInAllConversations = ServicesManager.sharedInstance()?.conversationsManagerService.totalNbOfUnreadMessagesInAllConversations ?? 0
-        if(self.totalNbOfUnreadMessagesInAllConversations == 0) {
-            self.tabBarController?.tabBar.items?[1].badgeValue  = nil;
-        }
-        else {
-            self.tabBarController?.tabBar.items?[1].badgeValue = "\(self.totalNbOfUnreadMessagesInAllConversations)"
-            
-        }
+        allConversations = []
+        self.updateBadgeValue()
+        self.loadAllConversations()
     }
 
     @IBAction func doLogout(_ sender: Any) {
@@ -67,29 +66,51 @@ class ConversationsTableViewController: UITableViewController {
             }
             return
         }
-        
+        allConversations.sort{$0.lastUpdateDate! > $1.lastUpdateDate!}
         self.tableView.reloadData()
     }
     
     @objc func didAddConversation(notification : Notification) {
         if !Thread.isMainThread {
-            DispatchQueue.main.sync {
+            DispatchQueue.main.async {
                 self.didAddConversation(notification: notification)
             }
             return
         }
-        
+        let theConversation = notification.object as! Conversation
+        if (theConversation.conversationId != nil) {
+            if (allConversations.index(of: theConversation) == nil) {
+                allConversations.append(theConversation)
+            }
+            allConversations.sort{$0.lastUpdateDate! > $1.lastUpdateDate!}
+        }
+        self.tableView.reloadData()
+    }
+    
+    @objc func didUpdateConversation(notification : Notification) {
+        if !Thread.isMainThread {
+            DispatchQueue.main.async {
+                self.didUpdateConversation(notification: notification)
+            }
+            return
+        }
+        allConversations.sort{$0.lastUpdateDate! > $1.lastUpdateDate!}
         self.tableView.reloadData()
     }
     
     @objc func didRemoveConversation(notification : Notification) {
         if !Thread.isMainThread {
-            DispatchQueue.main.sync {
+            DispatchQueue.main.async {
                 self.didRemoveConversation(notification: notification)
             }
             return
         }
-        
+        let theConversation = notification.object as! Conversation
+        if let index = allConversations.index(of: theConversation) {
+            if (index != NSNotFound) {
+                allConversations.remove(at: index)
+            }
+        }
         self.tableView.reloadData()
     }
     
@@ -100,7 +121,7 @@ class ConversationsTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return conversationsManager.conversations.count
+        return allConversations.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -112,12 +133,12 @@ class ConversationsTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if let conversationsCell = cell as? ConversationsTableViewCell {
-            if let lastMessage = conversationsManager.conversations[indexPath.row].lastMessage {
+            if let lastMessage = allConversations[indexPath.row].lastMessage {
                 conversationsCell.lastMessage.text = lastMessage.body
             } else {
                 conversationsCell.lastMessage.text = ""
             }
-            if let photoData = (conversationsManager.conversations[indexPath.row].peer as? Contact)?.photoData {
+            if let photoData = (allConversations[indexPath.row].peer as? Contact)?.photoData {
                 conversationsCell.avatar.image = UIImage(data: photoData)
                 conversationsCell.avatar.tintColor = UIColor.clear
             } else {
@@ -125,14 +146,14 @@ class ConversationsTableViewController: UITableViewController {
                 conversationsCell.avatar.tintColor = UIColor(hue:CGFloat(indexPath.row*36%100)/100.0, saturation:1.0, brightness:1.0, alpha:1.0)
             }
             
-            let contact = conversationsManager.conversations[indexPath.row].peer as? Contact
+            let contact = allConversations[indexPath.row].peer as? Contact
             conversationsCell.peerName.text = contact?.fullName
         }
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.selectedIndex = indexPath
-        let conversation = conversationsManager.conversations[indexPath.row]
+        let conversation = allConversations[indexPath.row]
         conversationsManager.sendMarkAllMessagesAsRead(from: conversation)
         tableView.deselectRow(at: indexPath, animated: true)
         performSegue(withIdentifier: "ChatWithSegue", sender: self)
@@ -144,7 +165,7 @@ class ConversationsTableViewController: UITableViewController {
         if segue.identifier == "ChatWithSegue" {
             if let selectedIndex = selectedIndex {
                 if let vc = segue.destination as? ChatViewController {
-                    if let contact = conversationsManager.conversations[selectedIndex.row].peer as? Contact {
+                    if let contact = allConversations[selectedIndex.row].peer as? Contact {
                         vc.contact = contact
                     }
                     vc.contactImage = (tableView.cellForRow(at: selectedIndex) as? ConversationsTableViewCell)?.avatar.image
@@ -157,16 +178,28 @@ class ConversationsTableViewController: UITableViewController {
         if !Thread.isMainThread {
             DispatchQueue.main.async {
                 self.totalNbOfUnreadMessagesInAllConversations = ServicesManager.sharedInstance()?.conversationsManagerService.totalNbOfUnreadMessagesInAllConversations ?? 0
-                if(self.totalNbOfUnreadMessagesInAllConversations == 0) {
-                    self.tabBarController?.tabBar.items?[1].badgeValue  = nil;
-                }
-                else {
-                    self.tabBarController?.tabBar.items?[1].badgeValue = "\(self.totalNbOfUnreadMessagesInAllConversations)"
-                }
-                
+                self.updateBadgeValue()
+                self.tableView .reloadData()
             }
         }
         
+    }
+    func updateBadgeValue() {
+        self.totalNbOfUnreadMessagesInAllConversations = ServicesManager.sharedInstance()?.conversationsManagerService.totalNbOfUnreadMessagesInAllConversations ?? 0
+        if(self.totalNbOfUnreadMessagesInAllConversations == 0) {
+            self.tabBarController?.tabBar.items?[0].badgeValue  = nil;
+        }
+        else {
+            self.tabBarController?.tabBar.items?[0].badgeValue = "\(self.totalNbOfUnreadMessagesInAllConversations)"
+        }
+    }
+    func loadAllConversations() {
+        for conversation in conversationsManager.conversations {
+            if(conversation.lastMessage != nil) {
+                allConversations.append(conversation)
+            }
+        }
+        allConversations.sort{$0.lastUpdateDate! > $1.lastUpdateDate!}
     }
     
 }

@@ -38,11 +38,6 @@ class ContactsTableViewController: UITableViewController {
         super.viewDidLoad()
         self.title = "Contacts"
         allObjects = []
-        for contact in contactsManager.contacts {
-            if contact.isInRoster {
-                allObjects.append(contact)
-            }
-        }
         self.tableView.reloadData()
     }
     
@@ -51,6 +46,13 @@ class ContactsTableViewController: UITableViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(didAddContact(notification:)), name: NSNotification.Name(kContactsManagerServiceDidAddContact), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(didUpdateContact(notification:)), name: NSNotification.Name(kContactsManagerServiceDidUpdateContact), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(didRemoveContact(notification:)), name: NSNotification.Name(kContactsManagerServiceDidRemoveContact), object: nil)
+        if (!populated) {
+            for contact in contactsManager.myNetworkContacts {
+                self.insert(contact)
+            }
+            populated = true
+            self.tableView.reloadData()
+        }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -74,7 +76,7 @@ class ContactsTableViewController: UITableViewController {
         if !contact.isInRoster {
             return
         }
-        if !contact.isBot {
+        if contact.isBot {
             return
         }
         

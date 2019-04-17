@@ -144,6 +144,7 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
                 DispatchQueue.main.async {
                     if error == nil {
                         self.textInput.text = ""
+                        self.serviceManager.conversationsManagerService.markAsReadByMeAllMessage(for: theConversation)
                     } else {
                         NSLog("Can't send message to the conversation error: \(error.debugDescription)")
                         self.sendButton.isEnabled = true
@@ -167,9 +168,8 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
         NSLog("CKItemsBrowser didAddCacheItems")
         synchronized(self.messages as AnyObject){
             // insert new items at the beginning of the messages array
-            self.messages.insert(contentsOf: Array.init(repeating: MessageItem(), count: newItems.count), at: 0)
-            for (idx, idxValue) in indexes.sorted().enumerated() {
-                if let message = newItems[idx] as? Message {
+            for (index, value) in indexes.sorted().enumerated() {
+                if let message = newItems[index] as? Message {
                     let item = MessageItem()
                     if message.isOutgoing {
                         item.contact = self.serviceManager.myUser.contact
@@ -177,7 +177,8 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
                         item.contact = message.peer as? Contact
                     }
                     item.text = message.body
-                    self.messages[idx] = item
+                    self.messages.insert(item, at: index)
+                    self.messageList.reloadData()
                 }
             }
         }
@@ -209,20 +210,6 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
         }
         
         NSLog("CKItemsBrowser didUpdateCacheItems")
-        synchronized(self.messages as AnyObject){
-            for (idx, idxValue) in indexes.sorted().enumerated() {
-                if let message = changedItems[idx] as? Message {
-                    let item = MessageItem()
-                    if message.isOutgoing {
-                        item.contact = self.serviceManager.myUser.contact
-                    } else {
-                        item.contact = message.peer as? Contact
-                    }
-                    item.text = message.body
-                    self.messages[idx] = item
-                }
-            }
-        }
         reloadAndScrollToBottom()
     }
     
@@ -248,6 +235,7 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
         if let receivedConversation = notification.object as? Conversation {
             if(receivedConversation == self.theConversation){
                 NSLog("did received new message for the conversation")
+                self.conversationsManager.markAsReadByMeAllMessage(for: theConversation)
                 let lastRow = IndexPath(row:  messageList.numberOfRows(inSection: 0) - 1, section: 0)
                 messageList.scrollToRow(at: lastRow, at: .bottom, animated: true)
                 messageList.reloadData()
