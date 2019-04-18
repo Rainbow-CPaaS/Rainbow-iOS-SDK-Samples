@@ -22,7 +22,7 @@ class ContactsTableViewController: UITableViewController {
     var populated = false
     var selectedIndex : IndexPath? = nil
     var allObjects : [Contact] = []
-    @IBOutlet weak var logout: UIBarButtonItem!
+    @IBOutlet weak var logoutButton: UIBarButtonItem!
     
     required init?(coder aDecoder: NSCoder) {
         serviceManager = ServicesManager.sharedInstance()
@@ -46,12 +46,9 @@ class ContactsTableViewController: UITableViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(didAddContact(notification:)), name: NSNotification.Name(kContactsManagerServiceDidAddContact), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(didUpdateContact(notification:)), name: NSNotification.Name(kContactsManagerServiceDidUpdateContact), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(didRemoveContact(notification:)), name: NSNotification.Name(kContactsManagerServiceDidRemoveContact), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didEndPopulatingMyNetwork), name: NSNotification.Name(kContactsManagerServiceDidEndPopulatingMyNetwork), object: nil)
         if (!populated) {
-            for contact in contactsManager.myNetworkContacts {
-                self.insert(contact)
-            }
-            populated = true
-            self.tableView.reloadData()
+            self.didEndPopulatingMyNetwork()
         }
     }
     
@@ -60,6 +57,8 @@ class ContactsTableViewController: UITableViewController {
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kContactsManagerServiceDidAddContact), object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kContactsManagerServiceDidUpdateContact), object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kContactsManagerServiceDidRemoveContact), object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kContactsManagerServiceDidEndPopulatingMyNetwork), object: nil)
+
     }
     
     @IBAction func logoutAction(_ sender: Any) {
@@ -141,6 +140,23 @@ class ContactsTableViewController: UITableViewController {
         }
     }
     
+    @objc func didEndPopulatingMyNetwork() {
+        // Enforce that this method is called on the main thread
+        if !Thread.isMainThread {
+            DispatchQueue.main.async {
+                self.didEndPopulatingMyNetwork()
+            }
+            return
+        }
+        for contact in contactsManager.myNetworkContacts {
+            self.insert(contact)
+        }
+        if self.isViewLoaded {
+            self.tableView.reloadData()
+        }
+        populated = true
+    }
+    
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -193,4 +209,5 @@ class ContactsTableViewController: UITableViewController {
             }
         }
     }
+    
 }

@@ -84,7 +84,10 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
         }
         
         // If there is no conversation with this peer, create a new one
-        if theConversation != nil {
+        if (theConversation != nil) {
+            if ((theConversation?.peer.displayName) != nil) {
+                self.title = theConversation?.peer.displayName;
+            }
             conversationsManager.startConversation(with: contact){ (conversation : Optional<Conversation>, error : Optional<Error>)  in
                 if error != nil {
                     self.theConversation = conversation
@@ -144,7 +147,6 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
                 DispatchQueue.main.async {
                     if error == nil {
                         self.textInput.text = ""
-                        self.serviceManager.conversationsManagerService.markAsReadByMeAllMessage(for: theConversation)
                     } else {
                         NSLog("Can't send message to the conversation error: \(error.debugDescription)")
                         self.sendButton.isEnabled = true
@@ -168,7 +170,7 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
         NSLog("CKItemsBrowser didAddCacheItems")
         synchronized(self.messages as AnyObject){
             // insert new items at the beginning of the messages array
-            for (index, value) in indexes.sorted().enumerated() {
+            for (index, _) in indexes.sorted().enumerated() {
                 if let message = newItems[index] as? Message {
                     let item = MessageItem()
                     if message.isOutgoing {
@@ -178,7 +180,6 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
                     }
                     item.text = message.body
                     self.messages.insert(item, at: index)
-                    self.messageList.reloadData()
                 }
             }
         }
