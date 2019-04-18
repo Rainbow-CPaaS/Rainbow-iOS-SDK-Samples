@@ -39,6 +39,7 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
             return
         }
         
+        self.title = contact.displayName
         self.nameLabel.text = contact.fullName;
         self.companyLabel.text = contact.companyName;
         self.avatar.image = self.contactImage;
@@ -61,7 +62,6 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
         if let contact = self.contact {
             // Update the UI with already fetched informations
             self.updateUI(contact)
-            
             // Fetch potentially missing informations about the contact
             NotificationCenter.default.addObserver(self, selector: #selector(didGetInfo(notification:)), name: NSNotification.Name(kContactsManagerServiceDidUpdateContact), object: nil)
             ServicesManager.sharedInstance().contactsManagerService.fetchRemoteContactDetail(contact)

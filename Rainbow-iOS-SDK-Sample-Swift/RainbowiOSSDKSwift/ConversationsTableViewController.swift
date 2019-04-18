@@ -20,7 +20,6 @@ class ConversationsTableViewController: UITableViewController {
     let serviceManager : ServicesManager
     let conversationsManager : ConversationsManagerService
     var selectedIndex : IndexPath? = nil
-    var totalNbOfUnreadMessagesInAllConversations = 0
     var allConversations : [Conversation] = []
     
     @IBOutlet weak var logoutButton: UIBarButtonItem!
@@ -49,6 +48,7 @@ class ConversationsTableViewController: UITableViewController {
         self.tableView.reloadData()
         allConversations = []
         self.loadAllConversations()
+        self.sortAllConversation()
     }
 
     @IBAction func logoutAction(_ sender: Any) {
@@ -182,12 +182,13 @@ class ConversationsTableViewController: UITableViewController {
     @objc func didUpdateMessagesUnreadCount(notification : Notification) {
         if !Thread.isMainThread {
             DispatchQueue.main.async {
-                self.totalNbOfUnreadMessagesInAllConversations = ServicesManager.sharedInstance()?.conversationsManagerService.totalNbOfUnreadMessagesInAllConversations ?? 0
-                if(self.totalNbOfUnreadMessagesInAllConversations == 0) {
+                var totalNbOfUnreadMessagesInAllConversations = 0
+                totalNbOfUnreadMessagesInAllConversations = ServicesManager.sharedInstance()?.conversationsManagerService.totalNbOfUnreadMessagesInAllConversations ?? 0
+                if(totalNbOfUnreadMessagesInAllConversations == 0) {
                     self.tabBarController?.tabBar.items?[0].badgeValue  = nil;
                 }
                 else {
-                    self.tabBarController?.tabBar.items?[0].badgeValue = "\(self.totalNbOfUnreadMessagesInAllConversations)"
+                    self.tabBarController?.tabBar.items?[0].badgeValue = "\(totalNbOfUnreadMessagesInAllConversations)"
                 }
                 self.tableView .reloadData()
             }
