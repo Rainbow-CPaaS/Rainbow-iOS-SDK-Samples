@@ -70,7 +70,7 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
         super.viewDidLoad()
         
         textInput.delegate = self
-
+        self.title = "Coversations"
         if let photoData = contact?.photoData {
             peerAvatar = UIImage(data: photoData)
         }
