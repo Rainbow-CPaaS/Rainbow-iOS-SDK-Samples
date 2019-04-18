@@ -101,7 +101,6 @@
         });
         return;
     }
-    
     [_channelsListView reloadData];
 }
 
@@ -158,6 +157,7 @@
         Channel *channel = [_channelsManager.channels objectAtIndex:indexPath.row];
         if(channel){
             channelCell.name.text = channel.name;
+            channelCell.topic.text = channel.channelDescription;
             if(channel.photoData){
                 channelCell.avatar.image = [UIImage imageWithData: channel.photoData];
                 channelCell.avatar.tintColor = [UIColor clearColor];
@@ -171,7 +171,23 @@
         if(self.selectedIndex){
             ChannelItem *item = [_itemsInChannel objectAtIndex:indexPath.row];
             if(item){
-                itemCell.text.text = item.message;
+                if(item.type == ChannelItemTypeHtml){
+                    [itemCell.html loadHTMLString:item.message baseURL:nil];
+                    itemCell.text.hidden = YES;
+                    itemCell.html.hidden = NO;
+                } else if(item.type == ChannelItemTypeBasic){
+                    itemCell.text.text = item.message;
+                    itemCell.text.hidden = NO;
+                    itemCell.html.hidden = YES;
+                }
+                
+                // Show the first image if any
+                if(item.images && item.images.count > 0){
+                    itemCell.image.hidden = NO;
+                    itemCell.image.image = ((ChannelItemImage *)[item.images firstObject]).image;
+                } else {
+                    itemCell.image.hidden = YES;
+                }
             }
         }
     }

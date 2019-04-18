@@ -14,8 +14,10 @@
  */
 
 #import <UIKit/UIKit.h>
+#import <WebKit/WebKit.h>
 
 @interface ItemTableViewCell : UITableViewCell
 @property (weak, nonatomic) IBOutlet UIImageView *image;
 @property (weak, nonatomic) IBOutlet UITextView *text;
+@property (weak, nonatomic) IBOutlet WKWebView *html;
 @end

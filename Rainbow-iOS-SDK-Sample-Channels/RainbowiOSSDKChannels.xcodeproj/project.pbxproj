@@ -15,6 +15,7 @@
 		E55A3B552229745C0082C0DF /* WebRTC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E55A3B50222974400082C0DF /* WebRTC.framework */; };
 		E59D99A722550B6400541017 /* CreateChannelViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E59D99A622550B6400541017 /* CreateChannelViewController.m */; };
 		E59D99B4225BB33B00541017 /* PostItemViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E59D99B3225BB33B00541017 /* PostItemViewController.m */; };
+		E59D99B6225DF00700541017 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E59D99B5225DF00700541017 /* WebKit.framework */; };
 		E5D2BFA52069314700EEDB5F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E5D2BFA42069314700EEDB5F /* AppDelegate.m */; };
 		E5D2BFA82069314700EEDB5F /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E5D2BFA72069314700EEDB5F /* LoginViewController.m */; };
 		E5D2BFAB2069314700EEDB5F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E5D2BFA92069314700EEDB5F /* Main.storyboard */; };
@@ -50,6 +51,7 @@
 		E59D99A622550B6400541017 /* CreateChannelViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CreateChannelViewController.m; sourceTree = "<group>"; };
 		E59D99B2225BB33B00541017 /* PostItemViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PostItemViewController.h; sourceTree = "<group>"; };
 		E59D99B3225BB33B00541017 /* PostItemViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PostItemViewController.m; sourceTree = "<group>"; };
+		E59D99B5225DF00700541017 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		E5D2BFA02069314700EEDB5F /* RainbowiOSSDKChannels.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RainbowiOSSDKChannels.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E5D2BFA32069314700EEDB5F /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		E5D2BFA42069314700EEDB5F /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -69,6 +71,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E59D99B6225DF00700541017 /* WebKit.framework in Frameworks */,
 				E55A3B542229745C0082C0DF /* Rainbow.framework in Frameworks */,
 				E55A3B552229745C0082C0DF /* WebRTC.framework in Frameworks */,
 			);
@@ -123,6 +126,7 @@
 		E5D2BFB9206931B900EEDB5F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E59D99B5225DF00700541017 /* WebKit.framework */,
 				E55A3B51222974410082C0DF /* Rainbow.framework */,
 				E55A3B50222974400082C0DF /* WebRTC.framework */,
 			);
@@ -146,7 +150,7 @@
 			dependencies = (
 			);
 			name = RainbowiOSSDKChannels;
-			productName = RainbowiOSSDKIM;
+			productName = RainbowiOSSDKChannels;
 			productReference = E5D2BFA02069314700EEDB5F /* RainbowiOSSDKChannels.app */;
 			productType = "com.apple.product-type.application";
 		};
