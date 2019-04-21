@@ -21,6 +21,8 @@ class ConversationsTableViewController: UITableViewController {
     let conversationsManager : ConversationsManagerService
     var selectedIndex : IndexPath? = nil
     var allConversations : [Conversation] = []
+    var totalNbOfUnreadMessagesInAllConversations = 0
+
     
     @IBOutlet weak var logoutButton: UIBarButtonItem!
     
@@ -49,6 +51,13 @@ class ConversationsTableViewController: UITableViewController {
         allConversations = []
         self.loadAllConversations()
         self.sortAllConversation()
+        totalNbOfUnreadMessagesInAllConversations = ServicesManager.sharedInstance()?.conversationsManagerService.totalNbOfUnreadMessagesInAllConversations ?? 0
+        if(totalNbOfUnreadMessagesInAllConversations == 0) {
+            self.tabBarController?.tabBar.items?[0].badgeValue  = nil;
+        }
+        else {
+            self.tabBarController?.tabBar.items?[0].badgeValue = "\(totalNbOfUnreadMessagesInAllConversations)"
+        }
     }
 
     @IBAction func logoutAction(_ sender: Any) {
@@ -182,7 +191,6 @@ class ConversationsTableViewController: UITableViewController {
     @objc func didUpdateMessagesUnreadCount(notification : Notification) {
         if !Thread.isMainThread {
             DispatchQueue.main.async {
-                var totalNbOfUnreadMessagesInAllConversations = 0
                 totalNbOfUnreadMessagesInAllConversations = ServicesManager.sharedInstance()?.conversationsManagerService.totalNbOfUnreadMessagesInAllConversations ?? 0
                 if(totalNbOfUnreadMessagesInAllConversations == 0) {
                     self.tabBarController?.tabBar.items?[0].badgeValue  = nil;

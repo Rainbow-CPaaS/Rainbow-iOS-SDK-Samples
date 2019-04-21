@@ -236,7 +236,7 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
         if let receivedConversation = notification.object as? Conversation {
             if(receivedConversation == self.theConversation){
                 NSLog("did received new message for the conversation")
-                self.conversationsManager.markAsReadByMeAllMessage(for: theConversation)
+                self.conversationsManager.sendMarkAllMessagesAsRead(from: theConversation)
                 let lastRow = IndexPath(row:  messageList.numberOfRows(inSection: 0) - 1, section: 0)
                 messageList.scrollToRow(at: lastRow, at: .bottom, animated: true)
                 messageList.reloadData()
