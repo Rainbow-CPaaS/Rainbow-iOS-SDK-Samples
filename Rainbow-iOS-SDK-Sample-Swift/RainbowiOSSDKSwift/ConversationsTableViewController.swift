@@ -51,8 +51,8 @@ class ConversationsTableViewController: UITableViewController {
         allConversations = []
         self.loadAllConversations()
         self.sortAllConversation()
-        totalNbOfUnreadMessagesInAllConversations = ServicesManager.sharedInstance()?.conversationsManagerService.totalNbOfUnreadMessagesInAllConversations ?? 0
-        if(totalNbOfUnreadMessagesInAllConversations == 0) {
+        self.totalNbOfUnreadMessagesInAllConversations = ServicesManager.sharedInstance()?.conversationsManagerService.totalNbOfUnreadMessagesInAllConversations ?? 0
+        if(self.totalNbOfUnreadMessagesInAllConversations == 0) {
             self.tabBarController?.tabBar.items?[0].badgeValue  = nil;
         }
         else {
@@ -191,8 +191,8 @@ class ConversationsTableViewController: UITableViewController {
     @objc func didUpdateMessagesUnreadCount(notification : Notification) {
         if !Thread.isMainThread {
             DispatchQueue.main.async {
-                totalNbOfUnreadMessagesInAllConversations = ServicesManager.sharedInstance()?.conversationsManagerService.totalNbOfUnreadMessagesInAllConversations ?? 0
-                if(totalNbOfUnreadMessagesInAllConversations == 0) {
+                self.totalNbOfUnreadMessagesInAllConversations = ServicesManager.sharedInstance()?.conversationsManagerService.totalNbOfUnreadMessagesInAllConversations ?? 0
+                if(self.totalNbOfUnreadMessagesInAllConversations == 0) {
                     self.tabBarController?.tabBar.items?[0].badgeValue  = nil;
                 }
                 else {
