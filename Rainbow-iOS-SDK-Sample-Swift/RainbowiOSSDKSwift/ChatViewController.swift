@@ -36,6 +36,7 @@ extension Array {
 class MessageItem : NSObject {
     var contact : Contact?
     var text : String?
+    var date : Date?
 }
 
 class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDelegate, UITableViewDelegate, UITableViewDataSource {
@@ -179,7 +180,10 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
                         item.contact = message.peer as? Contact
                     }
                     item.text = message.body
+                    item.date = message.date
                     self.messages.insert(item, at: index)
+                    self.messages.sort{($0.date ?? .distantPast) > ($1.date ?? .distantPast)}
+
                 }
             }
         }

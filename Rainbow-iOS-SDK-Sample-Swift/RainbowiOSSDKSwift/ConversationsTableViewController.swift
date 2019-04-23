@@ -21,8 +21,8 @@ class ConversationsTableViewController: UITableViewController {
     let conversationsManager : ConversationsManagerService
     var selectedIndex : IndexPath? = nil
     var allConversations : [Conversation] = []
-    var totalNbOfUnreadMessagesInAllConversations = 0
 
+    
     
     @IBOutlet weak var logoutButton: UIBarButtonItem!
     
@@ -51,13 +51,8 @@ class ConversationsTableViewController: UITableViewController {
         allConversations = []
         self.loadAllConversations()
         self.sortAllConversation()
-        self.totalNbOfUnreadMessagesInAllConversations = ServicesManager.sharedInstance()?.conversationsManagerService.totalNbOfUnreadMessagesInAllConversations ?? 0
-        if(self.totalNbOfUnreadMessagesInAllConversations == 0) {
-            self.tabBarController?.tabBar.items?[0].badgeValue  = nil;
-        }
-        else {
-            self.tabBarController?.tabBar.items?[0].badgeValue = "\(totalNbOfUnreadMessagesInAllConversations)"
-        }
+        self.updateBadgeValue()
+        
     }
 
     @IBAction func logoutAction(_ sender: Any) {
@@ -88,7 +83,9 @@ class ConversationsTableViewController: UITableViewController {
         let theConversation = notification.object as! Conversation
         if (theConversation.conversationId != nil) {
             if (allConversations.index(of: theConversation) == nil) {
-                allConversations.append(theConversation)
+                if(theConversation.peer.displayName != nil) {
+                    allConversations.append(theConversation)
+                }
             }
         }
         self.sortAllConversation()
@@ -191,13 +188,7 @@ class ConversationsTableViewController: UITableViewController {
     @objc func didUpdateMessagesUnreadCount(notification : Notification) {
         if !Thread.isMainThread {
             DispatchQueue.main.async {
-                self.totalNbOfUnreadMessagesInAllConversations = ServicesManager.sharedInstance()?.conversationsManagerService.totalNbOfUnreadMessagesInAllConversations ?? 0
-                if(self.totalNbOfUnreadMessagesInAllConversations == 0) {
-                    self.tabBarController?.tabBar.items?[0].badgeValue  = nil;
-                }
-                else {
-                    self.tabBarController?.tabBar.items?[0].badgeValue = "\(totalNbOfUnreadMessagesInAllConversations)"
-                }
+                self.updateBadgeValue()
                 self.tableView .reloadData()
             }
         }
@@ -215,5 +206,14 @@ class ConversationsTableViewController: UITableViewController {
     func sortAllConversation() {
         allConversations.sort{($0.lastUpdateDate ?? .distantPast) > ($1.lastUpdateDate ?? .distantPast)}
         self.tableView.reloadData()
+    }
+    func updateBadgeValue() {
+        let totalNbOfUnreadMessagesInAllConversations = ServicesManager.sharedInstance()?.conversationsManagerService.totalNbOfUnreadMessagesInAllConversations ?? 0
+        if(totalNbOfUnreadMessagesInAllConversations == 0) {
+            tabBarController?.tabBar.items?[0].badgeValue  = nil;
+        }
+        else {
+            tabBarController?.tabBar.items?[0].badgeValue = "\(totalNbOfUnreadMessagesInAllConversations)"
+        }
     }
 }

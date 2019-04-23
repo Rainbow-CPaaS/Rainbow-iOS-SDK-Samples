@@ -103,11 +103,11 @@
             </objects>
             <point key="canvasLocation" x="670" y="134"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--Conversations-->
         <scene sceneID="AmK-al-6K3">
             <objects>
                 <navigationController id="x72-Wt-l6L" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" selectedImage="conversationSelected" systemItem="recents" id="buC-bv-3LI"/>
+                    <tabBarItem key="tabBarItem" title="Conversations" image="conversation" landscapeImage="conversation" selectedImage="conversationSelected" id="buC-bv-3LI"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="Y9Y-3j-nE1">
                         <rect key="frame" x="0.0" y="20" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -120,11 +120,11 @@
             </objects>
             <point key="canvasLocation" x="1497" y="628"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--Contacts-->
         <scene sceneID="gox-Jf-JSY">
             <objects>
                 <navigationController id="2Lf-xz-WRU" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" selectedImage="contactSelected" systemItem="contacts" id="WTP-iH-KQu"/>
+                    <tabBarItem key="tabBarItem" title="Contacts" image="contact" landscapeImage="contact" selectedImage="contactSelected" id="WTP-iH-KQu"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="wrW-B2-iY1">
                         <rect key="frame" x="0.0" y="20" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -137,7 +137,7 @@
             </objects>
             <point key="canvasLocation" x="1442" y="-313"/>
         </scene>
-        <!--Contacts Table View Controller-->
+        <!--Contacts-->
         <scene sceneID="Mtm-ly-l8x">
             <objects>
                 <tableViewController id="AKG-5M-hBw" customClass="ContactsTableViewController" customModule="RainbowiOSSDKSwift" customModuleProvider="target" sceneMemberID="viewController">
@@ -154,14 +154,13 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="jCm-qr-KRq">
-                                            <rect key="frame" x="8" y="10" width="60" height="60"/>
+                                            <rect key="frame" x="8" y="6" width="60" height="60"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="60" id="b9J-Wn-bnx"/>
                                                 <constraint firstAttribute="width" constant="60" id="qeJ-Sl-2VA"/>
                                             </constraints>
                                         </imageView>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="J5C-6R-OCQ">
-                                            <rect key="frame" x="76" y="29.5" width="42" height="21"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
@@ -187,7 +186,7 @@
                         </connections>
                     </tableView>
                     <toolbarItems/>
-                    <navigationItem key="navigationItem" id="crV-eY-BnZ">
+                    <navigationItem key="navigationItem" title="Contacts" id="crV-eY-BnZ">
                         <barButtonItem key="rightBarButtonItem" title="Logout" id="hbI-Y6-tjT">
                             <connections>
                                 <action selector="logoutAction:" destination="AKG-5M-hBw" id="4nt-2M-Ii9"/>
@@ -514,7 +513,9 @@
     </scenes>
     <resources>
         <image name="Default_Avatar" width="40" height="40"/>
+        <image name="contact" width="25" height="25"/>
         <image name="contactSelected" width="25" height="25"/>
+        <image name="conversation" width="25" height="25"/>
         <image name="conversationSelected" width="25" height="25"/>
     </resources>
 </document>
