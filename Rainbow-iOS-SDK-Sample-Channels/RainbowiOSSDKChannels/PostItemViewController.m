@@ -21,17 +21,32 @@
 @property (weak, nonatomic) IBOutlet UITextField *titleTextField;
 @property (weak, nonatomic) IBOutlet UITextView *bodyTextView;
 
+@property (nonatomic, strong) ChannelsService *channelsManager;
+
 @end
 
 @implementation PostItemViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    _channelsManager = [ServicesManager sharedInstance].channelsService;
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    _titleTextField.text = @"";
+    _bodyTextView.text = @"";
 }
 
 - (IBAction)postAction:(id)sender {
-    if(_titleTextField.text.length > 0 && _bodyTextView.text.length > 0){
-        ChannelItem *item = [[ChannelItem alloc] init];
+    if(_bodyTextView.text.length > 0){
+        if(_channel){
+            // Channel item title is optional
+            NSString *title = _titleTextField.text.length > 0 ? _titleTextField.text : nil;
+            [_channelsManager addItemToChannel:_channel type:ChannelItemTypeBasic message:_bodyTextView.text title:title url:nil images:nil attachments:nil youtubeVideoId:nil completionHandler:nil];
+        }
+        self.channel = nil;
+        [self.navigationController popViewControllerAnimated:YES];
     }
 }
 

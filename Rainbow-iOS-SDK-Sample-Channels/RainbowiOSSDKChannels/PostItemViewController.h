@@ -14,7 +14,8 @@
  */
 
 #import <UIKit/UIKit.h>
+#import <Rainbow/Rainbow.h>
 
 @interface PostItemViewController : UIViewController
-
+@property (nonatomic, retain) Channel *channel;
 @end

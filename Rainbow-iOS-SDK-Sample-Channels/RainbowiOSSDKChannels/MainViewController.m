@@ -15,19 +15,15 @@
 
 #import "MainViewController.h"
 #import <Rainbow/Rainbow.h>
-#import <Rainbow/ChannelsService.h>
 #import "ChannelTableViewCell.h"
 #import "ItemTableViewCell.h"
-
-#import <Contacts/Contacts.h>
-#import <Rainbow/ContactsManagerService.h>
 #import "LoginViewController.h"
+#import "PostItemViewController.h"
 
 @interface MainViewController ()
 @property (nonatomic, weak) IBOutlet UITableView *channelsListView;
 @property (nonatomic, weak) IBOutlet UITableView *itemsListView;
 
-@property (nonatomic, strong) ServicesManager *serviceManager;
 @property (nonatomic, strong) ChannelsService *channelsManager;
 @property (nonatomic, strong) NSIndexPath *selectedIndex;
 @property (nonatomic, strong) NSMutableArray<ChannelItem *> *itemsInChannel;
@@ -38,8 +34,7 @@
 -(instancetype) initWithCoder:(NSCoder *)aDecoder {
     self = [super initWithCoder:aDecoder];
     if(self){
-        _serviceManager = [ServicesManager sharedInstance];
-        _channelsManager = _serviceManager.channelsService;
+        _channelsManager = [ServicesManager sharedInstance].channelsService;
         _selectedIndex = nil;
         _itemsInChannel = [NSMutableArray new];
         
@@ -51,7 +46,6 @@
 }
 
 -(void)dealloc {
-    _serviceManager = nil;
     _channelsManager = nil;
     _selectedIndex = nil;
     _itemsInChannel = nil;
@@ -69,6 +63,13 @@
     if ([segue.identifier isEqualToString: @"BackToLoginSegue"]){
         LoginViewController *loginViewController = (LoginViewController *)segue.destinationViewController;
         loginViewController.doLogout = YES;
+    } else if ([segue.identifier isEqualToString:@"PostItemSegue"]){
+        if(_selectedIndex){
+            Channel *channel = [_channelsManager.channels objectAtIndex:self.selectedIndex.row];
+            PostItemViewController *postItemViewController = (PostItemViewController *)segue.destinationViewController;
+            postItemViewController.channel = channel;
+        }
+        
     }
 }
 
@@ -179,6 +180,14 @@
                     itemCell.text.text = item.message;
                     itemCell.text.hidden = NO;
                     itemCell.html.hidden = YES;
+                }
+                
+                // Show the item title if any
+                if(item.title){
+                    itemCell.title.text = item.title;
+                    itemCell.title.hidden = NO;
+                } else {
+                    itemCell.title.hidden = YES;
                 }
                 
                 // Show the first image if any

@@ -192,7 +192,7 @@
             </objects>
             <point key="canvasLocation" x="1748" y="-596.85157421289364"/>
         </scene>
-        <!--Post Item View Controller-->
+        <!--Post a item-->
         <scene sceneID="l4j-Je-zi1">
             <objects>
                 <viewController id="v3g-z6-cua" customClass="PostItemViewController" sceneMemberID="viewController">
@@ -241,6 +241,7 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="29k-qS-PgR"/>
                     </view>
+                    <navigationItem key="navigationItem" title="Post a item" id="O1P-t1-sV7"/>
                     <connections>
                         <outlet property="bodyTextView" destination="jaQ-BQ-X7Z" id="OQo-km-Jum"/>
                         <outlet property="postButton" destination="bmY-g2-ZUg" id="F07-I9-7T1"/>
@@ -249,7 +250,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DT0-mO-2a0" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2479.1999999999998" y="-601.34932533733138"/>
+            <point key="canvasLocation" x="2570" y="125"/>
         </scene>
         <!--Channels-->
         <scene sceneID="tHb-qj-WJw">
@@ -363,7 +364,7 @@
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <state key="normal" title="Post a item..."/>
                                                     <connections>
-                                                        <segue destination="v3g-z6-cua" kind="show" id="2Ll-1a-wL1"/>
+                                                        <segue destination="v3g-z6-cua" kind="show" identifier="PostItemSegue" id="2Ll-1a-wL1"/>
                                                     </connections>
                                                 </button>
                                             </subviews>
@@ -384,13 +385,19 @@
                                                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="WMv-lP-Ci9">
                                                             <rect key="frame" x="0.0" y="0.0" width="375" height="200"/>
                                                             <subviews>
+                                                                <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hlm-7S-G2t">
+                                                                    <rect key="frame" x="0.0" y="0.0" width="375" height="0.0"/>
+                                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                                    <nil key="textColor"/>
+                                                                    <nil key="highlightedColor"/>
+                                                                </label>
                                                                 <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="kk9-0g-KU8">
                                                                     <rect key="frame" x="0.0" y="0.0" width="375" height="0.0"/>
                                                                 </imageView>
-                                                                <textView hidden="YES" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="kbX-Yf-bMr">
+                                                                <textView hidden="YES" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="kbX-Yf-bMr">
                                                                     <rect key="frame" x="0.0" y="0.0" width="375" height="0.0"/>
                                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                                    <mutableString key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</mutableString>
+                                                                    <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
                                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                                                 </textView>
@@ -426,6 +433,7 @@
                                                     <outlet property="html" destination="93m-ZI-DYC" id="49M-OG-6N8"/>
                                                     <outlet property="image" destination="kk9-0g-KU8" id="tIz-2Z-F7U"/>
                                                     <outlet property="text" destination="kbX-Yf-bMr" id="TBC-od-nQO"/>
+                                                    <outlet property="title" destination="hlm-7S-G2t" id="ch3-s2-E1a"/>
                                                 </connections>
                                             </tableViewCell>
                                         </prototypes>
