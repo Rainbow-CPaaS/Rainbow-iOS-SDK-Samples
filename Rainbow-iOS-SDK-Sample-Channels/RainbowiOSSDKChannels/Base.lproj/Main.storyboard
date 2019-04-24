@@ -201,7 +201,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Title" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="sQ9-e9-BG3">
-                                <rect key="frame" x="16" y="164" width="343" height="30"/>
+                                <rect key="frame" x="16" y="114" width="343" height="30"/>
                                 <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
@@ -210,7 +210,7 @@
                                 </connections>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bmY-g2-ZUg">
-                                <rect key="frame" x="172" y="404" width="31" height="30"/>
+                                <rect key="frame" x="172" y="328" width="31" height="30"/>
                                 <state key="normal" title="Post"/>
                                 <connections>
                                     <action selector="createAction:" destination="WgA-go-sTv" eventType="touchUpInside" id="gJb-eC-Sd2"/>
@@ -218,8 +218,8 @@
                                 </connections>
                             </button>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="jaQ-BQ-X7Z">
-                                <rect key="frame" x="16" y="210" width="343" height="128"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <rect key="frame" x="16" y="160" width="343" height="128"/>
+                                <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="128" id="jiv-SL-uyW"/>
                                 </constraints>
@@ -231,8 +231,8 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="jaQ-BQ-X7Z" firstAttribute="top" secondItem="sQ9-e9-BG3" secondAttribute="bottom" constant="16" id="1e4-Kz-1nw"/>
-                            <constraint firstItem="sQ9-e9-BG3" firstAttribute="top" secondItem="29k-qS-PgR" secondAttribute="top" constant="100" id="EAK-dw-lE2"/>
-                            <constraint firstItem="bmY-g2-ZUg" firstAttribute="top" secondItem="jaQ-BQ-X7Z" secondAttribute="bottom" constant="66" id="EGj-sm-Xch"/>
+                            <constraint firstItem="sQ9-e9-BG3" firstAttribute="top" secondItem="29k-qS-PgR" secondAttribute="top" constant="50" id="EAK-dw-lE2"/>
+                            <constraint firstItem="bmY-g2-ZUg" firstAttribute="top" secondItem="jaQ-BQ-X7Z" secondAttribute="bottom" constant="40" id="EGj-sm-Xch"/>
                             <constraint firstItem="bmY-g2-ZUg" firstAttribute="centerX" secondItem="TYo-dg-wu7" secondAttribute="centerX" id="FAk-bw-UZ4"/>
                             <constraint firstItem="29k-qS-PgR" firstAttribute="trailing" secondItem="jaQ-BQ-X7Z" secondAttribute="trailing" constant="16" id="Is2-hp-Tsz"/>
                             <constraint firstItem="jaQ-BQ-X7Z" firstAttribute="leading" secondItem="29k-qS-PgR" secondAttribute="leading" constant="16" id="dNa-Bi-zq0"/>
@@ -359,9 +359,8 @@
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2l0-tW-7Hk">
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2l0-tW-7Hk">
                                                     <rect key="frame" x="278" y="7" width="89" height="30"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <state key="normal" title="Post a item..."/>
                                                     <connections>
                                                         <segue destination="v3g-z6-cua" kind="show" identifier="PostItemSegue" id="2Ll-1a-wL1"/>
@@ -370,8 +369,10 @@
                                             </subviews>
                                             <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                             <constraints>
+                                                <constraint firstAttribute="trailing" secondItem="2l0-tW-7Hk" secondAttribute="trailing" constant="8" id="LHO-gJ-Qq6"/>
                                                 <constraint firstItem="7ly-0e-rFM" firstAttribute="centerX" secondItem="dU6-gC-bXl" secondAttribute="centerX" id="PQU-e7-0ik"/>
                                                 <constraint firstItem="7ly-0e-rFM" firstAttribute="centerY" secondItem="dU6-gC-bXl" secondAttribute="centerY" id="qmD-oQ-TNo"/>
+                                                <constraint firstItem="2l0-tW-7Hk" firstAttribute="centerY" secondItem="dU6-gC-bXl" secondAttribute="centerY" id="vRH-SG-RBU"/>
                                             </constraints>
                                         </view>
                                         <prototypes>
@@ -469,6 +470,7 @@
                     <connections>
                         <outlet property="channelsListView" destination="Gk2-HW-O7u" id="r6L-Hj-66P"/>
                         <outlet property="itemsListView" destination="YTe-2C-UMv" id="1jn-R6-7HN"/>
+                        <outlet property="postItemButton" destination="2l0-tW-7Hk" id="ZPS-6k-dG7"/>
                         <segue destination="BYZ-38-t0r" kind="show" identifier="BackToLoginSegue" id="FcE-bJ-sU8"/>
                     </connections>
                 </viewController>

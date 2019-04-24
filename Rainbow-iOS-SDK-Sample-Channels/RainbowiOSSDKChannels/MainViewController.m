@@ -23,6 +23,7 @@
 @interface MainViewController ()
 @property (nonatomic, weak) IBOutlet UITableView *channelsListView;
 @property (nonatomic, weak) IBOutlet UITableView *itemsListView;
+@property (weak, nonatomic) IBOutlet UIButton *postItemButton;
 
 @property (nonatomic, strong) ChannelsService *channelsManager;
 @property (nonatomic, strong) NSIndexPath *selectedIndex;
@@ -41,6 +42,8 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didAddChannel:) name:kChannelsServiceDidAddChannel object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didRemoveChannel:) name:kChannelsServiceDidRemoveChannel object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didUpdateChannel:) name:kChannelsServiceDidUpdateChannel object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveItem:) name: kChannelsServiceDidReceiveItem object:nil];
     }
     return self;
 }
@@ -53,10 +56,13 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kChannelsServiceDidAddChannel object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kChannelsServiceDidRemoveChannel object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kChannelsServiceDidUpdateChannel object:nil];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name: kChannelsServiceDidReceiveItem object:nil];
 }
 
--(void)viewDidLoad {
-    [super viewDidLoad];
+-(void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    _postItemButton.enabled = _selectedIndex ? YES : NO;
 }
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -105,6 +111,19 @@
     [_channelsListView reloadData];
 }
 
+-(void) didReceiveItem :(NSNotification *) notification {
+    if(![NSThread isMainThread]){
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self didReceiveItem:notification];
+        });
+        return;
+    }
+    ChannelItem *item = notification.object;
+    Channel *channel = [_channelsManager getChannel:item.channelId];
+    [self getItemsInChannel: channel];
+    [_itemsListView reloadData];
+}
+
 #pragma mark - IBAction
 
 - (IBAction)logout:(id)sender {
@@ -117,17 +136,21 @@
     return 1;
 }
 
--(void)getItemsInSelectedChannel {
+-(void)getItemsInChannel:(Channel *)channel {
     @synchronized (self) {
         [self.itemsInChannel removeAllObjects];
-        if(_selectedIndex){
-            Channel *channel = [_channelsManager.channels objectAtIndex:self.selectedIndex.row];
-            for(ChannelItem *item in _channelsManager.channelsItems){
-                if([item.channelId isEqualToString:channel.id]){
-                    [_itemsInChannel addObject:item];
-                }
+        for(ChannelItem *item in _channelsManager.channelsItems){
+            if([item.channelId isEqualToString:channel.id]){
+                [_itemsInChannel addObject:item];
             }
         }
+    }
+}
+
+-(void)getItemsInSelectedChannel {
+    if(_selectedIndex){
+        Channel *channel = [_channelsManager.channels objectAtIndex:self.selectedIndex.row];
+        [self getItemsInChannel:channel];
     }
 }
 
@@ -207,6 +230,7 @@
         self.selectedIndex = indexPath;
         [self getItemsInSelectedChannel];
         [_itemsListView reloadData];
+        _postItemButton.enabled = YES;
     }
 }
 
