@@ -23,6 +23,7 @@
 @property (nonatomic, weak) IBOutlet UITextField *titleTextField;
 @property (nonatomic, weak) IBOutlet UITextField *descriptionTextField;
 @property (nonatomic, weak) IBOutlet UITextField *categoryTextField;
+@property (weak, nonatomic) IBOutlet UISegmentedControl *closedOrPublicSwitch;
 @property (nonatomic, weak) IBOutlet UIButton *createButton;
 
 @property (nonatomic, strong) ServicesManager *serviceManager;
@@ -66,19 +67,39 @@
 }
 
 - (IBAction)createAction:(id)sender {
-    if(_titleTextField.text.length > 0 && _titleTextField.text.length > 0){
-        [_channelsManager createPublicChannel:_titleTextField.text description:_titleTextField.text category:_categoryTextField.text maxItems: -1 completionHandler:^(Channel *channel, NSError *error) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if(error){
-                    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Error" message:[error localizedDescription] preferredStyle:UIAlertControllerStyleAlert];
-                    UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
-                    [alert addAction:okAction];
-                    [self presentViewController:alert animated:YES completion:nil];
-                } else {
-                    [self.navigationController popViewControllerAnimated:YES];
-                }
-            });
-        }];
+    void (^block)(Channel *channel, NSError *error) = ^void (Channel *channel, NSError *error){
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if(error){
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Error" message:[error localizedDescription] preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
+                [alert addAction:okAction];
+                [self presentViewController:alert animated:YES completion:nil];
+            } else {
+                [self.channelsManager updateChannel:channel.id avatar:self.avatarImageView.image completionHandler:^(NSError *error) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        if(error){
+                            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Error" message:[error localizedDescription] preferredStyle:UIAlertControllerStyleAlert];
+                            UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
+                            [alert addAction:okAction];
+                            [self presentViewController:alert animated:YES completion:nil];
+                        }
+                    });
+                }];
+                [self.navigationController popViewControllerAnimated:YES];
+            }
+        });
+    };
+    
+    if(_titleTextField.text.length > 0 && _descriptionTextField.text.length > 0){
+        if(_closedOrPublicSwitch.selectedSegmentIndex == 0){
+            [_channelsManager createClosedChannel:_titleTextField.text description:_titleTextField.text category:_categoryTextField.text maxItems: -1 completionHandler:^(Channel *channel, NSError *error) {
+                block(channel, error);
+            }];
+        } else {
+            [_channelsManager createPublicChannel:_titleTextField.text description:_titleTextField.text category:_categoryTextField.text maxItems: -1 completionHandler:^(Channel *channel, NSError *error) {
+                block(channel, error);
+            }];
+        }
     }
 }
 

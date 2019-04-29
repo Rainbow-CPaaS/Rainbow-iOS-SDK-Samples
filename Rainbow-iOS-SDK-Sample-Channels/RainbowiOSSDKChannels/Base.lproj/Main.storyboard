@@ -129,7 +129,7 @@
                                     <outlet property="delegate" destination="WgA-go-sTv" id="txt-uv-BGx"/>
                                 </connections>
                             </textField>
-                            <imageView clipsSubviews="YES" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Logo_rainbow" translatesAutoresizingMaskIntoConstraints="NO" id="nGH-Uj-INw">
+                            <imageView clipsSubviews="YES" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Default_Avatar" translatesAutoresizingMaskIntoConstraints="NO" id="nGH-Uj-INw">
                                 <rect key="frame" x="16" y="80" width="343" height="128"/>
                                 <gestureRecognizers/>
                                 <constraints>
@@ -139,9 +139,8 @@
                                     <outletCollection property="gestureRecognizers" destination="UfN-bQ-cxP" appends="YES" id="Bio-gp-lBx"/>
                                 </connections>
                             </imageView>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1BU-8o-WxR">
-                                <rect key="frame" x="164" y="395" width="46" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1BU-8o-WxR">
+                                <rect key="frame" x="164.5" y="406" width="46" height="30"/>
                                 <state key="normal" title="Create"/>
                                 <connections>
                                     <action selector="createAction:" destination="WgA-go-sTv" eventType="touchUpInside" id="MQz-Nc-R7d"/>
@@ -156,10 +155,21 @@
                                     <outlet property="delegate" destination="WgA-go-sTv" id="Oea-Jm-Sea"/>
                                 </connections>
                             </textField>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="mO9-NK-EWL">
+                                <rect key="frame" x="16" y="362" width="217" height="29"/>
+                                <segments>
+                                    <segment title="Closed channel"/>
+                                    <segment title="Public channel"/>
+                                </segments>
+                            </segmentedControl>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="1KY-Ib-pQr" firstAttribute="trailing" secondItem="TNv-L3-Wur" secondAttribute="trailing" constant="16" id="0hj-uW-2hg"/>
+                            <constraint firstItem="mO9-NK-EWL" firstAttribute="top" secondItem="f13-yF-jWl" secondAttribute="bottom" constant="16" id="Cb2-7n-TkE"/>
+                            <constraint firstItem="1BU-8o-WxR" firstAttribute="centerX" secondItem="1xP-ih-gBg" secondAttribute="centerX" id="JeY-iR-O8N"/>
+                            <constraint firstItem="mO9-NK-EWL" firstAttribute="leading" secondItem="1KY-Ib-pQr" secondAttribute="leading" constant="16" id="ODk-kn-ioF"/>
+                            <constraint firstItem="1BU-8o-WxR" firstAttribute="top" secondItem="mO9-NK-EWL" secondAttribute="bottom" constant="16" id="RuC-WI-hc2"/>
                             <constraint firstItem="Qhz-eF-rLR" firstAttribute="leading" secondItem="1KY-Ib-pQr" secondAttribute="leading" constant="16" id="STP-8u-T3X"/>
                             <constraint firstItem="TNv-L3-Wur" firstAttribute="leading" secondItem="1KY-Ib-pQr" secondAttribute="leading" constant="16" id="bzg-H2-IXg"/>
                             <constraint firstItem="1KY-Ib-pQr" firstAttribute="trailing" secondItem="f13-yF-jWl" secondAttribute="trailing" constant="16" id="c9V-2e-SjY"/>
@@ -178,6 +188,7 @@
                     <connections>
                         <outlet property="avatarImageView" destination="nGH-Uj-INw" id="lva-SR-IJm"/>
                         <outlet property="categoryTextField" destination="f13-yF-jWl" id="5ps-r8-5IU"/>
+                        <outlet property="closedOrPublicSwitch" destination="mO9-NK-EWL" id="D8H-d6-uBc"/>
                         <outlet property="createButton" destination="1BU-8o-WxR" id="vdx-Nt-Yoy"/>
                         <outlet property="descriptionTextField" destination="TNv-L3-Wur" id="idk-rd-jbl"/>
                         <outlet property="titleTextField" destination="Qhz-eF-rLR" id="tyn-tn-OEr"/>
@@ -413,10 +424,10 @@
                                                             </subviews>
                                                         </stackView>
                                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cDP-ab-0W7">
-                                                            <rect key="frame" x="0.0" y="199" width="375" height="1"/>
+                                                            <rect key="frame" x="0.0" y="192" width="375" height="8"/>
                                                             <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             <constraints>
-                                                                <constraint firstAttribute="height" constant="1" id="FCI-hr-rZ7"/>
+                                                                <constraint firstAttribute="height" constant="8" id="FCI-hr-rZ7"/>
                                                             </constraints>
                                                         </view>
                                                     </subviews>
@@ -480,6 +491,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Logo_rainbow" width="207" height="243.5"/>
+        <image name="Default_Avatar" width="40" height="40"/>
     </resources>
 </document>
