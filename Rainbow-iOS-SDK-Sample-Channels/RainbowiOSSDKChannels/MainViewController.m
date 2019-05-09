@@ -234,4 +234,15 @@
     }
 }
 
+-(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if(editingStyle == UITableViewCellEditingStyleDelete) {
+        Channel *channel = [_channelsManager.channels objectAtIndex:indexPath.row];
+        [_channelsManager deleteChannel:channel.id completionHandler:^(NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [tableView reloadData];
+            });
+        }];
+    }
+}
+
 @end
