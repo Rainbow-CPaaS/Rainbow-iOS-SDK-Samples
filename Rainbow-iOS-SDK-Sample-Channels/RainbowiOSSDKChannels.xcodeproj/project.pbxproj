@@ -23,6 +23,7 @@
 		E5D2BFB02069314700EEDB5F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E5D2BFAE2069314700EEDB5F /* LaunchScreen.storyboard */; };
 		E5D2BFB32069314700EEDB5F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E5D2BFB22069314700EEDB5F /* main.m */; };
 		E5D2BFC520693D3E00EEDB5F /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E5D2BFC420693D3E00EEDB5F /* MainViewController.m */; };
+		E5D76A3722842A2F00C730BE /* ChannelInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E5D76A3622842A2F00C730BE /* ChannelInfoViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -64,6 +65,8 @@
 		E5D2BFB22069314700EEDB5F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		E5D2BFC320693D3E00EEDB5F /* MainViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
 		E5D2BFC420693D3E00EEDB5F /* MainViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
+		E5D76A3522842A2F00C730BE /* ChannelInfoViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChannelInfoViewController.h; sourceTree = "<group>"; };
+		E5D76A3622842A2F00C730BE /* ChannelInfoViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChannelInfoViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,6 +117,8 @@
 				E59D99A622550B6400541017 /* CreateChannelViewController.m */,
 				E59D99B2225BB33B00541017 /* PostItemViewController.h */,
 				E59D99B3225BB33B00541017 /* PostItemViewController.m */,
+				E5D76A3522842A2F00C730BE /* ChannelInfoViewController.h */,
+				E5D76A3622842A2F00C730BE /* ChannelInfoViewController.m */,
 				E5D2BFA92069314700EEDB5F /* Main.storyboard */,
 				E5D2BFAE2069314700EEDB5F /* LaunchScreen.storyboard */,
 				E5D2BFB12069314700EEDB5F /* Info.plist */,
@@ -206,6 +211,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E54400DE207EC58C008B90F2 /* ItemTableViewCell.m in Sources */,
+				E5D76A3722842A2F00C730BE /* ChannelInfoViewController.m in Sources */,
 				E5D2BFA82069314700EEDB5F /* LoginViewController.m in Sources */,
 				E5D2BFB32069314700EEDB5F /* main.m in Sources */,
 				E55968D1206D33E50080D632 /* ChannelTableViewCell.m in Sources */,

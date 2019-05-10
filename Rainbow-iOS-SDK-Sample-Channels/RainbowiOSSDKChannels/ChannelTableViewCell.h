@@ -19,4 +19,5 @@
 @property (weak, nonatomic) IBOutlet UIImageView *avatar;
 @property (weak, nonatomic) IBOutlet UILabel *name;
 @property (weak, nonatomic) IBOutlet UILabel *topic;
+@property (weak, nonatomic) IBOutlet UIButton *infoButton;
 @end

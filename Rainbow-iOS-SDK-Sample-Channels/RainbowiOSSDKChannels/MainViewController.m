@@ -19,6 +19,7 @@
 #import "ItemTableViewCell.h"
 #import "LoginViewController.h"
 #import "PostItemViewController.h"
+#import "ChannelInfoViewController.h"
 
 @interface MainViewController ()
 @property (nonatomic, weak) IBOutlet UITableView *channelsListView;
@@ -75,7 +76,12 @@
             PostItemViewController *postItemViewController = (PostItemViewController *)segue.destinationViewController;
             postItemViewController.channel = channel;
         }
-        
+    } else if ([segue.identifier isEqualToString:@"ChannelInfoSegue"]){
+        if(_selectedIndex){
+            Channel *channel = [_channelsManager.channels objectAtIndex:self.selectedIndex.row];
+            ChannelInfoViewController *channelInfoViewController = (ChannelInfoViewController *)segue.destinationViewController;
+            channelInfoViewController.channel = channel;
+        }
     }
 }
 
@@ -155,8 +161,11 @@
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    // Channels list view
     if(tableView == self.channelsListView){
         return _channelsManager.channels.count;
+        
+    // Channel items list view
     } else if(tableView == self.itemsListView){
         return _itemsInChannel.count;
     }
@@ -165,8 +174,12 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = nil;
+    
+    // Channels list view
     if(tableView == self.channelsListView){
         cell = [self.channelsListView dequeueReusableCellWithIdentifier:@"ChannelTableViewCell" forIndexPath:indexPath];
+        
+    // Channel items list view
     } else if(tableView == self.itemsListView){
         cell = [self.itemsListView dequeueReusableCellWithIdentifier:@"ItemTableViewCell" forIndexPath:indexPath];
     }
@@ -176,7 +189,11 @@
 #pragma mark - UITableViewDelegate
 
 -(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if(tableView == self.channelsListView){
+    
+    // Channels list view
+    if(tableView == self.channelsListView && indexPath.row < _channelsManager.channels.count){
+        // We have to check the bounds because when a channel is removed using swipe to delete
+        // the reloadData is called asynchronously and may not yet been called
         ChannelTableViewCell *channelCell = (ChannelTableViewCell *)cell;
         Channel *channel = [_channelsManager.channels objectAtIndex:indexPath.row];
         if(channel){
@@ -190,6 +207,8 @@
                 channelCell.avatar.tintColor = [UIColor colorWithHue:(indexPath.row*36%100)/100.0 saturation:1.0 brightness:1.0 alpha:1.0];
             }
         }
+        
+    // Channel items list view
     }  else if(tableView == self.itemsListView){
         ItemTableViewCell *itemCell = (ItemTableViewCell *)cell;
         if(self.selectedIndex){
@@ -226,6 +245,8 @@
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    // Channels list view
     if(tableView == self.channelsListView){
         self.selectedIndex = indexPath;
         [self getItemsInSelectedChannel];
