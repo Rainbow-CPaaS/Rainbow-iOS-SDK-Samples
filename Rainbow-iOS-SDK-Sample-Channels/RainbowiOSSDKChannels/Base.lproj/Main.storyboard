@@ -264,13 +264,39 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="YT2-R9-3jQ">
                                 <rect key="frame" x="16" y="401" width="343" height="246"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="ContactTableViewCell" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ChannelUserTableViewCell" id="Za3-BV-URk" customClass="ChannelUserTableViewCell">
+                                        <rect key="frame" x="0.0" y="28" width="343" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Za3-BV-URk" id="fvV-KW-sLS">
+                                            <rect key="frame" x="0.0" y="0.0" width="343" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dJ0-oe-fww">
+                                                    <rect key="frame" x="15" y="11.5" width="313" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="trailingMargin" secondItem="dJ0-oe-fww" secondAttribute="trailing" id="D0B-WH-bNr"/>
+                                                <constraint firstItem="dJ0-oe-fww" firstAttribute="centerY" secondItem="fvV-KW-sLS" secondAttribute="centerY" id="OxQ-Ax-lUL"/>
+                                                <constraint firstItem="dJ0-oe-fww" firstAttribute="leading" secondItem="fvV-KW-sLS" secondAttribute="leadingMargin" id="aVq-o8-UhZ"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="name" destination="dJ0-oe-fww" id="G9r-3j-IWe"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </prototypes>
                                 <connections>
                                     <outlet property="dataSource" destination="Cob-mT-1b1" id="lY7-di-xne"/>
                                     <outlet property="delegate" destination="Cob-mT-1b1" id="sff-1M-kqc"/>
                                 </connections>
                             </tableView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Subscribers" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qmu-WE-nyC">
-                                <rect key="frame" x="146.5" y="375" width="82" height="18"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Channel  users" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qmu-WE-nyC">
+                                <rect key="frame" x="136.5" y="375" width="102" height="18"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -449,7 +475,7 @@
                                                             <rect key="frame" x="332" y="29" width="22" height="22"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                             <connections>
-                                                                <segue destination="Cob-mT-1b1" kind="show" identifier="ChannelInfoSegue" id="NcR-ax-SOi"/>
+                                                                <action selector="channelInfoAction:" destination="00V-FR-ENL" eventType="touchUpInside" id="RwL-kr-NjU"/>
                                                             </connections>
                                                         </button>
                                                     </subviews>
@@ -605,6 +631,7 @@
                         <outlet property="itemsListView" destination="YTe-2C-UMv" id="1jn-R6-7HN"/>
                         <outlet property="postItemButton" destination="2l0-tW-7Hk" id="ZPS-6k-dG7"/>
                         <segue destination="BYZ-38-t0r" kind="show" identifier="BackToLoginSegue" id="FcE-bJ-sU8"/>
+                        <segue destination="Cob-mT-1b1" kind="show" identifier="ChannelInfoSegue" id="vfD-gm-XDu"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="66d-YF-Pjf" userLabel="First Responder" sceneMemberID="firstResponder"/>

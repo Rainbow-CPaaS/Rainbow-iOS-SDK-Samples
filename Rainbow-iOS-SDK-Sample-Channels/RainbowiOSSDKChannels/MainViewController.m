@@ -136,6 +136,16 @@
     [self performSegueWithIdentifier:@"BackToLoginSegue" sender:self];
 }
 
+- (IBAction)channelInfoAction:(id)sender {
+    CGPoint buttonPosition = [sender convertPoint:CGPointZero toView:self.channelsListView];
+    NSIndexPath *indexPath = [self.channelsListView indexPathForRowAtPoint:buttonPosition];
+    if(indexPath){
+        self.selectedIndex = indexPath;
+        [self performSegueWithIdentifier:@"ChannelInfoSegue" sender:self];
+    }
+}
+
+
 #pragma mark - UITableViewDataSource
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {

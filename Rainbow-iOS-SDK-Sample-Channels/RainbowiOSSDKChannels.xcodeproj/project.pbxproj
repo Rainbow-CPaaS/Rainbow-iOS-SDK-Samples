@@ -13,6 +13,7 @@
 		E55A3B53222974410082C0DF /* Rainbow.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E55A3B51222974410082C0DF /* Rainbow.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E55A3B542229745C0082C0DF /* Rainbow.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E55A3B51222974410082C0DF /* Rainbow.framework */; };
 		E55A3B552229745C0082C0DF /* WebRTC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E55A3B50222974400082C0DF /* WebRTC.framework */; };
+		E57309BF2286D4270044D826 /* ChannelUserTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E57309BE2286D4270044D826 /* ChannelUserTableViewCell.m */; };
 		E59D99A722550B6400541017 /* CreateChannelViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E59D99A622550B6400541017 /* CreateChannelViewController.m */; };
 		E59D99B4225BB33B00541017 /* PostItemViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E59D99B3225BB33B00541017 /* PostItemViewController.m */; };
 		E59D99B6225DF00700541017 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E59D99B5225DF00700541017 /* WebKit.framework */; };
@@ -48,6 +49,8 @@
 		E55968D0206D33E50080D632 /* ChannelTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChannelTableViewCell.m; sourceTree = "<group>"; };
 		E55A3B50222974400082C0DF /* WebRTC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebRTC.framework; path = RainbowiOSSDKChannels/Carthage/Build/iOS/WebRTC.framework; sourceTree = "<group>"; };
 		E55A3B51222974410082C0DF /* Rainbow.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Rainbow.framework; path = RainbowiOSSDKChannels/Carthage/Build/iOS/Rainbow.framework; sourceTree = "<group>"; };
+		E57309BD2286D4270044D826 /* ChannelUserTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChannelUserTableViewCell.h; sourceTree = "<group>"; };
+		E57309BE2286D4270044D826 /* ChannelUserTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChannelUserTableViewCell.m; sourceTree = "<group>"; };
 		E59D99A522550B6400541017 /* CreateChannelViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CreateChannelViewController.h; sourceTree = "<group>"; };
 		E59D99A622550B6400541017 /* CreateChannelViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CreateChannelViewController.m; sourceTree = "<group>"; };
 		E59D99B2225BB33B00541017 /* PostItemViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PostItemViewController.h; sourceTree = "<group>"; };
@@ -119,6 +122,8 @@
 				E59D99B3225BB33B00541017 /* PostItemViewController.m */,
 				E5D76A3522842A2F00C730BE /* ChannelInfoViewController.h */,
 				E5D76A3622842A2F00C730BE /* ChannelInfoViewController.m */,
+				E57309BD2286D4270044D826 /* ChannelUserTableViewCell.h */,
+				E57309BE2286D4270044D826 /* ChannelUserTableViewCell.m */,
 				E5D2BFA92069314700EEDB5F /* Main.storyboard */,
 				E5D2BFAE2069314700EEDB5F /* LaunchScreen.storyboard */,
 				E5D2BFB12069314700EEDB5F /* Info.plist */,
@@ -212,6 +217,7 @@
 			files = (
 				E54400DE207EC58C008B90F2 /* ItemTableViewCell.m in Sources */,
 				E5D76A3722842A2F00C730BE /* ChannelInfoViewController.m in Sources */,
+				E57309BF2286D4270044D826 /* ChannelUserTableViewCell.m in Sources */,
 				E5D2BFA82069314700EEDB5F /* LoginViewController.m in Sources */,
 				E5D2BFB32069314700EEDB5F /* main.m in Sources */,
 				E55968D1206D33E50080D632 /* ChannelTableViewCell.m in Sources */,
