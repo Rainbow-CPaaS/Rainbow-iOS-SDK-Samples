@@ -44,6 +44,8 @@
 @property (strong, nonatomic) UIImage *peerAvatar;
 @property (strong, nonatomic) Conversation *theConversation;
 @property (strong, nonatomic) File *attachmentFileToSend;
+@property (strong, nonatomic) UIImageView *attachemntImageView;
+
 @end
 
 @implementation ChatViewController
@@ -97,6 +99,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:@"UIKeyboardWillShowNotification" object: nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:@"UIKeyboardDidHideNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveNewMessage:) name:kConversationsManagerDidReceiveNewMessageForConversation object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(shouldUpdateAttachment:) name:kFileSharingServiceDidUpdateFile object:nil];
     
     self.messagesBrowser = [self.conversationsManager messagesBrowserForConversation:self.theConversation withPageSize:kPageSize preloadMessages:YES];
     self.messagesBrowser.delegate = self;
@@ -114,6 +117,11 @@
     _peerAvatar = nil;
     _serviceManager = nil;
     _conversationsManager = nil;
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"UIKeyboardWillShowNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"UIKeyboardDidHideNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kConversationsManagerDidReceiveNewMessageForConversation object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kFileSharingServiceDidUpdateFile object:nil];
 }
 
 /*
@@ -140,24 +148,42 @@
 
 - (IBAction)sendAction:(id)sender {
     if(self.theConversation){
-        self.sendButton.enabled = NO;
         self.textInput.editable = NO;
         [self.conversationsManager sendMessage:self.textInput.text fileAttachment:self.attachmentFileToSend to:self.theConversation completionHandler:^(Message *message, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 if(!error){
-                    self.textInput.text = @"";
+                    self.navigationItem.rightBarButtonItem = nil;
+                    self.navigationItem.leftBarButtonItem = nil;
+                    MessageItem *item = [[MessageItem alloc] init];
+                    if(message.isOutgoing){
+                        item.contact = self.serviceManager.myUser.contact;
+                    } else {
+                        item.contact = (Contact *)message.peer;
+                    }
+                    item.text = message.body;
+                    item.attachment = message.attachment;
+                    [self.messages replaceObjectAtIndex:0 withObject:item];
+                    [self.attachemntImageView removeFromSuperview];
+                    [self reloadAndScrollToBottom];
                 } else {
                     NSLog(@"Can't send message to the conversation error: %@",[error description]);
                     self.sendButton.enabled = YES;
                 }
                 self.textInput.editable = YES;
                 self.attachmentFileToSend = nil;
+                self.textInput.text = nil;
             });
         } attachmentUploadProgressHandler:^(Message *message, double totalBytesSent, double totalBytesExpectedToSend) {
             NSLog(@"total byte send  : %f",totalBytesSent);
             NSLog(@"total byte expected to send  : %f",totalBytesExpectedToSend);
         }];
     }
+}
+-(IBAction)cancelButtonPressed:(id)sender
+{
+    [self.attachemntImageView removeFromSuperview];
+    self.navigationItem.leftBarButtonItem = nil;
+    self.navigationItem.rightBarButtonItem = nil;
 }
 
 - (IBAction)addAttachment:(id)sender {
@@ -277,7 +303,15 @@
         }
     }
     
-    [picker dismissViewControllerAnimated:YES completion:nil];
+    [picker dismissViewControllerAnimated:YES completion:^{
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Send" style:UIBarButtonItemStylePlain target:self action:@selector(sendAction:)];
+        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:self action:@selector(cancelButtonPressed:)];
+        self.attachemntImageView = [[UIImageView alloc] initWithImage:[UIImage imageWithData:self.attachmentFileToSend.data]];
+        self.attachemntImageView.frame = CGRectOffset(self.view.frame, 0, 0);
+        [self.attachemntImageView setContentMode:UIViewContentModeScaleAspectFit];
+        [self.attachemntImageView setBackgroundColor:[UIColor whiteColor]];
+        [self.view addSubview:self.attachemntImageView];
+    }];
 }
 
 #pragma mark - Browsing delegate
@@ -302,7 +336,7 @@
             }
             item.text = message.body;
             item.attachment = message.attachment;
-            [self.messages setObject:item atIndexedSubscript:idx];
+            [self.messages insertObject:item atIndex:idx];
             newItemIndex++;
         }];
     }
@@ -351,7 +385,6 @@
             }
             item.text = message.body;
             item.attachment = message.attachment;
-            [self.messages setObject:item atIndexedSubscript:idx];
             changedItemIndex++;
         }];
     }
@@ -403,6 +436,12 @@
     }
 }
 
+-(void) shouldUpdateAttachment:(NSNotification *) notification {
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self reloadAndScrollToBottom];
+    });
+}
 #pragma mark - Keyboard notification
 
 - (void)keyboardWillShow:(NSNotification *)notification{
@@ -465,6 +504,7 @@
             myCell.attachmentPreview.image = [UIImage imageWithData:self.messages[row].attachment.thumbnailData];
             myCell.attachmentPreview.hidden = NO;
             myCell.attachmentHeight.constant = 80;
+            myCell.message.text = @"";
         } else {
             myCell.attachmentPreview.hidden = YES;
             myCell.attachmentHeight.constant = 0;
@@ -475,11 +515,11 @@
             peerCell.avatar.image = self.peerAvatar;
         }
         peerCell.message.text = self.messages[row].text;
-        peerCell.message.text = self.messages[row].text;
         if(self.messages[row].attachment && self.messages[row].attachment.thumbnailData){
             peerCell.attachmentPreview.image = [UIImage imageWithData:self.messages[row].attachment.thumbnailData];
             peerCell.attachmentPreview.hidden = NO;
             peerCell.attachmentHeight.constant = 80;
+            peerCell.message.text = @"";
         } else {
             peerCell.attachmentPreview.hidden = YES;
             peerCell.attachmentHeight.constant = 0;
