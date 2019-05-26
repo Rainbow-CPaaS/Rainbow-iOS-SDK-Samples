@@ -42,10 +42,10 @@
 @property (strong, nonatomic) NSMutableArray<MessageItem *> *messages;
 @property (strong, nonatomic) UIImage *myAvatar;
 @property (strong, nonatomic) UIImage *peerAvatar;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *attachmentViewHeightConstraint;
 @property (strong, nonatomic) Conversation *theConversation;
 @property (strong, nonatomic) File *attachmentFileToSend;
-@property (strong, nonatomic) UIImageView *attachemntImageView;
-
+@property (weak, nonatomic) IBOutlet UIImageView *attachementImageView;
 @end
 
 @implementation ChatViewController
@@ -95,7 +95,7 @@
             }
         }];
     }
-    
+    self.attachmentViewHeightConstraint.constant = 0;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:@"UIKeyboardWillShowNotification" object: nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:@"UIKeyboardDidHideNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveNewMessage:) name:kConversationsManagerDidReceiveNewMessageForConversation object:nil];
@@ -149,41 +149,25 @@
 - (IBAction)sendAction:(id)sender {
     if(self.theConversation){
         self.textInput.editable = NO;
+        self.sendButton.enabled = NO;
+        self.attachmentViewHeightConstraint.constant = 0;
         [self.conversationsManager sendMessage:self.textInput.text fileAttachment:self.attachmentFileToSend to:self.theConversation completionHandler:^(Message *message, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 if(!error){
-                    self.navigationItem.rightBarButtonItem = nil;
-                    self.navigationItem.leftBarButtonItem = nil;
-                    MessageItem *item = [[MessageItem alloc] init];
-                    if(message.isOutgoing){
-                        item.contact = self.serviceManager.myUser.contact;
-                    } else {
-                        item.contact = (Contact *)message.peer;
-                    }
-                    item.text = message.body;
-                    item.attachment = message.attachment;
-                    [self.messages replaceObjectAtIndex:0 withObject:item];
-                    [self.attachemntImageView removeFromSuperview];
-                    [self reloadAndScrollToBottom];
                 } else {
                     NSLog(@"Can't send message to the conversation error: %@",[error description]);
-                    self.sendButton.enabled = YES;
                 }
+                self.textInput.text = @"";
+                self.sendButton.enabled = NO;
                 self.textInput.editable = YES;
                 self.attachmentFileToSend = nil;
-                self.textInput.text = nil;
+                [self reloadAndScrollToBottom];
             });
         } attachmentUploadProgressHandler:^(Message *message, double totalBytesSent, double totalBytesExpectedToSend) {
             NSLog(@"total byte send  : %f",totalBytesSent);
             NSLog(@"total byte expected to send  : %f",totalBytesExpectedToSend);
         }];
     }
-}
--(IBAction)cancelButtonPressed:(id)sender
-{
-    [self.attachemntImageView removeFromSuperview];
-    self.navigationItem.leftBarButtonItem = nil;
-    self.navigationItem.rightBarButtonItem = nil;
 }
 
 - (IBAction)addAttachment:(id)sender {
@@ -201,6 +185,7 @@
     
     // show the menu.
     [self presentViewController:actionSheet animated:YES completion:nil];
+    self.textInput.editable = NO;
 }
 
 -(void) showAllowAccessPhotoAndCameraPopup {
@@ -236,6 +221,12 @@
             }
         });
     }];
+}
+- (IBAction)closeAttachementAction:(id)sender {
+    self.attachmentViewHeightConstraint.constant = 0;
+    self.textInput.editable = YES;
+    _attachmentFileToSend = nil;
+    [self reloadAndScrollToBottom];
 }
 
 #pragma mark - UIImagePickerControllerDelegate protocol
@@ -288,7 +279,7 @@
     if(assetURL){
         asset = [PHAsset fetchAssetsWithALAssetURLs:@[assetURL] options:nil];
         if(asset.count > 0){
-            __block NSString *fileName = [asset.firstObject valueForKey:@"filename"];
+            __block NSString* fileName = [asset.firstObject valueForKey:@"filename"];
             NSURL *cacheURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@/%@",
                                                       [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) firstObject], [[NSUUID UUID] UUIDString]]];
             dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
@@ -300,17 +291,13 @@
             dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
             
             self.attachmentFileToSend = [[ServicesManager sharedInstance].fileSharingService createTemporaryFileWithFileName:fileName andData:dataToSend andURL:cacheURL];
+            self.sendButton.enabled = YES;
         }
     }
-    
     [picker dismissViewControllerAnimated:YES completion:^{
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Send" style:UIBarButtonItemStylePlain target:self action:@selector(sendAction:)];
-        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:self action:@selector(cancelButtonPressed:)];
-        self.attachemntImageView = [[UIImageView alloc] initWithImage:[UIImage imageWithData:self.attachmentFileToSend.data]];
-        self.attachemntImageView.frame = CGRectOffset(self.view.frame, 0, 0);
-        [self.attachemntImageView setContentMode:UIViewContentModeScaleAspectFit];
-        [self.attachemntImageView setBackgroundColor:[UIColor whiteColor]];
-        [self.view addSubview:self.attachemntImageView];
+        self.attachmentViewHeightConstraint.constant = 115;
+        [self reloadAndScrollToBottom];
+        [self.attachementImageView setImage:[UIImage imageWithData:self.attachmentFileToSend.data]];
     }];
 }
 
@@ -329,16 +316,18 @@
         [indexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL * _Nonnull stop) {
             Message *message = [newItems objectAtIndex:newItemIndex];
             MessageItem *item = [[MessageItem alloc] init];
-            if(message.isOutgoing){
+            if (message.isOutgoing) {
                 item.contact = self.serviceManager.myUser.contact;
+                
             } else {
                 item.contact = (Contact *)message.peer;
             }
-            item.text = message.body;
             item.attachment = message.attachment;
+            item.text = message.body;
             [self.messages insertObject:item atIndex:idx];
             newItemIndex++;
         }];
+        [self reloadAndScrollToBottom];
     }
     [self reloadAndScrollToBottom];
 }
@@ -385,11 +374,12 @@
             }
             item.text = message.body;
             item.attachment = message.attachment;
+            [self.messages replaceObjectAtIndex:changedItemIndex withObject:item];
             changedItemIndex++;
         }];
     }
     [self reloadAndScrollToBottom];
-
+    
 }
 
 -(void) itemsBrowser:(CKItemsBrowser*)browser didReorderCacheItemsAtIndexes:(NSArray*)oldIndexes toIndexes:(NSArray*)newIndexes {
@@ -411,7 +401,7 @@
         return;
     }
     
-     NSLog(@"%@", NSStringFromSelector(_cmd));
+    NSLog(@"%@", NSStringFromSelector(_cmd));
 }
 
 #pragma mark - UITextviewDelegate
@@ -433,6 +423,7 @@
     Conversation * receivedConversation  = notification.object;
     if(receivedConversation == self.theConversation){
         NSLog(@"did received new message for the conversation");
+        [self reloadAndScrollToBottom];
     }
 }
 
@@ -505,7 +496,11 @@
             myCell.attachmentPreview.hidden = NO;
             myCell.attachmentHeight.constant = 80;
             myCell.message.text = @"";
-        } else {
+        }
+        else if (self.messages[row].attachment) {
+            myCell.message.text = self.messages[row].attachment.fileName;
+        }
+        else {
             myCell.attachmentPreview.hidden = YES;
             myCell.attachmentHeight.constant = 0;
         }
@@ -520,7 +515,11 @@
             peerCell.attachmentPreview.hidden = NO;
             peerCell.attachmentHeight.constant = 80;
             peerCell.message.text = @"";
-        } else {
+        }
+        else if (self.messages[row].attachment) {
+            peerCell.message.text = self.messages[row].attachment.fileName;
+        }
+        else {
             peerCell.attachmentPreview.hidden = YES;
             peerCell.attachmentHeight.constant = 0;
         }
@@ -530,9 +529,9 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     NSInteger row = self.messages.count - indexPath.row - 1;
     if(self.messages[row].attachment && self.messages[row].attachment.thumbnailData){
-        return 60+80;
+        return 60 + 80;
     } else {
-        return 60;
+        return 80;
     }
 }
 
