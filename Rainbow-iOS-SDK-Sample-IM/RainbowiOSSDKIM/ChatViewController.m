@@ -42,10 +42,10 @@
 @property (strong, nonatomic) NSMutableArray<MessageItem *> *messages;
 @property (strong, nonatomic) UIImage *myAvatar;
 @property (strong, nonatomic) UIImage *peerAvatar;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *attachmentViewHeightConstraint;
 @property (strong, nonatomic) Conversation *theConversation;
 @property (strong, nonatomic) File *attachmentFileToSend;
 @property (weak, nonatomic) IBOutlet UIImageView *attachementImageView;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *attachmentViewHeightConstraint;
 @end
 
 @implementation ChatViewController
@@ -327,7 +327,6 @@
             [self.messages insertObject:item atIndex:idx];
             newItemIndex++;
         }];
-        [self reloadAndScrollToBottom];
     }
     [self reloadAndScrollToBottom];
 }
@@ -423,12 +422,10 @@
     Conversation * receivedConversation  = notification.object;
     if(receivedConversation == self.theConversation){
         NSLog(@"did received new message for the conversation");
-        [self reloadAndScrollToBottom];
     }
 }
 
 -(void) shouldUpdateAttachment:(NSNotification *) notification {
-    
     dispatch_async(dispatch_get_main_queue(), ^{
         [self reloadAndScrollToBottom];
     });
