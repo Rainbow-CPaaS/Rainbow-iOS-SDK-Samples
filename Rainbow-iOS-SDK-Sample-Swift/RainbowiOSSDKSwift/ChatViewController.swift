@@ -36,6 +36,7 @@ extension Array {
 class MessageItem : NSObject {
     var contact : Contact?
     var text : String?
+    var date : Date?
 }
 
 class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDelegate, UITableViewDelegate, UITableViewDataSource {
@@ -70,7 +71,7 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
         super.viewDidLoad()
         
         textInput.delegate = self
-
+        self.title = "Coversations"
         if let photoData = contact?.photoData {
             peerAvatar = UIImage(data: photoData)
         }
@@ -84,7 +85,10 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
         }
         
         // If there is no conversation with this peer, create a new one
-        if theConversation != nil {
+        if (theConversation != nil) {
+            if ((theConversation?.peer.displayName) != nil) {
+                self.title = theConversation?.peer.displayName;
+            }
             conversationsManager.startConversation(with: contact){ (conversation : Optional<Conversation>, error : Optional<Error>)  in
                 if error != nil {
                     self.theConversation = conversation
@@ -106,7 +110,14 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
         }
     }
     
-    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.tabBarController?.tabBar.isHidden = true
+    }
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.tabBarController?.tabBar.isHidden = false
+    }
     // Scroll the message list to the latest one when the reloadData has finished
     func reloadAndScrollToBottom() {
         if self.messageList.dataSource == nil {
@@ -160,9 +171,8 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
         NSLog("CKItemsBrowser didAddCacheItems")
         synchronized(self.messages as AnyObject){
             // insert new items at the beginning of the messages array
-            self.messages.insert(contentsOf: Array.init(repeating: MessageItem(), count: newItems.count), at: 0)
-            for (idx, idxValue) in indexes.sorted().enumerated() {
-                if let message = newItems[idx] as? Message {
+            for (index, _) in indexes.sorted().enumerated() {
+                if let message = newItems[index] as? Message {
                     let item = MessageItem()
                     if message.isOutgoing {
                         item.contact = self.serviceManager.myUser.contact
@@ -170,7 +180,10 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
                         item.contact = message.peer as? Contact
                     }
                     item.text = message.body
-                    self.messages[idxValue] = item
+                    item.date = message.date
+                    self.messages.insert(item, at: index)
+                    self.messages.sort{($0.date ?? .distantPast) > ($1.date ?? .distantPast)}
+
                 }
             }
         }
@@ -202,20 +215,6 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
         }
         
         NSLog("CKItemsBrowser didUpdateCacheItems")
-        synchronized(self.messages as AnyObject){
-            for (idx, idxValue) in indexes.enumerated() {
-                if let message = changedItems[idx] as? Message {
-                    let item = MessageItem()
-                    if message.isOutgoing {
-                        item.contact = self.serviceManager.myUser.contact
-                    } else {
-                        item.contact = message.peer as? Contact
-                    }
-                    item.text = message.body
-                    self.messages[idxValue] = item
-                }
-            }
-        }
         reloadAndScrollToBottom()
     }
     
@@ -241,8 +240,10 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
         if let receivedConversation = notification.object as? Conversation {
             if(receivedConversation == self.theConversation){
                 NSLog("did received new message for the conversation")
+                self.conversationsManager.sendMarkAllMessagesAsRead(from: theConversation)
                 let lastRow = IndexPath(row:  messageList.numberOfRows(inSection: 0) - 1, section: 0)
                 messageList.scrollToRow(at: lastRow, at: .bottom, animated: true)
+                messageList.reloadData()
             }
         }
     }
@@ -304,11 +305,15 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
         if let myCell = cell as? MyUserTableViewCell {
             if myAvatar != nil {
                 myCell.avatar.image = myAvatar
+            }
+            if (messages[row].text != nil) {
                 myCell.message.text = messages[row].text
             }
         } else if let peerCell = cell as? PeerTableViewCell {
             if self.peerAvatar != nil {
                 peerCell.avatar.image = peerAvatar
+            }
+            if (messages[row].text != nil) {
                 peerCell.message.text = messages[row].text
             }
         }

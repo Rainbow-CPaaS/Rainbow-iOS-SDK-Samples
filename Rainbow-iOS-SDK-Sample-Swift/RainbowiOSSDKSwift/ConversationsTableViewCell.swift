@@ -18,9 +18,16 @@ import UIKit
 class ConversationsTableViewCell: UITableViewCell {
     @IBOutlet weak var lastMessage: UILabel!
     @IBOutlet weak var avatar: UIImageView!
+    @IBOutlet weak var peerName: UILabel!
+    @IBOutlet weak var badgeValue: UILabel!
     
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
     }
-
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        self.badgeValue.layer.cornerRadius = self.badgeValue.frame.size.width/2
+        self.badgeValue.layer.masksToBounds = true
+    }
 }

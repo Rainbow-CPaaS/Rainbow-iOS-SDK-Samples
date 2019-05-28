@@ -25,10 +25,11 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var loginTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var loginButton : UIButton!
-    
+    @IBOutlet weak var activityIndicatorView: UIActivityIndicatorView!
     override func awakeFromNib() {
         super.awakeFromNib()
         self.server = rainbowServer
+        self.hidesBottomBarWhenPushed = true
     }
     
     override func viewDidLoad() {
@@ -44,13 +45,14 @@ class LoginViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.navigationBar.isHidden = true
-        if let username = ServicesManager.sharedInstance().myUser.username {
-            loginTextField.text = username
+        if (ServicesManager.sharedInstance().myUser.username != nil) && (ServicesManager.sharedInstance().myUser.password != nil) {
+            self.loginTextField.text = ServicesManager.sharedInstance().myUser.username
+            self.passwordTextField.text = ServicesManager.sharedInstance().myUser.password
+            ServicesManager.sharedInstance()?.loginManager.disconnect()
+            ServicesManager.sharedInstance()?.loginManager.connect()
+            activityIndicatorView.startAnimating()
+            self.loginButton.isEnabled = false
         }
-        if let passwd = ServicesManager.sharedInstance().myUser.password {
-            passwordTextField.text = passwd
-        }
-
         NotificationCenter.default.addObserver(self, selector: #selector(didLogin(notification:)), name: NSNotification.Name(kLoginManagerDidLoginSucceeded), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(didReconnect(notification:)), name: NSNotification.Name(kLoginManagerDidReconnect), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(didLogout(notification:)), name: NSNotification.Name(kLoginManagerDidLogoutSucceeded), object: nil)
@@ -76,6 +78,7 @@ class LoginViewController: UIViewController {
         }
         NSLog("[LoginViewController] Did login")
         loginButton.isEnabled = true
+        activityIndicatorView.stopAnimating()
         performSegue(withIdentifier: "DidLoginSegue", sender: self)
     }
     
@@ -93,6 +96,7 @@ class LoginViewController: UIViewController {
             return
         }
         NSLog("[LoginViewController] Failed to login")
+        activityIndicatorView.stopAnimating()
         self.loginButton.isEnabled = true
         self.passwordTextField.text = ""
     }
@@ -105,6 +109,8 @@ class LoginViewController: UIViewController {
             return
         }
         NSLog("[LoginViewController] Did logout")
+        self.passwordTextField.text = ""
+        activityIndicatorView.stopAnimating()
     }
     
     @objc func didChangeServer(notification: NSNotification) {
@@ -123,9 +129,10 @@ class LoginViewController: UIViewController {
     @IBAction func loginAction(_ sender: Any) {
         if let login = self.loginTextField.text, let passwd = self.passwordTextField.text {
             if login.count > 0 && passwd.count > 0 {
-                self.loginButton.isEnabled = false
                 ServicesManager.sharedInstance().loginManager.setUsername(login, andPassword:passwd)
                 ServicesManager.sharedInstance().loginManager.connect()
+                activityIndicatorView.startAnimating()
+                self.loginButton.isEnabled = false
             }
         }
     }
