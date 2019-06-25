@@ -1,0 +1,399 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 48;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		E54AF72422C26B6600D17A85 /* WebRTC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E54AF72222C26B6600D17A85 /* WebRTC.framework */; };
+		E54AF72522C26B6600D17A85 /* Rainbow.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E54AF72322C26B6600D17A85 /* Rainbow.framework */; };
+		E54AF72622C26B7900D17A85 /* WebRTC.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E54AF72222C26B6600D17A85 /* WebRTC.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		E54AF72722C26B8800D17A85 /* Rainbow.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E54AF72322C26B6600D17A85 /* Rainbow.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		E55968D1206D33E50080D632 /* ContactTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E55968D0206D33E50080D632 /* ContactTableViewCell.m */; };
+		E55968D4206EAB3A0080D632 /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E55968D3206EAB3A0080D632 /* DetailViewController.m */; };
+		E5D2BFA52069314700EEDB5F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E5D2BFA42069314700EEDB5F /* AppDelegate.m */; };
+		E5D2BFA82069314700EEDB5F /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E5D2BFA72069314700EEDB5F /* LoginViewController.m */; };
+		E5D2BFAB2069314700EEDB5F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E5D2BFA92069314700EEDB5F /* Main.storyboard */; };
+		E5D2BFAD2069314700EEDB5F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E5D2BFAC2069314700EEDB5F /* Assets.xcassets */; };
+		E5D2BFB02069314700EEDB5F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E5D2BFAE2069314700EEDB5F /* LaunchScreen.storyboard */; };
+		E5D2BFB32069314700EEDB5F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E5D2BFB22069314700EEDB5F /* main.m */; };
+		E5D2BFC520693D3E00EEDB5F /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E5D2BFC420693D3E00EEDB5F /* MainViewController.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		E5D2BFC2206931C400EEDB5F /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				E54AF72722C26B8800D17A85 /* Rainbow.framework in Embed Frameworks */,
+				E54AF72622C26B7900D17A85 /* WebRTC.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		E54AF72222C26B6600D17A85 /* WebRTC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebRTC.framework; path = RainbowiOSSDKFileSharing/Carthage/Build/iOS/WebRTC.framework; sourceTree = "<group>"; };
+		E54AF72322C26B6600D17A85 /* Rainbow.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Rainbow.framework; path = RainbowiOSSDKFileSharing/Carthage/Build/iOS/Rainbow.framework; sourceTree = "<group>"; };
+		E55968CF206D33E50080D632 /* ContactTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ContactTableViewCell.h; sourceTree = "<group>"; };
+		E55968D0206D33E50080D632 /* ContactTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ContactTableViewCell.m; sourceTree = "<group>"; };
+		E55968D2206EAB3A0080D632 /* DetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DetailViewController.h; sourceTree = "<group>"; };
+		E55968D3206EAB3A0080D632 /* DetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DetailViewController.m; sourceTree = "<group>"; };
+		E5D2BFA02069314700EEDB5F /* RainbowiOSSDKFileSharing.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RainbowiOSSDKFileSharing.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E5D2BFA32069314700EEDB5F /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		E5D2BFA42069314700EEDB5F /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		E5D2BFA62069314700EEDB5F /* LoginViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
+		E5D2BFA72069314700EEDB5F /* LoginViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
+		E5D2BFAA2069314700EEDB5F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		E5D2BFAC2069314700EEDB5F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		E5D2BFAF2069314700EEDB5F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		E5D2BFB12069314700EEDB5F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E5D2BFB22069314700EEDB5F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		E5D2BFC320693D3E00EEDB5F /* MainViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
+		E5D2BFC420693D3E00EEDB5F /* MainViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		E5D2BF9D2069314700EEDB5F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E54AF72422C26B6600D17A85 /* WebRTC.framework in Frameworks */,
+				E54AF72522C26B6600D17A85 /* Rainbow.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		E5D2BF972069314700EEDB5F = {
+			isa = PBXGroup;
+			children = (
+				E5D2BFA22069314700EEDB5F /* RainbowiOSSDKFileSharing */,
+				E5D2BFA12069314700EEDB5F /* Products */,
+				E5D2BFB9206931B900EEDB5F /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		E5D2BFA12069314700EEDB5F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E5D2BFA02069314700EEDB5F /* RainbowiOSSDKFileSharing.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E5D2BFA22069314700EEDB5F /* RainbowiOSSDKFileSharing */ = {
+			isa = PBXGroup;
+			children = (
+				E5D2BFA32069314700EEDB5F /* AppDelegate.h */,
+				E5D2BFA42069314700EEDB5F /* AppDelegate.m */,
+				E5D2BFA62069314700EEDB5F /* LoginViewController.h */,
+				E5D2BFA72069314700EEDB5F /* LoginViewController.m */,
+				E5D2BFC320693D3E00EEDB5F /* MainViewController.h */,
+				E5D2BFC420693D3E00EEDB5F /* MainViewController.m */,
+				E55968CF206D33E50080D632 /* ContactTableViewCell.h */,
+				E55968D0206D33E50080D632 /* ContactTableViewCell.m */,
+				E55968D2206EAB3A0080D632 /* DetailViewController.h */,
+				E55968D3206EAB3A0080D632 /* DetailViewController.m */,
+				E5D2BFA92069314700EEDB5F /* Main.storyboard */,
+				E5D2BFAE2069314700EEDB5F /* LaunchScreen.storyboard */,
+				E5D2BFB12069314700EEDB5F /* Info.plist */,
+				E5D2BFB22069314700EEDB5F /* main.m */,
+				E5D2BFAC2069314700EEDB5F /* Assets.xcassets */,
+			);
+			path = RainbowiOSSDKFileSharing;
+			sourceTree = "<group>";
+		};
+		E5D2BFB9206931B900EEDB5F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E54AF72322C26B6600D17A85 /* Rainbow.framework */,
+				E54AF72222C26B6600D17A85 /* WebRTC.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		E5D2BF9F2069314700EEDB5F /* RainbowiOSSDKFileSharing */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E5D2BFB62069314700EEDB5F /* Build configuration list for PBXNativeTarget "RainbowiOSSDKFileSharing" */;
+			buildPhases = (
+				E5D2BF9C2069314700EEDB5F /* Sources */,
+				E5D2BF9D2069314700EEDB5F /* Frameworks */,
+				E5D2BF9E2069314700EEDB5F /* Resources */,
+				E5D2BFC2206931C400EEDB5F /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = RainbowiOSSDKFileSharing;
+			productName = RainbowiOSSDKContacts;
+			productReference = E5D2BFA02069314700EEDB5F /* RainbowiOSSDKFileSharing.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		E5D2BF982069314700EEDB5F /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0930;
+				ORGANIZATIONNAME = ALE;
+				TargetAttributes = {
+					E5D2BF9F2069314700EEDB5F = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = E5D2BF9B2069314700EEDB5F /* Build configuration list for PBXProject "RainbowiOSSDKFileSharing" */;
+			compatibilityVersion = "Xcode 8.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = E5D2BF972069314700EEDB5F;
+			productRefGroup = E5D2BFA12069314700EEDB5F /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				E5D2BF9F2069314700EEDB5F /* RainbowiOSSDKFileSharing */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		E5D2BF9E2069314700EEDB5F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E5D2BFB02069314700EEDB5F /* LaunchScreen.storyboard in Resources */,
+				E5D2BFAD2069314700EEDB5F /* Assets.xcassets in Resources */,
+				E5D2BFAB2069314700EEDB5F /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		E5D2BF9C2069314700EEDB5F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E5D2BFA82069314700EEDB5F /* LoginViewController.m in Sources */,
+				E5D2BFB32069314700EEDB5F /* main.m in Sources */,
+				E55968D1206D33E50080D632 /* ContactTableViewCell.m in Sources */,
+				E5D2BFA52069314700EEDB5F /* AppDelegate.m in Sources */,
+				E5D2BFC520693D3E00EEDB5F /* MainViewController.m in Sources */,
+				E55968D4206EAB3A0080D632 /* DetailViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		E5D2BFA92069314700EEDB5F /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E5D2BFAA2069314700EEDB5F /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		E5D2BFAE2069314700EEDB5F /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E5D2BFAF2069314700EEDB5F /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		E5D2BFB42069314700EEDB5F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_BITCODE = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		E5D2BFB52069314700EEDB5F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_BITCODE = NO;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		E5D2BFB72069314700EEDB5F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = YKWS6T5472;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Frameworks",
+					"$(PROJECT_DIR)/RainbowiOSSDKContacts/Carthage/Build/iOS",
+					"$(PROJECT_DIR)/RainbowiOSSDKFileSharing/Carthage/Build/iOS",
+				);
+				INFOPLIST_FILE = "$(SRCROOT)/RainbowiOSSDKFileSharing/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.alcatellucent.otcl.RainbowiOSSDKFileSharing;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		E5D2BFB82069314700EEDB5F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = YKWS6T5472;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Frameworks",
+					"$(PROJECT_DIR)/RainbowiOSSDKContacts/Carthage/Build/iOS",
+					"$(PROJECT_DIR)/RainbowiOSSDKFileSharing/Carthage/Build/iOS",
+				);
+				INFOPLIST_FILE = "$(SRCROOT)/RainbowiOSSDKFileSharing/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.alcatellucent.otcl.RainbowiOSSDKFileSharing;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		E5D2BF9B2069314700EEDB5F /* Build configuration list for PBXProject "RainbowiOSSDKFileSharing" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E5D2BFB42069314700EEDB5F /* Debug */,
+				E5D2BFB52069314700EEDB5F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E5D2BFB62069314700EEDB5F /* Build configuration list for PBXNativeTarget "RainbowiOSSDKFileSharing" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E5D2BFB72069314700EEDB5F /* Debug */,
+				E5D2BFB82069314700EEDB5F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = E5D2BF982069314700EEDB5F /* Project object */;
+}
