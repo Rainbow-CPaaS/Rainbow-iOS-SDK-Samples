@@ -57,11 +57,14 @@
     if ([[ServicesManager sharedInstance].myUser username] &&[[ServicesManager sharedInstance].myUser password]) {
         [self.loginTextField setText:[[ServicesManager sharedInstance].myUser username]];
         [self.passwordTextField setText:[[ServicesManager sharedInstance].myUser password]];
-        [[ServicesManager sharedInstance].loginManager disconnect];
-        [[ServicesManager sharedInstance].loginManager connect];
+        // disconnect should not be called on the Main thread
+        dispatch_async(dispatch_get_global_queue( QOS_CLASS_UTILITY, 0), ^{
+            [[ServicesManager sharedInstance].loginManager disconnect];
+            [[ServicesManager sharedInstance].loginManager connect];
+        });
         self.loginButton.enabled = NO;
         [self.activityIndicatorView startAnimating];
-         }
+    }
     if(self.doLogout){
         self.doLogout = NO;
         [self logoutAction:self];
@@ -94,8 +97,11 @@
 
 -(void) didReconnect:(NSNotification *) notification {
     NSLog(@"[LoginViewController] Did reconnect");
-    [[ServicesManager sharedInstance].loginManager disconnect];
-    [[ServicesManager sharedInstance].loginManager connect];
+    // disconnect should not be called on the Main thread
+    dispatch_async(dispatch_get_global_queue( QOS_CLASS_UTILITY, 0), ^{
+        [[ServicesManager sharedInstance].loginManager disconnect];
+        [[ServicesManager sharedInstance].loginManager connect];
+    });
 }
 
 -(void)failedToAuthenticate:(NSNotification *) notification {

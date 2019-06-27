@@ -27,7 +27,10 @@
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
-    [[ServicesManager sharedInstance].loginManager disconnect];
+    // disconnect should not be called on the Main thread
+    dispatch_async(dispatch_get_global_queue( QOS_CLASS_UTILITY, 0), ^{
+        [[ServicesManager sharedInstance].loginManager disconnect];
+    });
 }
 
 @end
