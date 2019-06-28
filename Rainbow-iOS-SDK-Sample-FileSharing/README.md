@@ -12,7 +12,7 @@ For informations about the login process you should look for [SDK for iOS: Getti
 ---
 The aim of this sample project is to demonstrate Rainbow file sharing on the cloud. After the login screen your actual contacts are listed.
 
-- In the first tab you can select a contact to display more information about him and the files he share with you. 
+- In the first tab you can select a contact to display more information about him and the files he shares with you. 
 - In the second tab all the files of "My Rainbow sharing" are listed.
 - In the third tab all received files are listed
 

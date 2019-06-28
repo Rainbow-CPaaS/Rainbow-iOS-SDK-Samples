@@ -12,7 +12,7 @@ For informations about the login process you should look for [SDK for iOS: Getti
 ---
 The aim of this sample project is to demonstrate the Channels API. After the login screen the channels you have subscribed will be listed and you'll be able to display the items posted in each of them. You might then post new items in the channels where you are allowed to do it and also create new channels.
 
-A sample screenshot :
+A sample screenshot:
 
 ![screenshot](screenshot.png)
 
