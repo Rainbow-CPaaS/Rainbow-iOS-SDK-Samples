@@ -65,6 +65,15 @@
     File *file = self.fileSharingService.files[indexPath.row];
     cell.textLabel.text = file.fileName;
     cell.detailTextLabel.text = [NSString stringWithFormat:@"Type: %@  Size: %lu", file.mimeType, file.size];
+    if(file.thumbnailData){
+        cell.imageView.image = [UIImage imageWithData:file.thumbnailData scale:1.0];
+        CGSize itemSize = CGSizeMake(40, 40);
+        UIGraphicsBeginImageContextWithOptions(itemSize, NO, UIScreen.mainScreen.scale);
+        CGRect imageRect = CGRectMake(0.0, 0.0, itemSize.width, itemSize.height);
+        [cell.imageView.image drawInRect:imageRect];
+        cell.imageView.image = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+    }
 }
 
 @end
