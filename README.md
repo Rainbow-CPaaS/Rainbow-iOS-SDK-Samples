@@ -13,6 +13,6 @@ Sample applications which demonstrate the uses of the Rainbow SDK for iOS :
 - [Rainbow-iOS-SDK-Sample-WebRTC](https://github.com/Rainbow-CPaaS/Rainbow-iOS-SDK-Samples/tree/master/Rainbow-iOS-SDK-Sample-WebRTC) : demonstration of the Instant Messaging API
 - [Rainbow-iOS-SDK-Sample-Background](https://github.com/Rainbow-CPaaS/Rainbow-iOS-SDK-Samples/tree/master/Rainbow-iOS-SDK-Sample-Background) : demonstration of the handling of push notifications
 - [Rainbow-iOS-SDK-Sample-Channel](https://github.com/Rainbow-CPaaS/Rainbow-iOS-SDK-Samples/tree/master/Rainbow-iOS-SDK-Sample-Channels) : demonstration of the Channels API
-
+- [Rainbow-iOS-SDK-Sample-FileSharing](https://github.com/Rainbow-CPaaS/Rainbow-iOS-SDK-Samples/tree/master/Rainbow-iOS-SDK-Sample-FileSharing) : demonstration of the File Sharing API
 
 
