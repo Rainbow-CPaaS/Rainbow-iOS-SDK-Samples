@@ -11,19 +11,14 @@ For informations about the login process you should look for [SDK for iOS: Getti
 ### File sharing
 ---
 The aim of this sample project is to demonstrate Rainbow file sharing on the cloud. After the login screen your actual contacts are listed.
-You can select a contact to display more information about him and the files he share with you. 
 
-### Retrieving the shared files by a contact
+- In the first tab you can select a contact to display more information about him and the files he share with you. 
+- In the second tab all the files of "My Rainbow sharing" are listed.
+- In the third tab all received files are listed
 
-Once connected, you can get the list of shared files by your contact 
+A sample screenshot:
 
-```objective-c 
-    [self.fileSharingService loadSharedFilesWithPeer:self.contact fromOffset:0 completionHandler:^(NSArray<File *> *files, NSError *error) {
-        if(error){
-            NSLog(@"Error while loading shared files: %@", [error localizedDescription]);
-        } else {
-            self.sharedFiles = files;
-        }
-        ...
-    }];
-```
+![screenshot](screenshot.png) ![screenshot2](screenshot2.png) ![screenshot3](screenshot3.png)
+
+For more information about the file sharing API you may look at the [iOS file sharing API guide](https://hub.openrainbow.com/#/documentation/doc/sdk/ios/api/File_Sharing) on the [Rainbow API Hub](https://hub.openrainbow.com/).
+
