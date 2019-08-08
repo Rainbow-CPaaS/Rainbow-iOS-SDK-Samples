@@ -55,12 +55,14 @@
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     
+    _call = nil;
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didEndPopulatingMyNetwork:) name:kContactsManagerServiceDidEndPopulatingMyNetwork object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didAddContact:) name:kContactsManagerServiceDidAddContact object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didUpdateContact:) name:kContactsManagerServiceDidUpdateContact object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didRemoveContact:) name:kContactsManagerServiceDidRemoveContact object:nil];
     // RTC call notifications
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didAddCall:) name:kTelephonyServiceDidAddCallNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didUpdateCall:) name:kTelephonyServiceDidUpdateCallNotification object:nil];
     if(!_populated) {
         [self didEndPopulatingMyNetwork:nil];
     }
@@ -197,19 +199,22 @@
 
 #pragma mark - RTC call handling
 
--(void)didAddCall:(NSNotification *)notification {
+-(void)didUpdateCall:(NSNotification *)notification {
     if(![NSThread isMainThread]){
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self didAddCall:notification];
+            [self didUpdateCall:notification];
         });
         return;
     }
     
     if([notification.object class] == [RTCCall class]){
-        NSLog(@"didAddCall notification");
-        self.call = (RTCCall *) notification.object;
-        self.isMPCall = NO;
-        [self showCallView:self.call];
+        NSLog(@"didUpdateCall notification");
+        RTCCall *call = (RTCCall *) notification.object;
+        if(self.call == nil && call.status == CallStatusEstablished){
+            self.call = call;
+            self.isMPCall = NO;
+            [self showCallView:call];
+        }
     }
 }
 
