@@ -17,5 +17,6 @@
 
 @interface ContactTableViewCell : UITableViewCell
 @property (weak, nonatomic) IBOutlet UIImageView *avatar;
+@property (weak, nonatomic) IBOutlet UILabel *emailAddress;
 @property (weak, nonatomic) IBOutlet UILabel *name;
 @end

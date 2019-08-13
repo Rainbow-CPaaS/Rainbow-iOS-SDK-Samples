@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -103,7 +103,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YGV-jr-AfA">
-                                            <rect key="frame" x="84" y="30" width="275" height="20"/>
+                                            <rect key="frame" x="84" y="18" width="275" height="20"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
@@ -115,10 +115,18 @@
                                                 <constraint firstAttribute="width" constant="60" id="kls-9q-ZKK"/>
                                             </constraints>
                                         </imageView>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WPF-8S-8fv">
+                                            <rect key="frame" x="84" y="38" width="36" height="17"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
                                     </subviews>
                                     <constraints>
                                         <constraint firstItem="YGV-jr-AfA" firstAttribute="leading" secondItem="tQM-5I-FWX" secondAttribute="trailing" constant="8" id="QwW-PI-YVD"/>
-                                        <constraint firstItem="YGV-jr-AfA" firstAttribute="centerY" secondItem="Pji-Cc-OjS" secondAttribute="centerY" id="V5b-52-qaO"/>
+                                        <constraint firstItem="YGV-jr-AfA" firstAttribute="centerY" secondItem="Pji-Cc-OjS" secondAttribute="centerY" constant="-12" id="V5b-52-qaO"/>
+                                        <constraint firstItem="WPF-8S-8fv" firstAttribute="top" secondItem="YGV-jr-AfA" secondAttribute="bottom" id="cSn-ie-HVg"/>
+                                        <constraint firstItem="WPF-8S-8fv" firstAttribute="leading" secondItem="YGV-jr-AfA" secondAttribute="leading" id="fh5-1t-KLH"/>
                                         <constraint firstItem="YGV-jr-AfA" firstAttribute="trailing" secondItem="Pji-Cc-OjS" secondAttribute="trailingMargin" id="q3F-l2-UUS"/>
                                         <constraint firstItem="tQM-5I-FWX" firstAttribute="leading" secondItem="Pji-Cc-OjS" secondAttribute="leading" constant="16" id="xtt-bT-HIL"/>
                                         <constraint firstItem="tQM-5I-FWX" firstAttribute="centerY" secondItem="Pji-Cc-OjS" secondAttribute="centerY" id="z77-8B-lQ2"/>
@@ -126,6 +134,7 @@
                                 </tableViewCellContentView>
                                 <connections>
                                     <outlet property="avatar" destination="tQM-5I-FWX" id="Xcx-37-LHO"/>
+                                    <outlet property="emailAddress" destination="WPF-8S-8fv" id="8d9-34-9cQ"/>
                                     <outlet property="name" destination="YGV-jr-AfA" id="0Qb-cF-a4a"/>
                                 </connections>
                             </tableViewCell>
@@ -149,7 +158,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7ah-ex-5H7" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2050" y="126"/>
+            <point key="canvasLocation" x="2048.8000000000002" y="125.4872563718141"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="zif-Bf-WbG">
