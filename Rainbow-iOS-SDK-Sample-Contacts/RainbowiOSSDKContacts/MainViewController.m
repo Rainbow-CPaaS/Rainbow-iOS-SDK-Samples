@@ -69,6 +69,10 @@
         [[NSNotificationCenter defaultCenter] removeObserver:self name:kContactsManagerServiceDidAddContact object:nil];
         [[NSNotificationCenter defaultCenter] removeObserver:self name:kContactsManagerServiceDidRemoveContact object:nil];
         [[NSNotificationCenter defaultCenter] removeObserver:self name:kContactsManagerServiceDidUpdateContact object:nil];
+        
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:kContactsManagerServiceDidAddInvitation object:nil];
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:kContactsManagerServiceDidRemoveInvitation object:nil];
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:kContactsManagerServiceDidUpdateInvitation object:nil];
     }
 }
 
