@@ -426,6 +426,10 @@
 }
 
 -(void) shouldUpdateAttachment:(NSNotification *) notification {
+    // The updated file is in the notification object,
+    // but in the sample code we reload the whole conversation
+    File *file = notification.object;
+    NSLog(@"[shouldUpdateAttachment] file=%@ mimeType=%@ URL=%@ hasThumbnailData=%@", file.fileName, file.mimeType, file.url, file.thumbnailData!=nil?@"yes":@"no");
     dispatch_async(dispatch_get_main_queue(), ^{
         [self reloadAndScrollToBottom];
     });
