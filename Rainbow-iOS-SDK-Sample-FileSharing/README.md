@@ -16,7 +16,7 @@ The aim of this sample project is to demonstrate Rainbow file sharing on the clo
 - In the second tab all the files of "My Rainbow sharing" are listed.
 - In the third tab all received files are listed
 
-A sample screenshot:
+Sample screenshots:
 
 ![screenshot](screenshot.png) ![screenshot2](screenshot2.png) ![screenshot3](screenshot3.png)
 
