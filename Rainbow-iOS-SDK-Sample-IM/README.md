@@ -16,5 +16,5 @@ Sample screenshots:
 
 ![screenshot](screenshot1.png) ![screenshot2](screenshot2.png)
 
-For more information about the file sharing API you may look at the [iOS instant messaging API guide](https://hub.openrainbow.com/#/documentation/doc/sdk/ios/api/Instant_Messaging) on the [Rainbow API Hub](https://hub.openrainbow.com/).
+For more information about the file sharing API you may look at the [iOS instant messaging API guide](https://hub.openrainbow.com/#/documentation/doc/sdk/ios/guides/Instant_Messaging) on the [Rainbow API Hub](https://hub.openrainbow.com/).
 

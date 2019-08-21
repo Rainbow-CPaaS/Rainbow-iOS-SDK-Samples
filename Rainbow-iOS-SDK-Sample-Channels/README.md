@@ -16,5 +16,5 @@ A sample screenshot:
 
 ![screenshot](screenshot.png)
 
-For more information about the channel API you may look at the [iOS channel API guide](https://hub.openrainbow.com/#/documentation/doc/sdk/ios/api/Managing_Channels) on the [Rainbow API Hub](https://hub.openrainbow.com/).
+For more information about the channel API you may look at the [iOS channel API guide](https://hub.openrainbow.com/#/documentation/doc/sdk/ios/guides/Managing_Channels) on the [Rainbow API Hub](https://hub.openrainbow.com/).
 
