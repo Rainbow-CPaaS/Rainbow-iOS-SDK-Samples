@@ -12,5 +12,5 @@ For informations about the login process you should look for [SDK for iOS: Getti
 ---
 The aim of this sample project is to demonstrate the handling of push notifications.
 
-For more information about the handling of push notification you may look at the [iOS Push notifications setup guide](https://hub.openrainbow.com/#/documentation/doc/sdk/ios/api/Push_notifications_setup) on the [Rainbow API Hub](https://hub.openrainbow.com/).
+For more information about the handling of push notification you may look at the [iOS Push notifications setup guide](https://hub.openrainbow.com/#/documentation/doc/sdk/ios/guides/Push_notifications_setup) on the [Rainbow API Hub](https://hub.openrainbow.com/).
 
