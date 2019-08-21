@@ -17,14 +17,14 @@ Retrieving all conversations done as follow,
 
 ```swift
 func loadAllConversations() {
-for conversation in conversationsManager.conversations {
+	for conversation in conversationsManager.conversations {
 
-// add conversation to conversations list
+		// add conversation to conversations list
 
-if(conversation.peer != nil) {
-allConversations.append(conversation)
-}
-}
+		if(conversation.peer != nil) {
+			allConversations.append(conversation)
+		}
+	}
 }
 ```
 This will give you a list of all your conversations.
@@ -49,14 +49,14 @@ NotificationCenter.default.addObserver(self, selector:#selector(didReceiveNewMes
 ```swift
 @objc func didReceiveNewMessageForConversation(notification : Notification) {
 ...
-// do something when recieved new message in conversation
-if let receivedConversation = notification.object as? Conversation {
-if(receivedConversation == self.theConversation){
-...
-reload messages list and mark recieved message status as read
-...
-}
-}
+	// do something when recieved new message in conversation
+	if let receivedConversation = notification.object as? Conversation {
+		if(receivedConversation == self.theConversation){
+			...
+			// reload messages list and mark recieved message status as read
+			...
+		}
+	}
 }
 ```
 
@@ -65,12 +65,12 @@ You can send a new message to contact as follow ,
 
 ```swift
 conversationsManager.sendMessage("Message to send", fileAttachment:nil, to:theConversation, completionHandler: {
-(message:Optional<Message>, error:Optional<Error>) in
-DispatchQueue.main.async {
-// do something with **message**
-}
-...
-});
+	(message:Optional<Message>, error:Optional<Error>) in
+		DispatchQueue.main.async {
+			// do something with **message**
+		}
+	...
+})
 ```
 #### Get Conversation History
 
@@ -89,28 +89,27 @@ messagesBrowser?.delegate = self
 // MARK: - CKItemsBrowserDelegate
 
 func itemsBrowser(_ browser: CKItemsBrowser!, didAddCacheItems newItems: [Any]!, at indexes: IndexSet!) {
-NSLog("CKItemsBrowser didAddCacheItems")
-synchronized(self.messages as AnyObject) {
-for (index, _) in indexes.sorted().enumerated() {
-...
-// insert new items at the beginning of the messages array
-//sort received messages according to the last update date
-...
-}
-}
+	NSLog("CKItemsBrowser didAddCacheItems")
+	synchronized(self.messages as AnyObject) {
+	for (index, _) in indexes.sorted().enumerated() {
+		...
+		// insert new items at the beginning of the messages array
+		//sort received messages according to the last update date
+		...
+		}
+	}
 }
 
 func itemsBrowser(_ browser: CKItemsBrowser!, didRemoveCacheItems removedItems: [Any]!, at indexes: IndexSet!) {
-NSLog("CKItemsBrowser didRemoveCacheItems")
+	NSLog("CKItemsBrowser didRemoveCacheItems")
 }
 
 func itemsBrowser(_ browser: CKItemsBrowser!, didUpdateCacheItems changedItems: [Any]!, at indexes: IndexSet!) {
-NSLog("CKItemsBrowser didUpdateCacheItems")
+	NSLog("CKItemsBrowser didUpdateCacheItems")
 }
 
 func itemsBrowser(_ browser: CKItemsBrowser!, didReorderCacheItemsAtIndexes oldIndexes: [Any]!, toIndexes newIndexes: [Any]!) {
-NSLog("CKItemsBrowser didReorderCacheItemsAtIndexes")
-}
+	NSLog("CKItemsBrowser didReorderCacheItemsAtIndexes")
 }
 ```
 ### Contact management
@@ -122,48 +121,46 @@ Second part of the sample  demonstrates Rainbow contact's management. We display
 Once connected, you can get the list of your contact when the `ContactsManagerService` has finished to retrieve the contacts from the server and has sent the `kContactsManagerServiceDidEndPopulatingMyNetwork` notifications and populated the `contactsManager.myNetworkContacts` array,
 
 ```swift 
-    override func viewWillAppear(_ animated: Bool) {
+override func viewWillAppear(_ animated: Bool) {
     ...
     NotificationCenter.default.addObserver(self, selector: #selector(didEndPopulatingMyNetwork), name: NSNotification.Name(kContactsManagerServiceDidEndPopulatingMyNetwork), object: nil)
     ...
   }
 
-    @objc func didEndPopulatingMyNetwork() {
+@objc func didEndPopulatingMyNetwork() {
     ...
     // fill contacts in user network using insert method
     for contact in contactsManager.myNetworkContacts {
-    self.insert(contact)    
+    	self.insert(contact)    
     }
     ...   
  }
 
 // listen to further update notifications
-    NotificationCenter.default.addObserver(self,selector:#selector(didAddContact(notification:)), name: NSNotification.Name(kContactsManagerServiceDidAddContact), object: nil)
-    NotificationCenter.default.addObserver(self,selector:#selector(didUpdateContact(notification:)),name: NSNotification.Name(kContactsManagerServiceDidUpdateContact), object: nil)
-    NotificationCenter.default.addObserver(self, selector: #selector(didRemoveContact(notification:)), name:
-    NSNotification.Name(kContactsManagerServiceDidRemoveContact), object: nil)}
-    ```
+NotificationCenter.default.addObserver(self,selector:#selector(didAddContact(notification:)),name: NSNotification.Name(kContactsManagerServiceDidAddContact), object: nil)
+NotificationCenter.default.addObserver(self,selector:#selector(didUpdateContact(notification:)),name: NSNotification.Name(kContactsManagerServiceDidUpdateContact), object: nil)
+NotificationCenter.default.addObserver(self,selector:#selector(didRemoveContact(notification:)),name: NSNotification.Name(kContactsManagerServiceDidRemoveContact), object: nil)}
+```
 
 Then you should listen to the contact update notifications and take actions accordingly,
 
 ```swift
 @objc func didAddContact(notification : Notification) {
-Contact *contact = (Contact *)notification.object;
-// add contact object to your contactsArray 
-
+	Contact *contact = (Contact *)notification.object;
+	// add contact object to your contactsArray 
 }
 
 @objc func didRemoveContact(notification : Notification) {
-Contact *contact = (Contact *)notification.object;
-// remove contact object from your contactsArray
+	Contact *contact = (Contact *)notification.object;
+	// remove contact object from your contactsArray
 }
 
 @objc func didUpdateContact(notification : Notification) {
-NSDictionary *userInfo = (NSDictionary *)notification.object;
-Contact *contact = [userInfo objectForKey:kContactKey];
-// update the contact object in your contacts array, new informations like the contact
-// avatar image might be sent by the server after the initial addContact.
-// update contact list when user remove/add contact from his network using other clients
+	NSDictionary *userInfo = (NSDictionary *)notification.object;
+	Contact *contact = [userInfo objectForKey:kContactKey];
+	// update the contact object in your contacts array, new informations like the contact
+	// avatar image might be sent by the server after the initial addContact.
+	// update contact list when user remove/add contact from his network using other clients
 }
 
 ```
