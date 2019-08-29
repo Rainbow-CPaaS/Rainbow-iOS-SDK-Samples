@@ -20,5 +20,5 @@ Sample screenshots:
 
 ![screenshot](screenshot.png) ![screenshot2](screenshot2.png) ![screenshot3](screenshot3.png)
 
-For more information about the file sharing API you may look at the [iOS file sharing API guide](https://hub.openrainbow.com/#/documentation/doc/sdk/ios/api/File_Sharing) on the [Rainbow API Hub](https://hub.openrainbow.com/).
+For more information about the file sharing API you may look at the [iOS file sharing API guide](https://hub.openrainbow.com/#/documentation/doc/sdk/ios/guides/File_Sharing) on the [Rainbow API Hub](https://hub.openrainbow.com/).
 
