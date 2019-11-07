@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="EHf-IW-A2E">
+            <objects>
+                <viewController id="01J-lp-oVM" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Ze5-6b-2t3">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Logo_rainbow" translatesAutoresizingMaskIntoConstraints="NO" id="tKf-ku-ckA">
+                                <rect key="frame" x="83.5" y="211.5" width="207" height="243"/>
+                            </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Logo_ALE" translatesAutoresizingMaskIntoConstraints="NO" id="nZ8-FC-srj">
+                                <rect key="frame" x="113" y="36" width="148" height="40"/>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="SDK Sample" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yd4-A6-gaQ">
+                                <rect key="frame" x="139.5" y="470.5" width="95" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="nZ8-FC-srj" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="16" id="FsM-JJ-R2m"/>
+                            <constraint firstItem="tKf-ku-ckA" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="GoN-cJ-HJ2"/>
+                            <constraint firstItem="tKf-ku-ckA" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="Kue-fm-5wQ"/>
+                            <constraint firstItem="yd4-A6-gaQ" firstAttribute="top" secondItem="tKf-ku-ckA" secondAttribute="bottom" constant="16" id="Qov-78-o3c"/>
+                            <constraint firstItem="nZ8-FC-srj" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="UjN-1G-Vg2"/>
+                            <constraint firstItem="yd4-A6-gaQ" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="uUb-Rc-mNK"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="52" y="374.66266866566718"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="Logo_ALE" width="148" height="40"/>
+        <image name="Logo_rainbow" width="207" height="243"/>
+    </resources>
+</document>
