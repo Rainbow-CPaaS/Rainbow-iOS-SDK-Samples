@@ -16,4 +16,5 @@
 @property (strong, nonatomic) RTCCall *currentCall;
 @property (nonatomic) BOOL isIncoming;
 @property (nonatomic) BOOL isMPCall;
+@property (nonatomic) BOOL isVideoCall;
 @end

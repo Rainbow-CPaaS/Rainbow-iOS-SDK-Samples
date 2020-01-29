@@ -15,9 +15,9 @@
 @end
 
 @interface CallViewController ()
+@property (weak, nonatomic) IBOutlet UILabel *callProgress;
 @property (weak, nonatomic) IBOutlet UIImageView *avatar;
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
-@property (weak, nonatomic) IBOutlet UIButton *answerButton;
 @property (weak, nonatomic) IBOutlet UIButton *cancelButton;
 @property (weak, nonatomic) IBOutlet UIButton *addVideoButton;
 
@@ -92,6 +92,8 @@
     self.nameLabel.text = self.contact.fullName;
     if(self.contactImage){
         self.avatar.image = self.contactImage;
+        self.avatar.layer.cornerRadius = 60;
+        self.avatar.layer.masksToBounds = YES;
         if(self.contactImageTint){
             self.avatar.tintColor = self.contactImageTint;
         }
@@ -126,8 +128,7 @@
 
 -(void) makeCallTo:(Contact *) contact features:(RTCCallFeatureFlags) features {
     if([self checkMicrophoneAccess]){
-        // Starting with SDK release 1.0.16 a call subject could also be provided
-        self.currentCall = [self.rtcService beginNewOutgoingCallWithPeer:contact withFeatures:features /* andSubject:@"RainbowiOSSDKWebRTC calling !" */];
+        self.currentCall = [self.rtcService beginNewOutgoingCallWithPeer:contact withFeatures:features andSubject:@"RainbowiOSSDKWebRTC calling !" ];
         if(!self.currentCall){
             NSLog(@"Error making WebRTC call");
         }
@@ -144,14 +145,35 @@
     }
 }
 
--(void)viewDidAppear:(BOOL)animated {
+-(void)setPeerAvatar:(Contact *)peer {
+    self.contact = peer;
+    if (self.contact.photoData){
+        self.contactImage = [UIImage imageWithData: self.contact.photoData];
+    }
+    self.nameLabel.text = self.contact.fullName;
+    if(self.contactImage){
+        self.avatar.image = self.contactImage;
+        self.avatar.layer.cornerRadius = 60;
+        self.avatar.layer.masksToBounds = YES;
+    }
+}
+
+-(void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
     if(self.isIncoming){
-        self.answerButton.enabled = YES;
+        NSLog(@"Incoming call !");
+        self.callProgress.text = @"In call with";
+        if([self.currentCall.peer isKindOfClass:[Contact class]]){
+            [self setPeerAvatar:(Contact *)self.currentCall.peer];
+        }
     } else {
+        self.callProgress.text = @"Calling...";
         if(self.isMPCall){
             [self makeMPCallTo:self.contact];
-        } else {
+        } else if (self.isVideoCall) {
             [self makeCallTo:self.contact features:(RTCCallFeatureAudio | RTCCallFeatureLocalVideo)];
+        } else {
+            [self makeCallTo:self.contact features:(RTCCallFeatureAudio)];
         }
     }
 }
@@ -189,9 +211,9 @@
         });
         return;
     }
+    
     if([notification.object class] == [RTCCall class]){
         NSLog(@"didCallSuccess notification");
-        [_cancelButton setTitle:@"Hangup" forState:UIControlStateNormal];
     }
 }
 
@@ -229,6 +251,7 @@
             case CallStatusEstablished: {
                 NSLog(@"didUpdateCall notification: established");
                 if(!self.isCallEtablished){
+                    self.callProgress.text = @"In call with";
                     self.addVideoButton.enabled = YES;
                 }
                 self.isCallEtablished = YES;
@@ -476,11 +499,6 @@
     } else {
         [self dismissViewControllerAnimated:YES completion:nil];
     }
-}
-
-- (IBAction)answerCall:(id)sender {
-    [self.rtcService acceptIncomingCall:self.currentCall withFeatures:RTCCallFeatureAudio];
-    self.answerButton.enabled = NO;
 }
 
 - (IBAction)addVideo:(id)sender {
