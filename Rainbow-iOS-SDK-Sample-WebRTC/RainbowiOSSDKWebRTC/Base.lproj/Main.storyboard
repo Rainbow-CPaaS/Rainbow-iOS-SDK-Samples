@@ -45,9 +45,8 @@
                                 <color key="textColor" red="0.99536854029999999" green="0.34165322780000001" blue="0.3435857296" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="ogZ-Tg-brf">
-                                <rect key="frame" x="177" y="424" width="20" height="20"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="ogZ-Tg-brf">
+                                <rect key="frame" x="177.5" y="424" width="20" height="20"/>
                             </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -56,6 +55,7 @@
                             <constraint firstItem="s5h-Is-kro" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="2by-7M-CpA"/>
                             <constraint firstItem="Zle-L5-HY0" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="2qY-lq-MXl"/>
                             <constraint firstItem="gCI-YX-Qfg" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="3y0-76-3B3"/>
+                            <constraint firstItem="ogZ-Tg-brf" firstAttribute="top" secondItem="gCI-YX-Qfg" secondAttribute="bottom" constant="38" id="5WL-08-c6a"/>
                             <constraint firstItem="Zle-L5-HY0" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="80" id="CYd-EY-Ppg"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="VZ4-eu-HdC" secondAttribute="trailing" constant="16" id="UsF-Hm-6Wx"/>
                             <constraint firstItem="apZ-NV-At6" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="VLq-lQ-0cW"/>
@@ -64,6 +64,7 @@
                             <constraint firstItem="s5h-Is-kro" firstAttribute="top" secondItem="Zle-L5-HY0" secondAttribute="bottom" constant="80" id="hOG-it-nTB"/>
                             <constraint firstItem="apZ-NV-At6" firstAttribute="top" secondItem="s5h-Is-kro" secondAttribute="bottom" constant="27" id="mz2-ey-rBE"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="s5h-Is-kro" secondAttribute="trailing" constant="16" id="pz4-Nz-aP7"/>
+                            <constraint firstItem="ogZ-Tg-brf" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="rwY-gz-CT7"/>
                             <constraint firstItem="VZ4-eu-HdC" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="x9U-Zp-tfB"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>

@@ -194,7 +194,6 @@
 #pragma mark - IBAction
 
 - (IBAction)logout:(id)sender {
-    [[ServicesManager sharedInstance].loginManager resetAllCredentials];
     [self performSegueWithIdentifier:@"BackToLoginSegue" sender:self];
 }
 
