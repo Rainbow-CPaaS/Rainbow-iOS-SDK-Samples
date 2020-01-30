@@ -1,2 +1,2 @@
 # Rainbow SDK binary framework
-binary "https://sdk.openrainbow.io/ios/carthage/RainbowSDK.json" == 1.0.10
+binary "https://sdk.openrainbow.io/ios/carthage/RainbowSDK.json" == 1.66.0

@@ -66,6 +66,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    _textInput.layer.cornerRadius = 12;
+    _textInput.layer.masksToBounds = YES;
     self.textInput.delegate = self;
     self.messages = [[NSMutableArray alloc] init];
     self.attachmentFileToSend = nil;
@@ -222,6 +224,7 @@
         });
     }];
 }
+
 - (IBAction)closeAttachementAction:(id)sender {
     self.attachmentViewHeightConstraint.constant = 0;
     self.textInput.editable = YES;
@@ -295,7 +298,7 @@
         }
     }
     [picker dismissViewControllerAnimated:YES completion:^{
-        self.attachmentViewHeightConstraint.constant = 115;
+        self.attachmentViewHeightConstraint.constant = 70;
         [self reloadAndScrollToBottom];
         [self.attachementImageView setImage:[UIImage imageWithData:self.attachmentFileToSend.data]];
     }];

@@ -19,6 +19,10 @@
 
 - (void)awakeFromNib {
     [super awakeFromNib];
+    _messageView.layer.cornerRadius = 12;
+    _messageView.layer.masksToBounds = YES;
+    _avatar.layer.cornerRadius = 20;
+    _avatar.layer.masksToBounds = YES;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
