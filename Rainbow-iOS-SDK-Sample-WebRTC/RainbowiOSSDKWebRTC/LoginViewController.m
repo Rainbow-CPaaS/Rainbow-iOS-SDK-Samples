@@ -153,7 +153,6 @@
         [[ServicesManager sharedInstance].loginManager connect];
         [self.activityIndicatorView startAnimating];
         self.loginButton.enabled = NO;
-
     }
 }
 
