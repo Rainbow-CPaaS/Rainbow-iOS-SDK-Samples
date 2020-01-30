@@ -50,8 +50,26 @@
     _selectedIndex = nil;
 }
 
+-(void)setMyUserAvatar {
+    UIView *avatarView = [[UIView alloc] initWithFrame: CGRectMake(0,0,40,40)];
+    UIImageView *avatarImageView = [[UIImageView alloc] initWithFrame: CGRectMake(0,0,40,40)];
+    avatarImageView.layer.cornerRadius = 20;
+    avatarImageView.layer.masksToBounds = YES;
+    avatarImageView.contentMode =  UIViewContentModeScaleAspectFit;
+    if(_serviceManager.myUser.contact.photoData){
+        avatarImageView.image = [UIImage imageWithData: _serviceManager.myUser.contact.photoData];
+    } else {
+        avatarImageView.image = [UIImage imageNamed:@"Default_Avatar"];
+    }
+    [avatarView addSubview:avatarImageView];
+    UIBarButtonItem *barButton = [[UIBarButtonItem alloc] initWithCustomView: avatarImageView];
+    [NSLayoutConstraint activateConstraints: @[[barButton.customView.widthAnchor constraintEqualToConstant:40]  ,[barButton.customView.heightAnchor constraintEqualToConstant:40]]];
+    self.navigationItem.leftBarButtonItem = barButton;
+}
+
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    [self setMyUserAvatar];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didAddContact:) name:kContactsManagerServiceDidAddContact object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didUpdateContact:) name:kContactsManagerServiceDidUpdateContact object:nil];

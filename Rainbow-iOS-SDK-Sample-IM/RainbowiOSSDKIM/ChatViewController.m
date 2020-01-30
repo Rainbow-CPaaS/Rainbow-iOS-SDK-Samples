@@ -97,6 +97,7 @@
             }
         }];
     }
+    self.title = [NSString stringWithFormat:@"Conversation with %@", ((Contact *)self.theConversation.peer).displayName];
     self.attachmentViewHeightConstraint.constant = 0;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:@"UIKeyboardWillShowNotification" object: nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:@"UIKeyboardDidHideNotification" object:nil];

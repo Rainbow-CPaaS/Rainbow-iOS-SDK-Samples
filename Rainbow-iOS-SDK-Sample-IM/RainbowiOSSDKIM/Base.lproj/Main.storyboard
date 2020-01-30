@@ -164,7 +164,7 @@
             </objects>
             <point key="canvasLocation" x="1025" y="126"/>
         </scene>
-        <!--Chat View Controller-->
+        <!--Conversation-->
         <scene sceneID="QuR-MC-Rzn">
             <objects>
                 <viewController modalPresentationStyle="fullScreen" id="YYH-vX-XKG" customClass="ChatViewController" sceneMemberID="viewController">
@@ -381,6 +381,7 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="zfD-sb-C3z"/>
                     </view>
+                    <navigationItem key="navigationItem" title="Conversation" id="wL0-kw-7Cq"/>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <connections>
                         <outlet property="attachementImageView" destination="QVs-cK-fLq" id="SpS-GC-sgf"/>
