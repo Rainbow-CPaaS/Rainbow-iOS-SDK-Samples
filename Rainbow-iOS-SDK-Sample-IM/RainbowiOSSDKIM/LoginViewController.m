@@ -16,7 +16,7 @@
 #import "LoginViewController.h"
 #import <Rainbow/Rainbow.h>
 
-@interface LoginViewController ()
+@interface LoginViewController () <UITextFieldDelegate>
 @property (weak, nonatomic) IBOutlet UITextField *loginTextField;
 @property (weak, nonatomic) IBOutlet UITextField *passwordTextField;
 @property (weak, nonatomic) IBOutlet UILabel *serverLabel;
@@ -42,6 +42,14 @@
     if(self.server){
         [[NSNotificationCenter defaultCenter] postNotificationName:kLoginManagerDidChangeServer object:@{ @"serverURL": self.server}];
     }
+    
+    if ([ServicesManager sharedInstance].myUser.username && [ServicesManager sharedInstance].myUser.password) {
+        self.loginTextField.text = [ServicesManager sharedInstance].myUser.username;
+        self.passwordTextField.text = [ServicesManager sharedInstance].myUser.password;
+    }
+    
+    self.loginTextField.delegate = self;
+    self.passwordTextField.delegate = self;
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -56,15 +64,12 @@
     
     if ([[ServicesManager sharedInstance].myUser username] &&[[ServicesManager sharedInstance].myUser password]) {
         [self.loginTextField setText:[[ServicesManager sharedInstance].myUser username]];
-         [self.passwordTextField setText:[[ServicesManager sharedInstance].myUser password]];
-         // disconnect should not be called on the Main thread
-         dispatch_async(dispatch_get_global_queue( QOS_CLASS_UTILITY, 0), ^{
-             [[ServicesManager sharedInstance].loginManager disconnect];
-             [[ServicesManager sharedInstance].loginManager connect];
-         });
-         self.loginButton.enabled = NO;
-         [self.activityIndicatorView startAnimating];
-         }
+        [self.passwordTextField setText:[[ServicesManager sharedInstance].myUser password]];
+        [[ServicesManager sharedInstance].loginManager disconnect];
+        [[ServicesManager sharedInstance].loginManager connect];
+        self.loginButton.enabled = NO;
+        [self.activityIndicatorView startAnimating];
+    }
     if(self.doLogout){
         self.doLogout = NO;
         [self logoutAction:self];
@@ -97,11 +102,8 @@
 
 -(void) didReconnect:(NSNotification *) notification {
     NSLog(@"[LoginViewController] Did reconnect");
-    // disconnect should not be called on the Main thread
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [[ServicesManager sharedInstance].loginManager disconnect];
-        [[ServicesManager sharedInstance].loginManager connect];
-    });
+    [[ServicesManager sharedInstance].loginManager disconnect];
+    [[ServicesManager sharedInstance].loginManager connect];
 }
 
 -(void)failedToAuthenticate:(NSNotification *) notification {
@@ -152,6 +154,12 @@
         [self.activityIndicatorView startAnimating];
         self.loginButton.enabled = NO;
     }
+}
+
+#pragma mark - UITextFieldDelegate
+-(BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [textField resignFirstResponder];
+    return YES;
 }
 
 @end
