@@ -224,6 +224,11 @@
         return;
     }
     UIAlertController *menu = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *ok = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [menu dismissViewControllerAnimated:YES completion:nil];
+    }];
+    [menu addAction:ok];
+   
     [self presentViewController:menu animated:YES completion:nil];
 }
 
