@@ -38,7 +38,7 @@ class LoginViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(didChangeServer(notification:)), name: NSNotification.Name(kLoginManagerDidChangeServer), object: nil)
 
         if let server = self.server {
-            NotificationCenter.default.post(name: NSNotification.Name(kChangeServerURLNotification), object: ["serverURL" : server])
+            NotificationCenter.default.post(name: NSNotification.Name(kLoginManagerDidChangeServer), object: ["serverURL" : server])
         }
     }
     

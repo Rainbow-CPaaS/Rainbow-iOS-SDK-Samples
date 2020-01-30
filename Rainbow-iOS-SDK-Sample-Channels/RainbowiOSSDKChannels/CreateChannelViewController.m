@@ -92,7 +92,7 @@
     
     if(_titleTextField.text.length > 0 && _descriptionTextField.text.length > 0){
         if(_closedOrPublicSwitch.selectedSegmentIndex == 0){
-            [_channelsManager createClosedChannel:_titleTextField.text description:_descriptionTextField.text category:_categoryTextField.text maxItems: -1 completionHandler:^(Channel *channel, NSError *error) {
+            [_channelsManager createClosedChannel:_titleTextField.text description:_descriptionTextField.text category:_categoryTextField.text maxItems: -1 autoprov:NO completionHandler:^(Channel *channel, NSError *error) {
                 block(channel, error);
             }];
         } else {

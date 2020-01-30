@@ -40,7 +40,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didChangeServer:) name:kLoginManagerDidChangeServer object:nil];
     
     if(self.server){
-        [[NSNotificationCenter defaultCenter] postNotificationName:kChangeServerURLNotification object:@{ @"serverURL": self.server}];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kLoginManagerDidChangeServer object:@{ @"serverURL": self.server}];
     }
 }
 
