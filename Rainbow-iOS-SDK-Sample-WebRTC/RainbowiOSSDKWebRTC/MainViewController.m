@@ -83,6 +83,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didRemoveContact:) name:kContactsManagerServiceDidRemoveContact object:nil];
     // RTC call notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didUpdateCall:) name:kTelephonyServiceDidUpdateCallNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didAddCall:) name:kTelephonyServiceDidAddCallNotification object:nil];
     if(!_populated) {
         [self didEndPopulatingMyNetwork:nil];
     }
@@ -94,6 +95,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kContactsManagerServiceDidUpdateContact object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kContactsManagerServiceDidRemoveContact object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kContactsManagerServiceDidEndPopulatingMyNetwork object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kTelephonyServiceDidUpdateCallNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kTelephonyServiceDidAddCallNotification object:nil];
 }
 
@@ -229,9 +231,23 @@
     }
     
     if([notification.object class] == [RTCCall class]){
-        NSLog(@"didUpdateCall notification");
         RTCCall *call = (RTCCall *) notification.object;
-        if(self.call == nil && call.status == CallStatusEstablished){
+        NSLog(@"didUpdateCall notification, call status: %@", [Call stringForStatus:call.status]);
+    }
+}
+
+-(void)didAddCall:(NSNotification *)notification {
+    if(![NSThread isMainThread]){
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self didAddCall:notification];
+        });
+        return;
+    }
+    
+    if([notification.object class] == [RTCCall class]){
+        RTCCall *call = (RTCCall *) notification.object;
+        NSLog(@"didAddCall notification, call status: %@", [Call stringForStatus:call.status]);
+        if(self.call == nil){
             self.call = call;
             self.isMPCall = NO;
             [self showCallView:call];

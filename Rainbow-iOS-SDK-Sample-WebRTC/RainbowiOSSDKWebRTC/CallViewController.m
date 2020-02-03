@@ -166,6 +166,7 @@
         if([self.currentCall.peer isKindOfClass:[Contact class]]){
             [self setPeerAvatar:(Contact *)self.currentCall.peer];
         }
+        [self.cancelButton setTitle:@"Take call" forState:UIControlStateNormal];
     } else {
         self.callProgress.text = @"Calling...";
         if(self.isMPCall){
@@ -253,6 +254,7 @@
                 if(!self.isCallEtablished){
                     self.callProgress.text = @"In call with";
                     self.addVideoButton.enabled = YES;
+                    [self.cancelButton setTitle:@"Hangup" forState:UIControlStateNormal];
                 }
                 self.isCallEtablished = YES;
                 break;
@@ -493,11 +495,15 @@
 #pragma mark - IBAction
 
 - (IBAction)cancelCall:(id)sender {
-    if(self.currentCall){
-        [self.rtcService cancelOutgoingCall:self.currentCall];
-        [self.rtcService hangupCall:self.currentCall];
+    if(self.isIncoming && self.currentCall && self.currentCall.status == CallStatusRinging){
+        [self.rtcService acceptIncomingCall:self.currentCall withFeatures:RTCCallFeatureAudio];
     } else {
-        [self dismissViewControllerAnimated:YES completion:nil];
+        if(self.currentCall){
+            [self.rtcService cancelOutgoingCall:self.currentCall];
+            [self.rtcService hangupCall:self.currentCall];
+        } else {
+            [self dismissViewControllerAnimated:YES completion:nil];
+        }
     }
 }
 

@@ -19,6 +19,9 @@
 #define kAppID @""
 #define kSecretKey @""
 
+// Disable CallKit to be in the same conditions as where CallKit is forbidden like in China
+//#define DISABLE_CALLKIT 1
+
 @implementation AppDelegate
 
 -(NSString *)applicationName {
@@ -35,6 +38,10 @@
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    [[NSUserDefaults standardUserDefaults] registerDefaults:@{ @"disableCallKit":@NO }];
+#ifdef DISABLE_CALLKIT
+    [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"disableCallKit"];
+#endif
     [[ServicesManager sharedInstance] setAppID:kAppID secretKey:kSecretKey];
     [[ServicesManager sharedInstance].rtcService requestMicrophoneAccess];
     [[ServicesManager sharedInstance].rtcService startCallKitWithIncomingSoundName:@"incoming-call.mp3" iconTemplate:@"logo" appName:[self applicationName]];
@@ -45,7 +52,6 @@
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
-    [[ServicesManager sharedInstance].loginManager disconnect];
 }
 
 @end

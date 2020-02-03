@@ -50,7 +50,7 @@
 		E54400DA207E00DD008B90F2 /* CallViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CallViewController.m; sourceTree = "<group>"; };
 		E55968CF206D33E50080D632 /* ContactTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ContactTableViewCell.h; sourceTree = "<group>"; };
 		E55968D0206D33E50080D632 /* ContactTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ContactTableViewCell.m; sourceTree = "<group>"; };
-		E5D2BFA02069314700EEDB5F /* RainbowiOSSDKWebRTC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RainbowiOSSDKWebRTC.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E5D2BFA02069314700EEDB5F /* WebRTC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WebRTC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E5D2BFA32069314700EEDB5F /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		E5D2BFA42069314700EEDB5F /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		E5D2BFA62069314700EEDB5F /* LoginViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
@@ -99,7 +99,7 @@
 		E5D2BFA12069314700EEDB5F /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E5D2BFA02069314700EEDB5F /* RainbowiOSSDKWebRTC.app */,
+				E5D2BFA02069314700EEDB5F /* WebRTC.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -154,7 +154,7 @@
 			);
 			name = RainbowiOSSDKWebRTC;
 			productName = RainbowiOSSDKWebRTC;
-			productReference = E5D2BFA02069314700EEDB5F /* RainbowiOSSDKWebRTC.app */;
+			productReference = E5D2BFA02069314700EEDB5F /* WebRTC.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -366,7 +366,7 @@
 				INFOPLIST_FILE = RainbowiOSSDKWebRTC/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.alcatellucent.otcl.RainbowiOSSDKWebRTC;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = WebRTC;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -385,7 +385,7 @@
 				INFOPLIST_FILE = RainbowiOSSDKWebRTC/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.alcatellucent.otcl.RainbowiOSSDKWebRTC;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = WebRTC;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
