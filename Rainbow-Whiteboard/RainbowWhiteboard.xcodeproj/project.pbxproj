@@ -1,0 +1,417 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 48;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		E54400D6207D5EF4008B90F2 /* hangup.wav in Resources */ = {isa = PBXBuildFile; fileRef = E54400D3207D5EF4008B90F2 /* hangup.wav */; };
+		E54400D7207D5EF4008B90F2 /* outgoing-rings.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = E54400D4207D5EF4008B90F2 /* outgoing-rings.mp3 */; };
+		E54400D8207D5EF4008B90F2 /* incoming-call.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = E54400D5207D5EF4008B90F2 /* incoming-call.mp3 */; };
+		E54400DB207E00DD008B90F2 /* CallViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E54400DA207E00DD008B90F2 /* CallViewController.m */; };
+		E55968D1206D33E50080D632 /* ContactTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E55968D0206D33E50080D632 /* ContactTableViewCell.m */; };
+		E55E54262438E10D00B68B85 /* Rainbow.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E55E54242438E10D00B68B85 /* Rainbow.framework */; };
+		E55E54272438E10D00B68B85 /* WebRTC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E55E54252438E10D00B68B85 /* WebRTC.framework */; };
+		E55E54282438E11C00B68B85 /* Rainbow.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E55E54242438E10D00B68B85 /* Rainbow.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		E55E54292438E12300B68B85 /* WebRTC.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E55E54252438E10D00B68B85 /* WebRTC.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		E5D2BFA52069314700EEDB5F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E5D2BFA42069314700EEDB5F /* AppDelegate.m */; };
+		E5D2BFA82069314700EEDB5F /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E5D2BFA72069314700EEDB5F /* LoginViewController.m */; };
+		E5D2BFAB2069314700EEDB5F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E5D2BFA92069314700EEDB5F /* Main.storyboard */; };
+		E5D2BFAD2069314700EEDB5F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E5D2BFAC2069314700EEDB5F /* Assets.xcassets */; };
+		E5D2BFB02069314700EEDB5F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E5D2BFAE2069314700EEDB5F /* LaunchScreen.storyboard */; };
+		E5D2BFB32069314700EEDB5F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E5D2BFB22069314700EEDB5F /* main.m */; };
+		E5D2BFC520693D3E00EEDB5F /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E5D2BFC420693D3E00EEDB5F /* MainViewController.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		964C4ED22097513800F77507 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				E55E54292438E12300B68B85 /* WebRTC.framework in Embed Frameworks */,
+				E55E54282438E11C00B68B85 /* Rainbow.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		E54400D3207D5EF4008B90F2 /* hangup.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = hangup.wav; sourceTree = "<group>"; };
+		E54400D4207D5EF4008B90F2 /* outgoing-rings.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "outgoing-rings.mp3"; sourceTree = "<group>"; };
+		E54400D5207D5EF4008B90F2 /* incoming-call.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "incoming-call.mp3"; sourceTree = "<group>"; };
+		E54400D9207E00DD008B90F2 /* CallViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CallViewController.h; sourceTree = "<group>"; };
+		E54400DA207E00DD008B90F2 /* CallViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CallViewController.m; sourceTree = "<group>"; };
+		E55968CF206D33E50080D632 /* ContactTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ContactTableViewCell.h; sourceTree = "<group>"; };
+		E55968D0206D33E50080D632 /* ContactTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ContactTableViewCell.m; sourceTree = "<group>"; };
+		E55E54242438E10D00B68B85 /* Rainbow.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Rainbow.framework; path = RainbowWhiteboard/Carthage/Build/iOS/Rainbow.framework; sourceTree = "<group>"; };
+		E55E54252438E10D00B68B85 /* WebRTC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebRTC.framework; path = RainbowWhiteboard/Carthage/Build/iOS/WebRTC.framework; sourceTree = "<group>"; };
+		E5D2BFA02069314700EEDB5F /* Whiteboard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Whiteboard.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E5D2BFA32069314700EEDB5F /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		E5D2BFA42069314700EEDB5F /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		E5D2BFA62069314700EEDB5F /* LoginViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
+		E5D2BFA72069314700EEDB5F /* LoginViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
+		E5D2BFAA2069314700EEDB5F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		E5D2BFAC2069314700EEDB5F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		E5D2BFAF2069314700EEDB5F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		E5D2BFB12069314700EEDB5F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E5D2BFB22069314700EEDB5F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		E5D2BFC320693D3E00EEDB5F /* MainViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
+		E5D2BFC420693D3E00EEDB5F /* MainViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		E5D2BF9D2069314700EEDB5F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E55E54262438E10D00B68B85 /* Rainbow.framework in Frameworks */,
+				E55E54272438E10D00B68B85 /* WebRTC.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		E54400D2207D5EF4008B90F2 /* Sounds */ = {
+			isa = PBXGroup;
+			children = (
+				E54400D3207D5EF4008B90F2 /* hangup.wav */,
+				E54400D4207D5EF4008B90F2 /* outgoing-rings.mp3 */,
+				E54400D5207D5EF4008B90F2 /* incoming-call.mp3 */,
+			);
+			path = Sounds;
+			sourceTree = "<group>";
+		};
+		E5D2BF972069314700EEDB5F = {
+			isa = PBXGroup;
+			children = (
+				E5D2BFA22069314700EEDB5F /* RainbowWhiteboard */,
+				E5D2BFA12069314700EEDB5F /* Products */,
+				E5D2BFB9206931B900EEDB5F /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		E5D2BFA12069314700EEDB5F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E5D2BFA02069314700EEDB5F /* Whiteboard.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E5D2BFA22069314700EEDB5F /* RainbowWhiteboard */ = {
+			isa = PBXGroup;
+			children = (
+				E5D2BFA32069314700EEDB5F /* AppDelegate.h */,
+				E5D2BFA42069314700EEDB5F /* AppDelegate.m */,
+				E5D2BFA62069314700EEDB5F /* LoginViewController.h */,
+				E5D2BFA72069314700EEDB5F /* LoginViewController.m */,
+				E5D2BFC320693D3E00EEDB5F /* MainViewController.h */,
+				E5D2BFC420693D3E00EEDB5F /* MainViewController.m */,
+				E55968CF206D33E50080D632 /* ContactTableViewCell.h */,
+				E55968D0206D33E50080D632 /* ContactTableViewCell.m */,
+				E54400D9207E00DD008B90F2 /* CallViewController.h */,
+				E54400DA207E00DD008B90F2 /* CallViewController.m */,
+				E5D2BFA92069314700EEDB5F /* Main.storyboard */,
+				E5D2BFAE2069314700EEDB5F /* LaunchScreen.storyboard */,
+				E5D2BFB12069314700EEDB5F /* Info.plist */,
+				E5D2BFB22069314700EEDB5F /* main.m */,
+				E5D2BFAC2069314700EEDB5F /* Assets.xcassets */,
+				E54400D2207D5EF4008B90F2 /* Sounds */,
+			);
+			path = RainbowWhiteboard;
+			sourceTree = "<group>";
+		};
+		E5D2BFB9206931B900EEDB5F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E55E54242438E10D00B68B85 /* Rainbow.framework */,
+				E55E54252438E10D00B68B85 /* WebRTC.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		E5D2BF9F2069314700EEDB5F /* RainbowWhiteboard */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E5D2BFB62069314700EEDB5F /* Build configuration list for PBXNativeTarget "RainbowWhiteboard" */;
+			buildPhases = (
+				E5D2BF9C2069314700EEDB5F /* Sources */,
+				E5D2BF9D2069314700EEDB5F /* Frameworks */,
+				E5D2BF9E2069314700EEDB5F /* Resources */,
+				964C4ED22097513800F77507 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = RainbowWhiteboard;
+			productName = RainbowiOSSDKWebRTC;
+			productReference = E5D2BFA02069314700EEDB5F /* Whiteboard.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		E5D2BF982069314700EEDB5F /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0930;
+				ORGANIZATIONNAME = ALE;
+				TargetAttributes = {
+					E5D2BF9F2069314700EEDB5F = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = E5D2BF9B2069314700EEDB5F /* Build configuration list for PBXProject "RainbowWhiteboard" */;
+			compatibilityVersion = "Xcode 8.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = E5D2BF972069314700EEDB5F;
+			productRefGroup = E5D2BFA12069314700EEDB5F /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				E5D2BF9F2069314700EEDB5F /* RainbowWhiteboard */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		E5D2BF9E2069314700EEDB5F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E5D2BFB02069314700EEDB5F /* LaunchScreen.storyboard in Resources */,
+				E54400D6207D5EF4008B90F2 /* hangup.wav in Resources */,
+				E54400D8207D5EF4008B90F2 /* incoming-call.mp3 in Resources */,
+				E54400D7207D5EF4008B90F2 /* outgoing-rings.mp3 in Resources */,
+				E5D2BFAD2069314700EEDB5F /* Assets.xcassets in Resources */,
+				E5D2BFAB2069314700EEDB5F /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		E5D2BF9C2069314700EEDB5F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E54400DB207E00DD008B90F2 /* CallViewController.m in Sources */,
+				E5D2BFA82069314700EEDB5F /* LoginViewController.m in Sources */,
+				E5D2BFB32069314700EEDB5F /* main.m in Sources */,
+				E55968D1206D33E50080D632 /* ContactTableViewCell.m in Sources */,
+				E5D2BFA52069314700EEDB5F /* AppDelegate.m in Sources */,
+				E5D2BFC520693D3E00EEDB5F /* MainViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		E5D2BFA92069314700EEDB5F /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E5D2BFAA2069314700EEDB5F /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		E5D2BFAE2069314700EEDB5F /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E5D2BFAF2069314700EEDB5F /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		E5D2BFB42069314700EEDB5F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_BITCODE = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		E5D2BFB52069314700EEDB5F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_BITCODE = NO;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		E5D2BFB72069314700EEDB5F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = BT9E66P673;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/RainbowWhiteboard/Carthage/Build/iOS",
+					"$(PROJECT_DIR)/Frameworks",
+				);
+				INFOPLIST_FILE = RainbowWhiteboard/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.alcatellucent.otcl.RainbowWhiteboard;
+				PRODUCT_NAME = Whiteboard;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		E5D2BFB82069314700EEDB5F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = BT9E66P673;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/RainbowWhiteboard/Carthage/Build/iOS",
+					"$(PROJECT_DIR)/Frameworks",
+				);
+				INFOPLIST_FILE = RainbowWhiteboard/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.alcatellucent.otcl.RainbowWhiteboard;
+				PRODUCT_NAME = Whiteboard;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		E5D2BF9B2069314700EEDB5F /* Build configuration list for PBXProject "RainbowWhiteboard" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E5D2BFB42069314700EEDB5F /* Debug */,
+				E5D2BFB52069314700EEDB5F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E5D2BFB62069314700EEDB5F /* Build configuration list for PBXNativeTarget "RainbowWhiteboard" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E5D2BFB72069314700EEDB5F /* Debug */,
+				E5D2BFB82069314700EEDB5F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = E5D2BF982069314700EEDB5F /* Project object */;
+}

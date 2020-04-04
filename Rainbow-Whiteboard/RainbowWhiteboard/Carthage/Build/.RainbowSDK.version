@@ -1,0 +1,22 @@
+{
+  "Mac" : [
+
+  ],
+  "watchOS" : [
+
+  ],
+  "tvOS" : [
+
+  ],
+  "commitish" : "1.69.0",
+  "iOS" : [
+    {
+      "name" : "Rainbow",
+      "hash" : "49977731c906ac924d02712def669e51a76df466f57c04f1b3fb0c186b390438"
+    },
+    {
+      "name" : "WebRTC",
+      "hash" : "17b7a3d72487c680a08eb5a2516da2f3a6d1ddd999feb88b31e6fa55a916e904"
+    }
+  ]
+}

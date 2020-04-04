@@ -189,7 +189,14 @@ for dir in directories {
 }
 
 print("\(String(repeating: "*", count: 60))\n")
+
 print("RESULTS:\n")
+
+if requiredSDK != "" {
+   print("\(String(repeating: "*", count: 60))")
+   print("Rainbow SDK \(requiredSDK)")
+   print("\(String(repeating: "*", count: 60))\n")
+}
 
 var nbError = 0
 for (result, msg) in results {
