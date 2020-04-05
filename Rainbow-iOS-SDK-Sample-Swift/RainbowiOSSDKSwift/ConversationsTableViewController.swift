@@ -185,9 +185,7 @@ class ConversationsTableViewController: UITableViewController {
         if segue.identifier == "ChatWithSegue" {
             if let selectedIndex = selectedIndex {
                 if let vc = segue.destination as? ChatViewController {
-                    if let contact = allConversations[selectedIndex.row].peer as? Contact {
-                        vc.contact = contact
-                    }
+                    vc.peer = allConversations[selectedIndex.row].peer
                     vc.contactImage = (tableView.cellForRow(at: selectedIndex) as? ConversationsTableViewCell)?.avatar.image
                     vc.contactImageTint = (tableView.cellForRow(at: selectedIndex) as? ConversationsTableViewCell)?.avatar.tintColor
                 }
