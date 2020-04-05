@@ -141,16 +141,25 @@ class ConversationsTableViewController: UITableViewController {
             } else {
                 conversationsCell.lastMessage.text = ""
             }
-            if let photoData = (allConversations[indexPath.row].peer as? Contact)?.photoData {
-                conversationsCell.avatar.image = UIImage(data: photoData)
-                conversationsCell.avatar.tintColor = UIColor.clear
-            } else {
+            
+            if let contact = allConversations[indexPath.row].peer as? Contact {
+                // The peer is a Contact, the conversation is one to one
+                if let photoData = contact.photoData {
+                    conversationsCell.avatar.image = UIImage(data: photoData)
+                    conversationsCell.avatar.tintColor = UIColor.clear
+                } else {
+                    conversationsCell.avatar.image = UIImage(named: "Default_Avatar")
+                    conversationsCell.avatar.tintColor = UIColor(hue:CGFloat(indexPath.row*36%100)/100.0, saturation:1.0, brightness:1.0, alpha:1.0)
+                }
+                
+                conversationsCell.peerName.text = contact.fullName
+                
+            } else if let room = allConversations[indexPath.row].peer as? Room {
+                // The peer is a Room, the conversation is a chat room
                 conversationsCell.avatar.image = UIImage(named: "Default_Avatar")
                 conversationsCell.avatar.tintColor = UIColor(hue:CGFloat(indexPath.row*36%100)/100.0, saturation:1.0, brightness:1.0, alpha:1.0)
+                conversationsCell.peerName.text = room.displayName
             }
-            
-            let contact = allConversations[indexPath.row].peer as? Contact
-            conversationsCell.peerName.text = contact?.fullName
             
             if(allConversations[indexPath.row].unreadMessagesCount != 0) {
                 conversationsCell.badgeValue.isHidden = false
