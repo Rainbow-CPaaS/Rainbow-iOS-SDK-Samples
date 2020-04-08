@@ -43,6 +43,8 @@
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    [[NSUserDefaults standardUserDefaults] registerDefaults:@{ @"disableCallKit":@NO }];
+
     [[ServicesManager sharedInstance] setAppID:kAppID secretKey:kSecretKey];
     [[ServicesManager sharedInstance].rtcService requestMicrophoneAccess];
     [[ServicesManager sharedInstance].rtcService startCallKitWithIncomingSoundName:@"incoming-call.mp3" iconTemplate:@"logo" appName:[self applicationName]];
@@ -53,9 +55,6 @@
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
-    [[ServicesManager sharedInstance].loginManager disconnect];
-    [[LogsRecorder sharedInstance] stopRecord];
-    [[LogsRecorder sharedInstance] cleanOldLogs];
 }
 
 @end

@@ -54,6 +54,35 @@
 
 #pragma mark -
 
+- (void) showErrorPopupWithTitle:(NSString *) title message:(NSString *) message {
+    if(![NSThread isMainThread]){
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self showErrorPopupWithTitle:title message:message];
+        });
+        return;
+    }
+    UIAlertController *menu = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *ok = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [menu dismissViewControllerAnimated:YES completion:nil];
+    }];
+    [menu addAction:ok];
+   
+    [self presentViewController:menu animated:YES completion:nil];
+}
+
+- (void)didMoveToParentViewController:(UIViewController *)parent {
+    if (![parent isEqual:self.parentViewController]) {
+        NSLog(@"Back pressed");
+        [self.conferencesManager terminateConference:self.room.conference completionHandler:^(NSError *error) {
+            if (error){
+                [self showErrorPopupWithTitle:@"Conference" message:@"Error while trying to terminate the conference"];
+            }
+        }];
+    }
+}
+
+#pragma mark -
+
 -(void) updateParticipants {
     [self.participants removeAllObjects];
     for(ConferenceParticipant *participant in self.room.conference.participants){

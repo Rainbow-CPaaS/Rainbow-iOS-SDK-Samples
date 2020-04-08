@@ -27,7 +27,6 @@
 @property (nonatomic, strong) NSMutableArray<Room *> *myRooms;
 @property (nonatomic, strong) NSMutableArray<Room *> *invitedRooms;
 @property (nonatomic, strong) NSIndexPath *selectedIndex;
-//@property (nonatomic, strong) RTCCall *call;
 @end
 
 @implementation MainViewController
@@ -54,15 +53,11 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    
-//    _call = nil;
-    
+        
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didEndPopulatingMyNetwork:) name:kContactsManagerServiceDidEndPopulatingMyNetwork object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didAddRoom:) name:kRoomsServiceDidAddRoom object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didUpdateRoom:) name:kRoomsServiceDidUpdateRoom object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didRemoveRoom:) name:kRoomsServiceDidRemoveRoom object:nil];
-    // RTC call notifications
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didUpdateCall:) name:kTelephonyServiceDidUpdateCallNotification object:nil];
 }
 
 -(void)viewWillDisappear:(BOOL)animated{
@@ -70,7 +65,6 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kRoomsServiceDidAddRoom object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kRoomsServiceDidUpdateRoom object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kRoomsServiceDidRemoveRoom object:nil];
-//    [[NSNotificationCenter defaultCenter] removeObserver:self name:kTelephonyServiceDidAddCallNotification object:nil];
 }
 
 -(void) insertRoom:(Room *) room {
@@ -240,40 +234,6 @@
         } else {
         }
     }];
-}
-
-//#pragma mark - RTC call handling
-//
-//-(void)didUpdateCall:(NSNotification *)notification {
-//    if(![NSThread isMainThread]){
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//            [self didUpdateCall:notification];
-//        });
-//        return;
-//    }
-//
-//    if([notification.object class] == [RTCCall class]){
-//        NSLog(@"didUpdateCall notification");
-//        RTCCall *call = (RTCCall *) notification.object;
-//        if(self.call == nil && call.status == CallStatusEstablished){
-//            self.call = call;
-//            [self showCallView:call];
-//        }
-//    }
-//}
-
--(void)showCallView:(RTCCall *)call {
-    CallViewController *callViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"CallViewController"];
-    callViewController.currentCall = call;
-    if(self.selectedIndex){
-        if(self.selectedIndex.section == 0){
-            callViewController.room = [self.myRooms objectAtIndex:self.selectedIndex.row];
-        } else {
-            callViewController.room = [self.invitedRooms objectAtIndex:self.selectedIndex.row];
-        }
-        callViewController.roomImage = ((RoomTableViewCell *)[self.tableView cellForRowAtIndexPath:self.selectedIndex]).avatar.image;
-    }
-    [self presentViewController:callViewController animated:YES completion:nil];
 }
 
 #pragma mark - IBAction
