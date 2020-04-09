@@ -378,13 +378,12 @@
 				DEVELOPMENT_TEAM = BT9E66P673;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/Frameworks",
 					"$(PROJECT_DIR)/RainbowiOSSDKWebRTC/Carthage/Build/iOS",
 					"$(PROJECT_DIR)/RainbowiOSSDKSFU/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/RainbowiOSSDKSFU/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.alcatellucent.otcl.RainbowiOSSDKSFU2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.alcatellucent.otcl.RainbowiOSSDKSFU;
 				PRODUCT_NAME = SFU;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -398,13 +397,12 @@
 				DEVELOPMENT_TEAM = BT9E66P673;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/Frameworks",
 					"$(PROJECT_DIR)/RainbowiOSSDKWebRTC/Carthage/Build/iOS",
 					"$(PROJECT_DIR)/RainbowiOSSDKSFU/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/RainbowiOSSDKSFU/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.alcatellucent.otcl.RainbowiOSSDKSFU2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.alcatellucent.otcl.RainbowiOSSDKSFU;
 				PRODUCT_NAME = SFU;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
