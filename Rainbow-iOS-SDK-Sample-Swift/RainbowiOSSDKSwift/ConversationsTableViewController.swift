@@ -165,7 +165,7 @@ class ConversationsTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.selectedIndex = indexPath
         let conversation = allConversations[indexPath.row]
-        conversationsManager.sendMarkAllMessagesAsRead(from: conversation)
+        conversationsManager.markAllMessagesAsRead(for: conversation)
         tableView.deselectRow(at: indexPath, animated: true)
         performSegue(withIdentifier: "ChatWithSegue", sender: self)
     }
