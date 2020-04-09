@@ -59,7 +59,7 @@
 		E5CF2DF623718BC700E8ECD2 /* ParticipantTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ParticipantTableViewCell.m; sourceTree = "<group>"; };
 		E5CF2DF823718C7F00E8ECD2 /* ConferenceViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ConferenceViewController.h; sourceTree = "<group>"; };
 		E5CF2DF923718C7F00E8ECD2 /* ConferenceViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ConferenceViewController.m; sourceTree = "<group>"; };
-		E5D2BFA02069314700EEDB5F /* RainbowiOSSDKSFU.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RainbowiOSSDKSFU.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E5D2BFA02069314700EEDB5F /* SFU.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SFU.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E5D2BFA32069314700EEDB5F /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		E5D2BFA42069314700EEDB5F /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		E5D2BFA62069314700EEDB5F /* LoginViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
@@ -108,7 +108,7 @@
 		E5D2BFA12069314700EEDB5F /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E5D2BFA02069314700EEDB5F /* RainbowiOSSDKSFU.app */,
+				E5D2BFA02069314700EEDB5F /* SFU.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -169,7 +169,7 @@
 			);
 			name = RainbowiOSSDKSFU;
 			productName = RainbowiOSSDKWebRTC;
-			productReference = E5D2BFA02069314700EEDB5F /* RainbowiOSSDKSFU.app */;
+			productReference = E5D2BFA02069314700EEDB5F /* SFU.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -378,14 +378,13 @@
 				DEVELOPMENT_TEAM = BT9E66P673;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/Frameworks",
 					"$(PROJECT_DIR)/RainbowiOSSDKWebRTC/Carthage/Build/iOS",
 					"$(PROJECT_DIR)/RainbowiOSSDKSFU/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/RainbowiOSSDKSFU/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.alcatellucent.otcl.RainbowiOSSDKSFU;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = SFU;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -398,14 +397,13 @@
 				DEVELOPMENT_TEAM = BT9E66P673;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/Frameworks",
 					"$(PROJECT_DIR)/RainbowiOSSDKWebRTC/Carthage/Build/iOS",
 					"$(PROJECT_DIR)/RainbowiOSSDKSFU/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/RainbowiOSSDKSFU/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.alcatellucent.otcl.RainbowiOSSDKSFU;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = SFU;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

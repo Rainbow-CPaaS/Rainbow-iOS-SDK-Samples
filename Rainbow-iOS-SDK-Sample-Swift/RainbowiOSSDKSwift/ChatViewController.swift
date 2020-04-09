@@ -34,14 +34,14 @@ extension Array {
 }
 
 class MessageItem : NSObject {
-    var contact : Contact?
+    var peer : Peer?
     var text : String?
     var date : Date?
 }
 
 class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDelegate, UITableViewDelegate, UITableViewDataSource {
     
-    var contact : Contact?
+    var peer : Peer?
     var contactImage : UIImage?
     var contactImageTint : UIColor?
     
@@ -72,13 +72,13 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
         
         textInput.delegate = self
         self.title = "Coversations"
-        if let photoData = contact?.photoData {
+        if let contact = peer as? Contact, let photoData = contact.photoData {
             peerAvatar = UIImage(data: photoData)
         }
         
         // All conversations for myUser
         for conversation in conversationsManager.conversations {
-            if conversation.peer == contact {
+            if conversation.peer == peer {
                 theConversation = conversation
                 break
             }
@@ -89,7 +89,7 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
             if ((theConversation?.peer.displayName) != nil) {
                 self.title = theConversation?.peer.displayName;
             }
-            conversationsManager.startConversation(with: contact){ (conversation : Optional<Conversation>, error : Optional<Error>)  in
+            conversationsManager.startConversation(with: peer){ (conversation : Optional<Conversation>, error : Optional<Error>)  in
                 if error != nil {
                     self.theConversation = conversation
                 } else {
@@ -143,7 +143,7 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
         if let theConversation = theConversation {
             sendButton.isEnabled = false
             textInput.isEditable = false
-            conversationsManager.sendMessage(textInput.text, fileAttachment:nil, to:theConversation, completionHandler: {
+            conversationsManager.sendTextMessage(textInput.text, fileAttachment:nil, to:theConversation, completionHandler: {
                 (message:Optional<Message>, error:Optional<Error>) in
                 DispatchQueue.main.async {
                     if error == nil {
@@ -175,9 +175,9 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
                 if let message = newItems[index] as? Message {
                     let item = MessageItem()
                     if message.isOutgoing {
-                        item.contact = self.serviceManager.myUser.contact
+                        item.peer = self.serviceManager.myUser.contact
                     } else {
-                        item.contact = message.peer as? Contact
+                        item.peer = message.peer
                     }
                     item.text = message.body
                     item.date = message.date
@@ -238,9 +238,9 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
             return
         }
         if let receivedConversation = notification.object as? Conversation {
-            if let theConversation = self.theConversation, receivedConversation == theConversation {
+            if receivedConversation == self.theConversation, let conversation = self.theConversation {
                 NSLog("did received new message for the conversation")
-                self.conversationsManager.markAllMessagesAsRead(for: theConversation)
+                self.conversationsManager.markAllMessagesAsRead(for: conversation)
                 let lastRow = IndexPath(row:  messageList.numberOfRows(inSection: 0) - 1, section: 0)
                 messageList.scrollToRow(at: lastRow, at: .bottom, animated: true)
                 messageList.reloadData()
@@ -291,7 +291,7 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let row = self.messages.count - indexPath.row - 1
-        if self.messages[row].contact == serviceManager.myUser.contact {
+        if self.messages[row].peer == serviceManager.myUser.contact {
             return tableView.dequeueReusableCell(withIdentifier: "MyUserTableViewCell", for:indexPath)
         } else {
             return tableView.dequeueReusableCell(withIdentifier:"PeerTableViewCell", for:indexPath)

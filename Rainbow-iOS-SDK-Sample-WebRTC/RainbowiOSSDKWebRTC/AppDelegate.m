@@ -16,7 +16,7 @@
 #import "AppDelegate.h"
 #import "Rainbow/Rainbow.h"
 
-#define kAppID @""
+#define kAppID @"" 
 #define kSecretKey @""
 
 // Disable CallKit to be in the same conditions as where CallKit is forbidden like in China
