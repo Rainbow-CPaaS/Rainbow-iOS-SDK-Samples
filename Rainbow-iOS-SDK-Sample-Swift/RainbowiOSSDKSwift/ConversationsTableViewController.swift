@@ -21,8 +21,7 @@ class ConversationsTableViewController: UITableViewController {
     let conversationsManager : ConversationsManagerService
     var selectedIndex : IndexPath? = nil
     var allConversations : [Conversation] = []
-
-    
+    var populated = false
     
     @IBOutlet weak var logoutButton: UIBarButtonItem!
     
@@ -35,24 +34,16 @@ class ConversationsTableViewController: UITableViewController {
         NotificationCenter.default.addObserver(self, selector:#selector(didRemoveConversation(notification:)), name:NSNotification.Name(kConversationsManagerDidRemoveConversation), object:nil)
         NotificationCenter.default.addObserver(self, selector: #selector(didUpdateConversation(notification:)), name:NSNotification.Name(kConversationsManagerDidUpdateConversation), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(didUpdateMessagesUnreadCount(notification:)), name:NSNotification.Name(kConversationsManagerDidUpdateMessagesUnreadCount), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didEndLoadingConversations), name: NSNotification.Name( kConversationsManagerDidEndLoadingConversations), object: nil)
     }
     
     deinit {
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kConversationsManagerDidReceiveNewMessageForConversation), object: nil)
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kConversationsManagerDidAddConversation), object: nil)
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kConversationsManagerDidRemoveConversation), object: nil)
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kConversationsManagerDidUpdateConversation), object: nil)
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kConversationsManagerDidUpdateMessagesUnreadCount), object: nil)
+        NotificationCenter.default.removeObserver(self)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.tableView.reloadData()
-        allConversations = []
-        self.loadAllConversations()
-        self.sortAllConversation()
-        self.updateBadgeValue()
-        
     }
 
     @IBAction func logoutAction(_ sender: Any) {
@@ -117,6 +108,22 @@ class ConversationsTableViewController: UITableViewController {
         self.sortAllConversation()
     }
     
+    
+    @objc func didEndLoadingConversations() {
+        // Enforce that this method is called on the main thread
+        if !Thread.isMainThread {
+            DispatchQueue.main.async {
+                self.didEndLoadingConversations()
+            }
+            return
+        }
+        
+        self.loadAllConversations()
+        self.sortAllConversation()
+        self.updateBadgeValue()
+        populated = true
+    }
+    
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -156,7 +163,7 @@ class ConversationsTableViewController: UITableViewController {
                 
             } else if let room = allConversations[indexPath.row].peer as? Room {
                 // The peer is a Room, the conversation is a chat room
-                conversationsCell.avatar.image = UIImage(named: "Default_Avatar")
+                conversationsCell.avatar.image = UIImage(named: "Default_Room_Avatar")
                 conversationsCell.avatar.tintColor = UIColor(hue:CGFloat(indexPath.row*36%100)/100.0, saturation:1.0, brightness:1.0, alpha:1.0)
                 conversationsCell.peerName.text = room.displayName
             }
@@ -164,8 +171,7 @@ class ConversationsTableViewController: UITableViewController {
             if(allConversations[indexPath.row].unreadMessagesCount != 0) {
                 conversationsCell.badgeValue.isHidden = false
                 conversationsCell.badgeValue.text = "\(allConversations[indexPath.row].unreadMessagesCount)"
-            }
-            else {
+            } else {
                 conversationsCell.badgeValue.isHidden = true
             }
         }
@@ -203,6 +209,7 @@ class ConversationsTableViewController: UITableViewController {
     }
 
     func loadAllConversations() {
+        allConversations = []
         for conversation in conversationsManager.conversations {
             if(conversation.peer != nil) {
                 allConversations.append(conversation)

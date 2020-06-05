@@ -65,6 +65,7 @@ class ContactsTableViewController: UITableViewController {
         ServicesManager.sharedInstance().loginManager.resetAllCredentials()
         self.dismiss(animated: false, completion: nil)
     }
+    
     func insert(_ contact : Contact) {
         // Ignore myself
         if contact == serviceManager.myUser.contact {

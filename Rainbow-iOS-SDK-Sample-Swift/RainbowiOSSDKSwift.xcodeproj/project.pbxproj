@@ -13,6 +13,9 @@
 		E54400F82084E05A008B90F2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E54400F72084E05A008B90F2 /* Assets.xcassets */; };
 		E54400FB2084E05A008B90F2 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E54400F92084E05A008B90F2 /* LaunchScreen.storyboard */; };
 		E544010A2084F014008B90F2 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E54401092084F014008B90F2 /* MainViewController.swift */; };
+		E550289B248A8C0700A6B603 /* RoomsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E550289A248A8C0700A6B603 /* RoomsTableViewController.swift */; };
+		E550289D248A8D4600A6B603 /* RoomsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E550289C248A8D4600A6B603 /* RoomsTableViewCell.swift */; };
+		E550289F248AA53F00A6B603 /* EditRoomViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E550289E248AA53E00A6B603 /* EditRoomViewController.swift */; };
 		E561CC8E216EB87100C398FC /* Rainbow.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E561CC8C216EB87100C398FC /* Rainbow.framework */; };
 		E561CC8F216EB87100C398FC /* WebRTC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E561CC8D216EB87100C398FC /* WebRTC.framework */; };
 		E561CC90216EB89500C398FC /* Rainbow.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E561CC8C216EB87100C398FC /* Rainbow.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -51,6 +54,9 @@
 		E54400FA2084E05A008B90F2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E54400FC2084E05A008B90F2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E54401092084F014008B90F2 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
+		E550289A248A8C0700A6B603 /* RoomsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomsTableViewController.swift; sourceTree = "<group>"; };
+		E550289C248A8D4600A6B603 /* RoomsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomsTableViewCell.swift; sourceTree = "<group>"; };
+		E550289E248AA53E00A6B603 /* EditRoomViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditRoomViewController.swift; sourceTree = "<group>"; };
 		E561CC8C216EB87100C398FC /* Rainbow.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Rainbow.framework; path = "../../Rainbow-iOS-SDK-Sample-WebRTC/RainbowiOSSDKWebRTC/Carthage/Build/iOS/Rainbow.framework"; sourceTree = "<group>"; };
 		E561CC8D216EB87100C398FC /* WebRTC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebRTC.framework; path = "../../Rainbow-iOS-SDK-Sample-WebRTC/RainbowiOSSDKWebRTC/Carthage/Build/iOS/WebRTC.framework"; sourceTree = "<group>"; };
 		E565D9DB20AAD9640074597C /* ConversationsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationsTableViewController.swift; sourceTree = "<group>"; };
@@ -104,6 +110,9 @@
 				E5773BEF2099F3D9000BC714 /* DetailViewController.swift */,
 				E565D9DB20AAD9640074597C /* ConversationsTableViewController.swift */,
 				E565D9DD20AADAB00074597C /* ConversationsTableViewCell.swift */,
+				E550289A248A8C0700A6B603 /* RoomsTableViewController.swift */,
+				E550289C248A8D4600A6B603 /* RoomsTableViewCell.swift */,
+				E550289E248AA53E00A6B603 /* EditRoomViewController.swift */,
 				E565D9E120AB3B670074597C /* ChatViewController.swift */,
 				E565D9E320AB3BB10074597C /* PeerTableViewCell.swift */,
 				E565D9E520AB3BDE0074597C /* MyUserTableViewCell.swift */,
@@ -196,8 +205,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E550289B248A8C0700A6B603 /* RoomsTableViewController.swift in Sources */,
 				E565D9DE20AADAB00074597C /* ConversationsTableViewCell.swift in Sources */,
 				E544010A2084F014008B90F2 /* MainViewController.swift in Sources */,
+				E550289F248AA53F00A6B603 /* EditRoomViewController.swift in Sources */,
+				E550289D248A8D4600A6B603 /* RoomsTableViewCell.swift in Sources */,
 				E5773BEE2099C5CC000BC714 /* ContactTableViewCell.swift in Sources */,
 				E54400F32084E055008B90F2 /* LoginViewController.swift in Sources */,
 				E5773BF02099F3D9000BC714 /* DetailViewController.swift in Sources */,
