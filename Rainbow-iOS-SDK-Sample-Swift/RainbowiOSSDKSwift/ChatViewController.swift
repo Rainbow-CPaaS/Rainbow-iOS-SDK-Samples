@@ -48,8 +48,9 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
     @IBOutlet fileprivate weak var messageList: UITableView!
     @IBOutlet fileprivate weak var textInput: UITextView!
     @IBOutlet fileprivate weak var sendButton: UIButton!
+    @IBOutlet weak var loadMoreButton: UIBarButtonItem!
     
-    fileprivate let kPageSize = 50
+    fileprivate let kPageSize = 10
     fileprivate let serviceManager : ServicesManager
     fileprivate let conversationsManager : ConversationsManagerService
     fileprivate var messagesBrowser : MessagesBrowser?
@@ -71,7 +72,7 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
         super.viewDidLoad()
         
         textInput.delegate = self
-        self.title = "Coversations"
+        self.title = "Conversations"
         if let contact = peer as? Contact, let photoData = contact.photoData {
             peerAvatar = UIImage(data: photoData)
         }
@@ -103,11 +104,15 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
             name:NSNotification.Name("UIKeyboardDidHideNotification"), object:nil)
         NotificationCenter.default.addObserver(self, selector:#selector(didReceiveNewMessage(notification:)), name:NSNotification.Name(kConversationsManagerDidReceiveNewMessageForConversation), object:nil)
         
+        loadMoreButton.isEnabled = false
         messagesBrowser = conversationsManager.messagesBrowser(for: self.theConversation, withPageSize:kPageSize, preloadMessages:true)
         messagesBrowser?.delegate = self
         messagesBrowser?.resyncBrowsingCache { (addedCacheItems : Optional<Array<Any>>, removedCacheItems : Optional<Array<Any>>, updatedCacheItems : Optional<Array<Any>>, error : Optional<Error>) in
             NSLog("Resync done")
+            let hasPage = self.messagesBrowser?.hasMorePages() ?? false
+            self.loadMoreButton.isEnabled = hasPage
         }
+ 
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -155,6 +160,20 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
                     self.textInput.isEditable = true
                 }
             }, attachmentUploadProgressHandler:nil)
+        }
+    }
+    
+    @IBAction func loadMoreAction(_ sender: Any) {
+        self.loadMoreButton.isEnabled = false
+        messagesBrowser?.nextPage() { (addedCacheItems, removedCacheItems, updatedCacheItems, error) in
+            if let error = error {
+                NSLog("Error while loading next page: \(error.localizedDescription)")
+            } else {
+                DispatchQueue.main.async {
+                    let hasPage = self.messagesBrowser?.hasMorePages() ?? false
+                    self.loadMoreButton.isEnabled = hasPage
+                }
+            }
         }
     }
     

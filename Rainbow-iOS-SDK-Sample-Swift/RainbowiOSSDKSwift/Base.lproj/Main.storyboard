@@ -442,7 +442,7 @@
             </objects>
             <point key="canvasLocation" x="2454" y="1064"/>
         </scene>
-        <!--Chat View Controller-->
+        <!--Chat-->
         <scene sceneID="ZHW-4o-dLm">
             <objects>
                 <viewController modalPresentationStyle="fullScreen" id="eHl-B0-0Mf" customClass="ChatViewController" customModule="RainbowiOSSDKSwift" customModuleProvider="target" sceneMemberID="viewController">
@@ -563,7 +563,15 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="lTc-gO-tuu"/>
                     </view>
+                    <navigationItem key="navigationItem" title="Chat" id="dEC-fO-zvn">
+                        <barButtonItem key="rightBarButtonItem" title="More..." id="y5W-cN-Ftv">
+                            <connections>
+                                <action selector="loadMoreAction:" destination="eHl-B0-0Mf" id="C4J-CK-EyJ"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
+                        <outlet property="loadMoreButton" destination="y5W-cN-Ftv" id="JxW-ue-Ler"/>
                         <outlet property="messageList" destination="pJx-ig-Yuq" id="iOW-fd-NFS"/>
                         <outlet property="sendButton" destination="VRM-w7-NGz" id="dlB-uS-elZ"/>
                         <outlet property="textInput" destination="Xd8-Fh-ksG" id="Yl2-xl-Epq"/>
