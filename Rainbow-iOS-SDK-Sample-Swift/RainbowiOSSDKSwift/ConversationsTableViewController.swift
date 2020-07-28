@@ -35,6 +35,9 @@ class ConversationsTableViewController: UITableViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(didUpdateConversation(notification:)), name:NSNotification.Name(kConversationsManagerDidUpdateConversation), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(didUpdateMessagesUnreadCount(notification:)), name:NSNotification.Name(kConversationsManagerDidUpdateMessagesUnreadCount), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(didEndLoadingConversations), name: NSNotification.Name( kConversationsManagerDidEndLoadingConversations), object: nil)
+        
+        // notification sent when the app regain the network after loosing it
+        NotificationCenter.default.addObserver(self, selector: #selector(didReconnect(notification:)), name: NSNotification.Name(kLoginManagerDidReconnect), object: nil)
     }
     
     deinit {
@@ -51,6 +54,24 @@ class ConversationsTableViewController: UITableViewController {
         ServicesManager.sharedInstance().loginManager.resetAllCredentials()
         self.dismiss(animated: false, completion: nil)
     }
+    
+    // MARK: - Notifications related to unread conversation count
+    
+    @objc func didUpdateMessagesUnreadCount(notification : Notification) {
+        if !Thread.isMainThread {
+            DispatchQueue.main.async {
+                self.updateBadgeValue()
+                self.tableView .reloadData()
+            }
+        }
+    }
+
+    // MARK: - Notifications related to losing/recovering network
+    
+    @objc func didReconnect(notification : NSNotification) {
+        NSLog("[ConversationsTableViewController] Did reconnect")
+    }
+    
     // MARK: - conversation notifications
     
     @objc func didReceiveNewMessageForConversation(notification : Notification) {
@@ -197,15 +218,6 @@ class ConversationsTableViewController: UITableViewController {
                 }
             }
         }
-    }
-    @objc func didUpdateMessagesUnreadCount(notification : Notification) {
-        if !Thread.isMainThread {
-            DispatchQueue.main.async {
-                self.updateBadgeValue()
-                self.tableView .reloadData()
-            }
-        }
-        
     }
 
     func loadAllConversations() {

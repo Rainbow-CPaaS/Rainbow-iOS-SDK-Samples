@@ -46,12 +46,7 @@ class MainViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        // notification related to the ContactManagerService
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kContactsManagerServiceDidEndPopulatingMyNetwork), object: nil)
-        
-        // notifications related to unread conversation count
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kConversationsManagerDidEndLoadingConversations), object: nil)
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kConversationsManagerDidUpdateMessagesUnreadCount), object: nil)
+        NotificationCenter.default.removeObserver(self)
     }
     
     // MARK: - ContactManagerService notifications
@@ -64,7 +59,7 @@ class MainViewController: UIViewController {
             }
             return
         }
-        NSLog("Did end populating my network");
+        NSLog("[MainViewController] Did end populating my network");
         contactsLoaded = true
         if isViewLoaded {
             contactsButton.isEnabled = true
@@ -83,7 +78,7 @@ class MainViewController: UIViewController {
                 }
             }
             self.totalNbOfUnreadMessagesInAllConversations = ServicesManager.sharedInstance().conversationsManagerService.totalNbOfUnreadMessagesInAllConversations
-            NSLog("totalNbOfUnreadMessagesInAllConversations=%ld", self.totalNbOfUnreadMessagesInAllConversations)
+            NSLog("[MainViewController] totalNbOfUnreadMessagesInAllConversations=%ld", self.totalNbOfUnreadMessagesInAllConversations)
         }
     }
     
@@ -91,7 +86,7 @@ class MainViewController: UIViewController {
         // Read the unread message count in a asynchronous block as it is a synchronous method protected by a lock
         DispatchQueue.global().async {
             self.totalNbOfUnreadMessagesInAllConversations = ServicesManager.sharedInstance().conversationsManagerService.totalNbOfUnreadMessagesInAllConversations
-            NSLog("totalNbOfUnreadMessagesInAllConversations=%ld", self.totalNbOfUnreadMessagesInAllConversations)
+            NSLog("[MainViewController] totalNbOfUnreadMessagesInAllConversations=%ld", self.totalNbOfUnreadMessagesInAllConversations)
         }
     }
     
