@@ -24,6 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+        NSLog("Rainbow SDK version:\(RainbowVersionNumber)")
         ServicesManager.sharedInstance().setAppID(appID, secretKey: secretKey)
         return true
     }

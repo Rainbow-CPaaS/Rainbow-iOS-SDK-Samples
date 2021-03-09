@@ -58,7 +58,7 @@ class EditRoomViewController: UIViewController {
     }
 
     @IBAction func updateAction(_ sender: Any) {
-        if let name = nameTextField.text {
+        if let name = nameTextField.text, let room = room {
             roomsManager.updateRoom(room, withName: name)
         }
         nameTextField.resignFirstResponder()

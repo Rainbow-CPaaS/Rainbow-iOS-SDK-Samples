@@ -63,8 +63,8 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
         serviceManager = ServicesManager.sharedInstance()
         conversationsManager = serviceManager.conversationsManagerService
         super.init(coder: aDecoder)
-        if serviceManager.myUser.contact.photoData != nil {
-            myAvatar = UIImage(data: serviceManager.myUser.contact.photoData)
+        if let contact =  serviceManager.myUser.contact, contact.photoData != nil {
+            myAvatar = UIImage(data: contact.photoData)
         }
     }
     
@@ -148,8 +148,7 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
         if let theConversation = theConversation {
             sendButton.isEnabled = false
             textInput.isEditable = false
-            conversationsManager.sendTextMessage(textInput.text, fileAttachment:nil, to:theConversation, completionHandler: {
-                (message:Optional<Message>, error:Optional<Error>) in
+            conversationsManager.sendTextMessage(textInput.text, files: nil, mentions: nil, priority: .default, repliedMessage: nil, conversation: theConversation) { (message, error) in
                 DispatchQueue.main.async {
                     if error == nil {
                         self.textInput.text = ""
@@ -159,7 +158,7 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
                     }
                     self.textInput.isEditable = true
                 }
-            }, attachmentUploadProgressHandler:nil)
+            }
         }
     }
     
