@@ -3,14 +3,10 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 48;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		964C4EC720974DC600F77507 /* WebRTC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 964C4EC520974DC600F77507 /* WebRTC.framework */; };
-		964C4EC820974DC600F77507 /* WebRTC.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 964C4EC520974DC600F77507 /* WebRTC.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		964C4EC920974DC600F77507 /* Rainbow.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 964C4EC620974DC600F77507 /* Rainbow.framework */; };
-		964C4ECA20974DC600F77507 /* Rainbow.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 964C4EC620974DC600F77507 /* Rainbow.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E54400DE207EC58C008B90F2 /* PeerTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E54400DD207EC58C008B90F2 /* PeerTableViewCell.m */; };
 		E54400E1207EC5A0008B90F2 /* MyUserTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E54400E0207EC5A0008B90F2 /* MyUserTableViewCell.m */; };
 		E55968D1206D33E50080D632 /* ContactTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E55968D0206D33E50080D632 /* ContactTableViewCell.m */; };
@@ -22,6 +18,10 @@
 		E5D2BFB02069314700EEDB5F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E5D2BFAE2069314700EEDB5F /* LaunchScreen.storyboard */; };
 		E5D2BFB32069314700EEDB5F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E5D2BFB22069314700EEDB5F /* main.m */; };
 		E5D2BFC520693D3E00EEDB5F /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E5D2BFC420693D3E00EEDB5F /* MainViewController.m */; };
+		E5DCEB362799739B0052CFF4 /* WebRTC.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = E5DCEB342799739B0052CFF4 /* WebRTC.xcframework */; };
+		E5DCEB372799739C0052CFF4 /* Rainbow.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = E5DCEB352799739B0052CFF4 /* Rainbow.xcframework */; };
+		E5DCEB38279973AC0052CFF4 /* Rainbow.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E5DCEB352799739B0052CFF4 /* Rainbow.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		E5DCEB39279973AC0052CFF4 /* WebRTC.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E5DCEB342799739B0052CFF4 /* WebRTC.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -31,8 +31,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				964C4EC820974DC600F77507 /* WebRTC.framework in Embed Frameworks */,
-				964C4ECA20974DC600F77507 /* Rainbow.framework in Embed Frameworks */,
+				E5DCEB38279973AC0052CFF4 /* Rainbow.xcframework in Embed Frameworks */,
+				E5DCEB39279973AC0052CFF4 /* WebRTC.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -40,8 +40,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		964C4EC520974DC600F77507 /* WebRTC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebRTC.framework; path = RainbowiOSSDKIM/Carthage/Build/iOS/WebRTC.framework; sourceTree = "<group>"; };
-		964C4EC620974DC600F77507 /* Rainbow.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Rainbow.framework; path = RainbowiOSSDKIM/Carthage/Build/iOS/Rainbow.framework; sourceTree = "<group>"; };
 		E54400DC207EC58C008B90F2 /* PeerTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PeerTableViewCell.h; sourceTree = "<group>"; };
 		E54400DD207EC58C008B90F2 /* PeerTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PeerTableViewCell.m; sourceTree = "<group>"; };
 		E54400DF207EC5A0008B90F2 /* MyUserTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MyUserTableViewCell.h; sourceTree = "<group>"; };
@@ -62,6 +60,8 @@
 		E5D2BFB22069314700EEDB5F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		E5D2BFC320693D3E00EEDB5F /* MainViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
 		E5D2BFC420693D3E00EEDB5F /* MainViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
+		E5DCEB342799739B0052CFF4 /* WebRTC.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = WebRTC.xcframework; path = RainbowiOSSDKIM/Carthage/Build/iOS/WebRTC.xcframework; sourceTree = "<group>"; };
+		E5DCEB352799739B0052CFF4 /* Rainbow.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Rainbow.xcframework; path = RainbowiOSSDKIM/Carthage/Build/iOS/Rainbow.xcframework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,8 +69,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				964C4EC720974DC600F77507 /* WebRTC.framework in Frameworks */,
-				964C4EC920974DC600F77507 /* Rainbow.framework in Frameworks */,
+				E5DCEB362799739B0052CFF4 /* WebRTC.xcframework in Frameworks */,
+				E5DCEB372799739C0052CFF4 /* Rainbow.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -123,8 +123,8 @@
 		E5D2BFB9206931B900EEDB5F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				964C4EC620974DC600F77507 /* Rainbow.framework */,
-				964C4EC520974DC600F77507 /* WebRTC.framework */,
+				E5DCEB352799739B0052CFF4 /* Rainbow.xcframework */,
+				E5DCEB342799739B0052CFF4 /* WebRTC.xcframework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -356,7 +356,10 @@
 					"$(PROJECT_DIR)/RainbowiOSSDKIM/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = RainbowiOSSDKIM/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.alcatellucent.otcl.RainbowiOSSDKIM;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -375,7 +378,10 @@
 					"$(PROJECT_DIR)/RainbowiOSSDKIM/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = RainbowiOSSDKIM/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.alcatellucent.otcl.RainbowiOSSDKIM;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";

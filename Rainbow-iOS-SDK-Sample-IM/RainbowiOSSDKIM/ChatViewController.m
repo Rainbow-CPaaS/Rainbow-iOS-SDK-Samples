@@ -154,7 +154,8 @@
         self.textInput.editable = NO;
         self.sendButton.enabled = NO;
         self.attachmentViewHeightConstraint.constant = 0;
-        [self.conversationsManager sendMessage:self.textInput.text fileAttachment:self.attachmentFileToSend to:self.theConversation completionHandler:^(Message *message, NSError *error) {
+        NSArray *fileToSend = self.attachmentFileToSend ? @[self.attachmentFileToSend] : nil;
+        [self.conversationsManager sendTextMessage:self.textInput.text files:fileToSend mentions:nil priority:MessagePriorityDefault repliedMessage:nil conversation:self.theConversation completionHandler:^(Message *message, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 if(!error){
                 } else {
@@ -166,9 +167,6 @@
                 self.attachmentFileToSend = nil;
                 [self reloadAndScrollToBottom];
             });
-        } attachmentUploadProgressHandler:^(Message *message, double totalBytesSent, double totalBytesExpectedToSend) {
-            NSLog(@"total byte send  : %f",totalBytesSent);
-            NSLog(@"total byte expected to send  : %f",totalBytesExpectedToSend);
         }];
     }
 }
