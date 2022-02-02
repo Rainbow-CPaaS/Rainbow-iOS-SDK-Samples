@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -24,10 +24,10 @@
 		E5773BEC2099C4EF000BC714 /* ContactsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5773BEB2099C4EF000BC714 /* ContactsTableViewController.swift */; };
 		E5773BEE2099C5CC000BC714 /* ContactTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5773BED2099C5CC000BC714 /* ContactTableViewCell.swift */; };
 		E5773BF02099F3D9000BC714 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5773BEF2099F3D9000BC714 /* DetailViewController.swift */; };
-		E5D6117E25F77C9B0088E52B /* Rainbow.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E5D6117D25F77C9B0088E52B /* Rainbow.framework */; };
-		E5D6118025F77CAF0088E52B /* WebRTC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E5D6117F25F77CAF0088E52B /* WebRTC.framework */; };
-		E5D6118125F77CBD0088E52B /* WebRTC.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E5D6117F25F77CAF0088E52B /* WebRTC.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		E5D6118225F77CE10088E52B /* Rainbow.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E5D6117D25F77C9B0088E52B /* Rainbow.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		E5DCEB6727AA90390052CFF4 /* WebRTC.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = E5DCEB6527AA90390052CFF4 /* WebRTC.xcframework */; };
+		E5DCEB6827AA90390052CFF4 /* Rainbow.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = E5DCEB6627AA90390052CFF4 /* Rainbow.xcframework */; };
+		E5DCEB6927AA904A0052CFF4 /* Rainbow.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E5DCEB6627AA90390052CFF4 /* Rainbow.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		E5DCEB6A27AA904A0052CFF4 /* WebRTC.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E5DCEB6527AA90390052CFF4 /* WebRTC.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -37,8 +37,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				E5D6118225F77CE10088E52B /* Rainbow.framework in Embed Frameworks */,
-				E5D6118125F77CBD0088E52B /* WebRTC.framework in Embed Frameworks */,
+				E5DCEB6927AA904A0052CFF4 /* Rainbow.xcframework in Embed Frameworks */,
+				E5DCEB6A27AA904A0052CFF4 /* WebRTC.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -65,8 +65,8 @@
 		E5773BEB2099C4EF000BC714 /* ContactsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsTableViewController.swift; sourceTree = "<group>"; };
 		E5773BED2099C5CC000BC714 /* ContactTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactTableViewCell.swift; sourceTree = "<group>"; };
 		E5773BEF2099F3D9000BC714 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
-		E5D6117D25F77C9B0088E52B /* Rainbow.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Rainbow.framework; path = RainbowiOSSDKSwift/Carthage/Build/iOS/Rainbow.framework; sourceTree = "<group>"; };
-		E5D6117F25F77CAF0088E52B /* WebRTC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebRTC.framework; path = RainbowiOSSDKSwift/Carthage/Build/iOS/WebRTC.framework; sourceTree = "<group>"; };
+		E5DCEB6527AA90390052CFF4 /* WebRTC.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = WebRTC.xcframework; path = RainbowiOSSDKSwift/Carthage/Build/iOS/WebRTC.xcframework; sourceTree = "<group>"; };
+		E5DCEB6627AA90390052CFF4 /* Rainbow.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Rainbow.xcframework; path = RainbowiOSSDKSwift/Carthage/Build/iOS/Rainbow.xcframework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,8 +74,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E5D6118025F77CAF0088E52B /* WebRTC.framework in Frameworks */,
-				E5D6117E25F77C9B0088E52B /* Rainbow.framework in Frameworks */,
+				E5DCEB6727AA90390052CFF4 /* WebRTC.xcframework in Frameworks */,
+				E5DCEB6827AA90390052CFF4 /* Rainbow.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -127,8 +127,8 @@
 		E5D6117C25F77C9A0088E52B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				E5D6117F25F77CAF0088E52B /* WebRTC.framework */,
-				E5D6117D25F77C9B0088E52B /* Rainbow.framework */,
+				E5DCEB6627AA90390052CFF4 /* Rainbow.xcframework */,
+				E5DCEB6527AA90390052CFF4 /* WebRTC.xcframework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -379,7 +379,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_WORKSPACE = YES;
 			};
 			name = Debug;
 		};
@@ -404,7 +403,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_WORKSPACE = YES;
 			};
 			name = Release;
 		};
