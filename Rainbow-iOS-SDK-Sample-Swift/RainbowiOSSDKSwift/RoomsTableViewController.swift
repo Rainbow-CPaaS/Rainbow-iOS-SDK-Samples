@@ -45,8 +45,7 @@ class RoomsTableViewController: UITableViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(didAddRoom(notification:)), name: NSNotification.Name(kRoomsServiceDidAddRoom), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(didUpdateRoom(notification:)), name: NSNotification.Name(kRoomsServiceDidUpdateRoom), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(didRemoveRoom(notification:)), name: NSNotification.Name(kRoomsServiceDidRemoveRoom), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(didEndFetchingRooms), name: NSNotification.Name( kRoomsServiceDidEndFetchingRooms), object: nil)
-        didEndFetchingRooms()
+        fetchRooms()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -61,7 +60,7 @@ class RoomsTableViewController: UITableViewController {
     }
     
     func insert(_ room : Room) {
-        if let index = allObjects.index(of: room) {
+        if let index = allObjects.firstIndex(of: room) {
             allObjects[index] = room
         } else {
             allObjects.append(room)
@@ -96,7 +95,7 @@ class RoomsTableViewController: UITableViewController {
         
         if let userInfo = notification.object as? Dictionary<String, AnyObject> {
             let room = userInfo[kRoomKey]! as! Room
-            if let index = allObjects.index(of: room) {
+            if let index = allObjects.firstIndex(of: room) {
                 if (index != NSNotFound) {
                     self.allObjects.remove(at: index)
                 }
@@ -117,7 +116,7 @@ class RoomsTableViewController: UITableViewController {
             return
         }
         if let room = notification.object as? Room {
-            if let index = allObjects.index(of: room) {
+            if let index = allObjects.firstIndex(of: room) {
                 self.allObjects.remove(at: index)
             }
             if self.isViewLoaded && populated {
@@ -126,19 +125,20 @@ class RoomsTableViewController: UITableViewController {
         }
     }
     
-    @objc func didEndFetchingRooms() {
-        // Enforce that this method is called on the main thread
-        if !Thread.isMainThread {
-            DispatchQueue.main.async {
-                self.didEndFetchingRooms()
+    func fetchRooms() {
+        roomsManager.fetchFirstPage(forType: .activeAll, sortingField: .lastActivity) {rooms, error in
+            if let error = error {
+                NSLog("Error: \(error.localizedDescription)")
+            } else {
+                if let rooms = rooms {
+                    self.allObjects = rooms
+                }
+                DispatchQueue.main.async {
+                    if self.isViewLoaded {
+                        self.tableView.reloadData()
+                    }
+                }
             }
-            return
-        }
-        for room in roomsManager.rooms {
-            self.insert(room)
-        }
-        if self.isViewLoaded {
-            self.tableView.reloadData()
         }
     }
     
@@ -163,8 +163,8 @@ class RoomsTableViewController: UITableViewController {
         if let roomCell = cell as? RoomsTableViewCell {
             let room = allObjects[indexPath.row]
             roomCell.name.text = room.displayName
-            if room.photoData != nil {
-                roomCell.avatar.image = UIImage.init(data: room.photoData)
+            if let photoData = room.photoData {
+                roomCell.avatar.image = UIImage.init(data: photoData)
                 roomCell.avatar.tintColor = UIColor.clear
             } else {
                 roomCell.avatar.image = UIImage.init(named: "Default_Room_Avatar")
@@ -182,15 +182,17 @@ class RoomsTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         let room = allObjects[indexPath.row]
         
-        let delete = UITableViewRowAction(style: UITableViewRowActionStyle.destructive, title: room.isMyRoom ? "Delete" : "Leave" , handler: { (action, indexPath) -> Void in
+        let delete = UITableViewRowAction(style: .destructive, title: room.isMyRoom ? "Delete" : "Leave" , handler: { (action, indexPath) -> Void in
             if room.isMyRoom {
-                self.roomsManager.deleteRoom(room)
+                self.roomsManager.deleteRoom(room) {_ in
+                }
             } else {
-                self.roomsManager.leaveRoom(room)
+                self.roomsManager.leaveRoom(room) {_ in
+                }
             }
         })
         
-        let edit = UITableViewRowAction(style: UITableViewRowActionStyle.normal, title: "Edit" , handler: { (action, indexPath) -> Void in
+        let edit = UITableViewRowAction(style: .normal, title: "Edit" , handler: { (action, indexPath) -> Void in
             self.selectedIndex = indexPath
             self.performSegue(withIdentifier: "EditRoomSegue", sender: self)
         })

@@ -26,6 +26,7 @@ class EditRoomViewController: UIViewController {
     @IBOutlet weak var avatar: UIImageView!
     @IBOutlet weak var ownerNameLabel: UILabel!
     @IBOutlet weak var nameTextField: UITextField!
+    @IBOutlet weak var topicTextField: UITextField!
     @IBOutlet weak var updateButton: UIButton!
     
     required init?(coder aDecoder: NSCoder) {
@@ -37,12 +38,15 @@ class EditRoomViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        title = "Edit room informations"
         self.avatar.image = self.roomImage;
         self.avatar.tintColor = self.roomImageTint;
         if let room = room {
             nameTextField.text = room.displayName
+            topicTextField.text = room.topic
             ownerNameLabel.text = room.isMyRoom ? "Me" : room.creator.displayName
             nameTextField.isEnabled = room.isMyRoom
+            topicTextField.isEnabled = room.isMyRoom
             updateButton.isEnabled = room.isMyRoom
         }
     }
@@ -58,10 +62,11 @@ class EditRoomViewController: UIViewController {
     }
 
     @IBAction func updateAction(_ sender: Any) {
-        if let name = nameTextField.text, let room = room {
-            roomsManager.updateRoom(room, withName: name)
+        if let name = nameTextField.text, let topic = topicTextField.text, let room = room {
+            roomsManager.updateRoom(room, name: name, topic: topic)
         }
         nameTextField.resignFirstResponder()
+        topicTextField.resignFirstResponder()
     }
     
     @objc func didUpdateRoom(notification : NSNotification) {

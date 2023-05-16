@@ -79,7 +79,7 @@ class ContactsTableViewController: UITableViewController {
             return
         }
         
-        if let index = allObjects.index(of: contact) {
+        if let index = allObjects.firstIndex(of: contact) {
             allObjects[index] = contact
         } else {
             allObjects.append(contact)
@@ -118,7 +118,7 @@ class ContactsTableViewController: UITableViewController {
                 self.insert(contact)
             }
             else {
-                if let index = allObjects.index(of: contact) {
+                if let index = allObjects.firstIndex(of: contact) {
                     if (index != NSNotFound) {
                         self.allObjects.remove(at: index)
                     }
@@ -139,7 +139,7 @@ class ContactsTableViewController: UITableViewController {
             return
         }
         if let contact = notification.object as? Contact {
-            if let index = allObjects.index(of: contact) {
+            if let index = allObjects.firstIndex(of: contact) {
                 self.allObjects.remove(at: index)
             }
             if self.isViewLoaded && populated {

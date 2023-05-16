@@ -18,9 +18,9 @@ import Rainbow
 
 extension NSObject {
     func synchronized<T>(_ lockObj: AnyObject!, closure: () throws -> T) rethrows ->  T {
-        objc_sync_enter(lockObj)
+        objc_sync_enter(lockObj as Any)
         defer {
-            objc_sync_exit(lockObj)
+            objc_sync_exit(lockObj as Any)
         }
         return try closure()
     }
@@ -87,8 +87,8 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
         
         // If there is no conversation with this peer, create a new one
         if (theConversation != nil) {
-            if ((theConversation?.peer.displayName) != nil) {
-                self.title = theConversation?.peer.displayName;
+            if let displayName = theConversation?.peer?.displayName {
+                self.title = displayName;
             }
             conversationsManager.startConversation(with: peer){ (conversation : Optional<Conversation>, error : Optional<Error>)  in
                 if error != nil {
@@ -277,7 +277,7 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
         }
         UIView.beginAnimations(nil, context:nil)
         if let userInfo = notification.userInfo as? [String: Any] {
-            if let keyboardFrame = userInfo[UIKeyboardFrameEndUserInfoKey] as? NSValue {
+            if let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
                 let keyboardRectangle = keyboardFrame.cgRectValue
                 self.view.frame = CGRect(x: 0,  y: -keyboardRectangle.size.height, width: self.view.frame.size.width, height: self.view.frame.size.height)
                 UIView.commitAnimations()

@@ -94,8 +94,8 @@ class ConversationsTableViewController: UITableViewController {
         }
         let theConversation = notification.object as! Conversation
         if (theConversation.conversationId != nil) {
-            if (allConversations.index(of: theConversation) == nil) {
-                if(theConversation.peer.displayName != nil) {
+            if (allConversations.firstIndex(of: theConversation) == nil) {
+                if(theConversation.peer?.displayName != nil) {
                     allConversations.append(theConversation)
                 }
             }
@@ -121,7 +121,7 @@ class ConversationsTableViewController: UITableViewController {
             return
         }
         let theConversation = notification.object as! Conversation
-        if let index = allConversations.index(of: theConversation) {
+        if let index = allConversations.firstIndex(of: theConversation) {
             if (index != NSNotFound) {
                 allConversations.remove(at: index)
             }
