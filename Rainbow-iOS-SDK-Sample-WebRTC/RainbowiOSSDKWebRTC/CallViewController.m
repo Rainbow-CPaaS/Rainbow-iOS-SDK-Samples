@@ -29,7 +29,7 @@
 @property (strong, nonatomic) RTCVideoTrack *localVideoTrack;
 @property (strong, nonatomic) RTCVideoTrack *remoteVideoTrack;
 
-@property (strong, nonatomic) RTCCameraVideoCapturer *cameraVideoCapturer;
+@property (strong, nonatomic) AVCaptureSession *cameraCaptureSession;
 
 @property (nonatomic) BOOL isCallEtablished;
 @end
@@ -303,65 +303,6 @@
         NSLog(@"didRefuseMicrophone notification");
     }
 }
-#pragma mark - CaptureSession Settings
-
--(void)startCapturer {
-    AVCaptureDevicePosition position = AVCaptureDevicePositionFront;
-    AVCaptureDevice *device = [self findDeviceForPosition:position];
-    AVCaptureDeviceFormat *format = [self selectFormatForDevice:device];
-    
-    if (format == nil) {
-        RTCLogError(@"No valid formats for device %@", device);
-        NSAssert(NO, @"");
-        
-        return;
-    }
-    
-    NSInteger fps = [self selectFpsForFormat:format];
-    
-    [self.cameraVideoCapturer startCaptureWithDevice:device format:format fps:fps];
-}
-
-- (AVCaptureDevice *)findDeviceForPosition:(AVCaptureDevicePosition)position {
-    NSArray<AVCaptureDevice *> *captureDevices = [RTCCameraVideoCapturer captureDevices];
-    for (AVCaptureDevice *device in captureDevices) {
-        if (device.position == position) {
-            return device;
-        }
-    }
-    return captureDevices[0];
-}
-
-- (NSInteger)selectFpsForFormat:(AVCaptureDeviceFormat *)format {
-    Float64 maxFramerate = 0;
-    for (AVFrameRateRange *fpsRange in format.videoSupportedFrameRateRanges) {
-        maxFramerate = fmax(maxFramerate, fpsRange.maxFrameRate);
-    }
-    return maxFramerate;
-}
-
-- (AVCaptureDeviceFormat *)selectFormatForDevice:(AVCaptureDevice *)device {
-    NSArray<AVCaptureDeviceFormat *> *formats =
-    [RTCCameraVideoCapturer supportedFormatsForDevice:device];
-    int targetWidth = 640;
-    int targetHeight = 480;
-    AVCaptureDeviceFormat *selectedFormat = nil;
-    int currentDiff = INT_MAX;
-    
-    for (AVCaptureDeviceFormat *format in formats) {
-        CMVideoDimensions dimension = CMVideoFormatDescriptionGetDimensions(format.formatDescription);
-        FourCharCode pixelFormat = CMFormatDescriptionGetMediaSubType(format.formatDescription);
-        int diff = abs(targetWidth - dimension.width) + abs(targetHeight - dimension.height);
-        if (diff < currentDiff) {
-            selectedFormat = format;
-            currentDiff = diff;
-        } else if (diff == currentDiff && pixelFormat == [_cameraVideoCapturer preferredOutputPixelFormat]) {
-            selectedFormat = format;
-        }
-    }
-    
-    return selectedFormat;
-}
 
 #pragma mark - Local video call notifications
 
@@ -397,8 +338,7 @@
         return;
     }
     
-    self.cameraVideoCapturer = (RTCCameraVideoCapturer *) notification.object;
-    [self startCapturer];
+    self.cameraCaptureSession = (AVCaptureSession *) notification.object;
 }
 
 -(void)didAddLocalVideoTrack:(NSNotification *) notification {
@@ -425,7 +365,7 @@
         source = (RTCVideoSource*)localVideoTrack.source;
     }
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didStartCaptureSession:) name:AVCaptureSessionDidStartRunningNotification object:nil];
-    self.localVideoView.captureSession = self.cameraVideoCapturer.captureSession;
+    self.localVideoView.captureSession = self.cameraCaptureSession;
     self.localVideoView.previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
     
     [self.addVideoButton setTitle:@"Stop video" forState:UIControlStateNormal];
