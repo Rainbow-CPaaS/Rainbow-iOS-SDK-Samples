@@ -82,8 +82,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didUpdateContact:) name:kContactsManagerServiceDidUpdateContact object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didRemoveContact:) name:kContactsManagerServiceDidRemoveContact object:nil];
     // RTC call notifications
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didUpdateCall:) name:kTelephonyServiceDidUpdateCallNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didAddCall:) name:kTelephonyServiceDidAddCallNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didUpdateCall:) name:kTelephonyServiceDidUpdateCall object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didAddCall:) name:kTelephonyServiceDidAddCall object:nil];
     if(!_populated) {
         [self didEndPopulatingMyNetwork:nil];
     }
@@ -95,8 +95,8 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kContactsManagerServiceDidUpdateContact object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kContactsManagerServiceDidRemoveContact object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kContactsManagerServiceDidEndPopulatingMyNetwork object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kTelephonyServiceDidUpdateCallNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kTelephonyServiceDidAddCallNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kTelephonyServiceDidUpdateCall object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kTelephonyServiceDidAddCall object:nil];
 }
 
 -(void) insertContact:(Contact *) contact {

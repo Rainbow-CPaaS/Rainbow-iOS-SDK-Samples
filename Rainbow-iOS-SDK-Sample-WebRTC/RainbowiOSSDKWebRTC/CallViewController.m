@@ -46,37 +46,37 @@
         _rtcService = [ServicesManager sharedInstance].rtcService;
         
         // Register for TelephonyService notifications
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didCallSuccess:) name:kTelephonyServiceDidAddCallNotification object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didUpdateCall:) name:kTelephonyServiceDidUpdateCallNotification object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didRemoveCall:) name:kTelephonyServiceDidRemoveCallNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didCallSuccess:) name:kTelephonyServiceDidAddCall object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didUpdateCall:) name:kTelephonyServiceDidUpdateCall object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didRemoveCall:) name:kTelephonyServiceDidRemoveCall object:nil];
         // Register for stats notifications
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statsUpdated:) name:kRTCServiceCallStatsNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statsUpdated:) name:kRTCServiceCallStats object:nil];
         // Local video notifications
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didAddCaptureSession:) name:kRTCServiceDidAddCaptureSessionNotification object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didAddLocalVideoTrack:) name:kRTCServiceDidAddLocalVideoTrackNotification object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didRemoveLocalVideoTrack:) name:kRTCServiceDidRemoveLocalVideoTrackNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didAddCaptureSession:) name:kRTCServiceDidAddCaptureSession object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didAddLocalVideoTrack:) name:kRTCServiceDidAddLocalVideoTrack object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didRemoveLocalVideoTrack:) name:kRTCServiceDidRemoveLocalVideoTrack object:nil];
         // Remote video notifications
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didAddRemoteVideoTrack:) name:kRTCServiceDidAddRemoteVideoTrackNotification object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didRemoveRemoteVideoTrack:) name:kRTCServiceDidRemoveRemoteVideoTrackNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didAddRemoteVideoTrack:) name:kRTCServiceDidAddRemoteVideoTrack object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didRemoveRemoteVideoTrack:) name:kRTCServiceDidRemoveRemoteVideoTrack object:nil];
         // Microphone notifications
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didAllowMicrophone:) name:kRTCServiceDidAllowMicrophoneNotification object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didRefuseMicrophone:) name:kRTCServiceDidRefuseMicrophoneNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didAllowMicrophone:) name:kRTCServiceDidAllowMicrophone object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didRefuseMicrophone:) name:kRTCServiceDidRefuseMicrophone object:nil];
     }
     return self;
 }
 
 -(void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kTelephonyServiceDidAddCallNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kTelephonyServiceDidUpdateCallNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kTelephonyServiceDidRemoveCallNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kRTCServiceCallStatsNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kRTCServiceDidAddCaptureSessionNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kRTCServiceDidAddLocalVideoTrackNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kRTCServiceDidAddRemoteVideoTrackNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kRTCServiceDidRemoveLocalVideoTrackNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kRTCServiceDidRemoveRemoteVideoTrackNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kRTCServiceDidAllowMicrophoneNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kRTCServiceDidRefuseMicrophoneNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kTelephonyServiceDidAddCall object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kTelephonyServiceDidUpdateCall object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kTelephonyServiceDidRemoveCall object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kRTCServiceCallStats object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kRTCServiceDidAddCaptureSession object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kRTCServiceDidAddLocalVideoTrack object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kRTCServiceDidAddRemoteVideoTrack object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kRTCServiceDidRemoveLocalVideoTrack object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kRTCServiceDidRemoveRemoteVideoTrack object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kRTCServiceDidAllowMicrophone object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kRTCServiceDidRefuseMicrophone object:nil];
     
     _currentCall = nil;
     _rtcService = nil;
@@ -184,15 +184,11 @@
         [self.remoteVideoTrack removeRenderer:self.remoteVideoView];
         self.remoteVideoTrack = nil;
         [self.remoteVideoView renderFrame:nil];
-        
-        RTCMediaStream *videoStream = [self.rtcService remoteVideoStreamForCall:self.currentCall];
-        if(videoStream && videoStream.videoTracks && [videoStream.videoTracks count] > 0) {
-            RTCVideoTrack *videoTrack = [videoStream.videoTracks objectAtIndex:0];
-            self.remoteVideoTrack = videoTrack;
-            [self.remoteVideoTrack addRenderer:self.remoteVideoView];
-            self.remoteVideoView.hidden = NO;
-            [self.view setNeedsLayout];
-        }
+        RTCVideoTrack *videoTrack = [self.rtcService remoteVideoTrackForCall:self.currentCall];
+        self.remoteVideoTrack = videoTrack;
+        [self.remoteVideoTrack addRenderer:self.remoteVideoView];
+        self.remoteVideoView.hidden = NO;
+        [self.view setNeedsLayout];
     }
 }
 
@@ -416,8 +412,7 @@
     NSLog(@"didAddLocalVideoTrack notification");
     RTCVideoTrack *localVideoTrack = (RTCVideoTrack *) notification.object;
     if(!localVideoTrack){
-        RTCMediaStream *localStream = [self.rtcService localVideoStreamForCall:self.currentCall];
-        localVideoTrack = localStream.videoTracks[0];
+        localVideoTrack = [self.rtcService localVideoTrackForCall:self.currentCall];
     }
     if(self.localVideoTrack == localVideoTrack)
         return;
