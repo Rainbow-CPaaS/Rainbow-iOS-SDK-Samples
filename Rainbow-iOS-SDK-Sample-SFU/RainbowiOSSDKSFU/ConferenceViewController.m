@@ -106,6 +106,8 @@
     NSDictionary *userInfo = (NSDictionary *)notification.object;
     Conference *conference = [userInfo objectForKey:kConferenceKey];
     
+    NSLog(@"Conference '%@' was updated", conference.description);
+    
     [self updateParticipants];
     
     if([self isViewLoaded]){

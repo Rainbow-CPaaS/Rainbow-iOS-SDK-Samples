@@ -69,7 +69,7 @@
         // disconnect should not be called on the Main thread
         dispatch_group_t lock = dispatch_group_create();
         dispatch_group_enter(lock);
-        dispatch_async(dispatch_get_global_queue( QOS_CLASS_UTILITY, 0), ^{
+        dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0), ^{
             [[ServicesManager sharedInstance].loginManager disconnect];
             dispatch_group_leave(lock);
         });

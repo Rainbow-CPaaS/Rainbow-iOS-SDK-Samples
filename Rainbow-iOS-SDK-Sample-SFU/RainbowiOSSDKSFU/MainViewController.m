@@ -142,7 +142,7 @@
     if((room.isMyRoom && room.myStatusInRoom != ParticipantStatusUnsubscribed) ||
        (room.myStatusInRoom == ParticipantStatusAccepted && room.conference.isActive)){
         [self insertRoom:room];
-        [self.roomsManager fetchRoomDetails:room];
+        [self.roomsManager fetchRoomWithRainbowId:room.rainbowID withCompletionHandler:nil];
         
         if([self isViewLoaded])
             [self.tableView reloadData];
