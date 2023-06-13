@@ -66,7 +66,7 @@
             self.closedOrPublicSwitch.selectedSegmentIndex = 1;
         }
         
-        [self.channelsManager getFirstUsersFromChannel:self.channel completionHandler:^(NSArray<ChannelUser *> *users, NSError *error) {
+        [self.channelsManager fetchUsersFromChannel:self.channel filterType:ChannelUserFilterTypeAll offset:0 count:16 withBlock:^(NSArray<ChannelUser *> *users, int total, NSError *error) {
             if(error){
                 NSLog(@"getFirstUsersFromChannel returned a error: %@", [error localizedDescription]);
             } else {
@@ -98,7 +98,7 @@
 
 -(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
     ChannelUserTableViewCell *channelUserCell = (ChannelUserTableViewCell *)cell;
-    channelUserCell.name.text = self.channelUsers[indexPath.row].displayName;
+    channelUserCell.name.text = self.channelUsers[indexPath.row].contact.displayName;
 }
 
 @end

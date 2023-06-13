@@ -59,7 +59,7 @@
         [self.passwordTextField setText:[[ServicesManager sharedInstance].myUser password]];
         dispatch_group_t group = dispatch_group_create();
         dispatch_group_enter(group);
-        dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY, 0), ^{
+        dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0), ^{
             [[ServicesManager sharedInstance].loginManager disconnect];
             dispatch_group_leave(group);
         });

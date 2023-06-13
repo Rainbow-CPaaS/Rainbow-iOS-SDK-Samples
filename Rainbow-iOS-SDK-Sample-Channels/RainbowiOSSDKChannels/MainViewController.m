@@ -44,7 +44,7 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didRemoveChannel:) name:kChannelsServiceDidRemoveChannel object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didUpdateChannel:) name:kChannelsServiceDidUpdateChannel object:nil];
         
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveItem:) name: kChannelsServiceDidReceiveItem object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveItem:) name: kChannelsServiceDidReceiveNewItem object:nil];
     }
     return self;
 }
@@ -58,7 +58,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kChannelsServiceDidRemoveChannel object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kChannelsServiceDidUpdateChannel object:nil];
     
-    [[NSNotificationCenter defaultCenter] removeObserver:self name: kChannelsServiceDidReceiveItem object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name: kChannelsServiceDidReceiveNewItem object:nil];
 }
 
 -(void)viewWillAppear:(BOOL)animated {
