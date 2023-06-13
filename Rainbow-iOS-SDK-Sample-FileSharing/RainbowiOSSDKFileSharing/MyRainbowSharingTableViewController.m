@@ -1,10 +1,18 @@
-//
-//  MyRainbowSharingTableViewController.m
-//  RainbowiOSSDKFileSharing
-//
-//  Created by Vladimir Vyskocil on 26/06/2019.
-//  Copyright © 2019 ALE. All rights reserved.
-//
+/*
+ * Rainbow SDK sample
+ *
+ * Copyright (c) 2018, ALE International
+ * All rights reserved.
+ *
+ * ALE International Proprietary Information
+ *
+ * Contains proprietary/trade secret information which is the property of
+ * ALE International and must not be made available to, or copied or used by
+ * anyone outside ALE International without its written authorization
+ *
+ * Not to be disclosed or used except in accordance with applicable agreements.
+ */
+
 
 #import "MyRainbowSharingTableViewController.h"
 #import <Rainbow/Rainbow.h>
@@ -13,6 +21,7 @@
 @property (nonatomic, weak) IBOutlet UILabel *quotaValue;
 
 @property (strong, nonatomic) FileSharingService *fileSharingService;
+@property (strong, nonatomic) NSArray<File *> *sharedFiles;
 @end
 
 @implementation MyRainbowSharingTableViewController
@@ -28,8 +37,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self.fileSharingService refreshSharedFileListFromOffset:0 withLimit:500 withTypeMIME:FilterFilesAll withCompletionHandler:^(NSArray<File *> *files, NSUInteger offset, NSUInteger total, NSError *error) {
+    [self.fileSharingService fetchMyFilesFromOffset:0 withLimit:500 withTypeMIME:FilterFilesAll withSortField:FileSortFieldDate withCompletionHandler:^(NSArray<File *> *files, NSUInteger total, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^{
+            self.sharedFiles = files;
             [self.tableView reloadData];
         });
     }];
@@ -48,7 +58,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.fileSharingService.files.count;
+    return self.sharedFiles.count;
 }
 
 -(NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
@@ -62,7 +72,7 @@
 #pragma mark - UITableViewDelegate
 
 -(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-    File *file = self.fileSharingService.files[indexPath.row];
+    File *file = self.sharedFiles[indexPath.row];
     cell.textLabel.text = file.fileName;
     cell.detailTextLabel.text = [NSString stringWithFormat:@"Type: %@  Size: %lu", file.mimeType, file.size];
     if(file.thumbnailData){

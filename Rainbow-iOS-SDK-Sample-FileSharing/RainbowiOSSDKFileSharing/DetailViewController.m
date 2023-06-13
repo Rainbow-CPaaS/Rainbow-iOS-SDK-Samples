@@ -63,7 +63,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    [self.fileSharingService loadSharedFilesWithPeer:self.contact fromOffset:0 completionHandler:^(NSArray<File *> *files, NSError *error) {
+    [self.fileSharingService fetchAllFilesWithPeer:self.contact fromOffset:0 withLimit:500 withTypeMIME:FilterFilesAll withSortField:FileSortFieldDate completionHandler:^(NSArray<File *> *files, NSUInteger total, NSError *error) {
         if(error){
             NSLog(@"Error while loading shared files: %@", [error localizedDescription]);
         } else {

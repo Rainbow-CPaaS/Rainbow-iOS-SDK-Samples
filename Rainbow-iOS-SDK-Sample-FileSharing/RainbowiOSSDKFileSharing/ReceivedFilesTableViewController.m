@@ -1,10 +1,17 @@
-//
-//  ReceivedFilesTableViewController.m
-//  RainbowiOSSDKFileSharing
-//
-//  Created by Vladimir Vyskocil on 26/06/2019.
-//  Copyright © 2019 ALE. All rights reserved.
-//
+/*
+ * Rainbow SDK sample
+ *
+ * Copyright (c) 2018, ALE International
+ * All rights reserved.
+ *
+ * ALE International Proprietary Information
+ *
+ * Contains proprietary/trade secret information which is the property of
+ * ALE International and must not be made available to, or copied or used by
+ * anyone outside ALE International without its written authorization
+ *
+ * Not to be disclosed or used except in accordance with applicable agreements.
+ */
 
 #import "ReceivedFilesTableViewController.h"
 #import <Rainbow/Rainbow.h>
@@ -34,7 +41,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self.fileSharingService loadSharedFilesWithPeer:nil fromOffset:0 completionHandler:^(NSArray<File *> *files, NSError *error) {
+    [self.fileSharingService fetchMyReceivedFilesFromOffset:0 withLimit:500 withTypeMIME:FilterFilesAll withSortField:FileSortFieldDate withCompletionHandler:^(NSArray<File *> *files, NSUInteger total, NSError *error) {
         if(error){
             NSLog(@"Error while loading shared files: %@", [error localizedDescription]);
         } else {

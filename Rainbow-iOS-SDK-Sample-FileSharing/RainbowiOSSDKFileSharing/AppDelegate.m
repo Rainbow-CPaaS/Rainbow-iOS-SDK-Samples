@@ -14,10 +14,11 @@
  */
 
 #import "AppDelegate.h"
-#import "Rainbow/Rainbow.h"
+#import <Rainbow/Rainbow.h>
 
-#define kAppID @"450ed8a039dc11e9a7c0997308051c7d"
-#define kSecretKey @"hb2XFta94gsoOsKKqR5gSic9vbDJIArbkmee6sHpo0pEzQuTAlts8j5I2cAeBxW3"
+// Application ID and secret key
+#define kAppID @"Put here the application ID"
+#define kSecretKey @"Put here the secret key"
 
 @implementation AppDelegate
 
