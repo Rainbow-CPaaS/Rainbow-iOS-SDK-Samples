@@ -3,18 +3,18 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 48;
+	objectVersion = 53;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E51716742A38ACBB001FA80F /* Rainbow.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = E51716722A38ACBB001FA80F /* Rainbow.xcframework */; };
+		E51716752A38ACBB001FA80F /* WebRTC.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = E51716732A38ACBB001FA80F /* WebRTC.xcframework */; };
+		E51716762A38ACC4001FA80F /* Rainbow.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E51716722A38ACBB001FA80F /* Rainbow.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		E51716772A38ACC4001FA80F /* WebRTC.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E51716732A38ACBB001FA80F /* WebRTC.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E54400D6207D5EF4008B90F2 /* hangup.wav in Resources */ = {isa = PBXBuildFile; fileRef = E54400D3207D5EF4008B90F2 /* hangup.wav */; };
 		E54400D7207D5EF4008B90F2 /* outgoing-rings.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = E54400D4207D5EF4008B90F2 /* outgoing-rings.mp3 */; };
 		E54400D8207D5EF4008B90F2 /* incoming-call.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = E54400D5207D5EF4008B90F2 /* incoming-call.mp3 */; };
 		E55968D1206D33E50080D632 /* ContactTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E55968D0206D33E50080D632 /* ContactTableViewCell.m */; };
-		E5A15B82215163600023AFDA /* Rainbow.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E5A15B80215163600023AFDA /* Rainbow.framework */; };
-		E5A15B83215163600023AFDA /* WebRTC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E5A15B81215163600023AFDA /* WebRTC.framework */; };
-		E5A15B84215163890023AFDA /* Rainbow.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E5A15B80215163600023AFDA /* Rainbow.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		E5A15B852151639A0023AFDA /* WebRTC.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E5A15B81215163600023AFDA /* WebRTC.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E5D2BFA52069314700EEDB5F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E5D2BFA42069314700EEDB5F /* AppDelegate.m */; };
 		E5D2BFA82069314700EEDB5F /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E5D2BFA72069314700EEDB5F /* LoginViewController.m */; };
 		E5D2BFAB2069314700EEDB5F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E5D2BFA92069314700EEDB5F /* Main.storyboard */; };
@@ -31,8 +31,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				E5A15B852151639A0023AFDA /* WebRTC.framework in Embed Frameworks */,
-				E5A15B84215163890023AFDA /* Rainbow.framework in Embed Frameworks */,
+				E51716762A38ACC4001FA80F /* Rainbow.xcframework in Embed Frameworks */,
+				E51716772A38ACC4001FA80F /* WebRTC.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -40,14 +40,14 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		E51716722A38ACBB001FA80F /* Rainbow.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Rainbow.xcframework; path = RainbowiOSSDKBackground/Carthage/Build/iOS/Rainbow.xcframework; sourceTree = "<group>"; };
+		E51716732A38ACBB001FA80F /* WebRTC.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = WebRTC.xcframework; path = RainbowiOSSDKBackground/Carthage/Build/iOS/WebRTC.xcframework; sourceTree = "<group>"; };
 		E54400D3207D5EF4008B90F2 /* hangup.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = hangup.wav; sourceTree = "<group>"; };
 		E54400D4207D5EF4008B90F2 /* outgoing-rings.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "outgoing-rings.mp3"; sourceTree = "<group>"; };
 		E54400D5207D5EF4008B90F2 /* incoming-call.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "incoming-call.mp3"; sourceTree = "<group>"; };
 		E55968CF206D33E50080D632 /* ContactTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ContactTableViewCell.h; sourceTree = "<group>"; };
 		E55968D0206D33E50080D632 /* ContactTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ContactTableViewCell.m; sourceTree = "<group>"; };
 		E55F0D5B215A9257005771D3 /* RainbowiOSSDKBackground.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RainbowiOSSDKBackground.entitlements; sourceTree = "<group>"; };
-		E5A15B80215163600023AFDA /* Rainbow.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Rainbow.framework; path = RainbowiOSSDKBackground/Carthage/Build/iOS/Rainbow.framework; sourceTree = "<group>"; };
-		E5A15B81215163600023AFDA /* WebRTC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebRTC.framework; path = RainbowiOSSDKBackground/Carthage/Build/iOS/WebRTC.framework; sourceTree = "<group>"; };
 		E5D2BFA02069314700EEDB5F /* RainbowiOSSDKBackground.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RainbowiOSSDKBackground.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E5D2BFA32069314700EEDB5F /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		E5D2BFA42069314700EEDB5F /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -67,8 +67,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E5A15B82215163600023AFDA /* Rainbow.framework in Frameworks */,
-				E5A15B83215163600023AFDA /* WebRTC.framework in Frameworks */,
+				E51716742A38ACBB001FA80F /* Rainbow.xcframework in Frameworks */,
+				E51716752A38ACBB001FA80F /* WebRTC.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -127,8 +127,8 @@
 		E5D2BFB9206931B900EEDB5F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				E5A15B80215163600023AFDA /* Rainbow.framework */,
-				E5A15B81215163600023AFDA /* WebRTC.framework */,
+				E51716722A38ACBB001FA80F /* Rainbow.xcframework */,
+				E51716732A38ACBB001FA80F /* WebRTC.xcframework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -160,7 +160,8 @@
 		E5D2BF982069314700EEDB5F /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0930;
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
 				ORGANIZATIONNAME = ALE;
 				TargetAttributes = {
 					E5D2BF9F2069314700EEDB5F = {
@@ -268,6 +269,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -294,7 +296,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -326,6 +328,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -346,7 +349,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
@@ -362,10 +365,14 @@
 				DEVELOPMENT_TEAM = BT9E66P673;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
+					"$(PROJECT_DIR)/Frameworks",
 					"$(PROJECT_DIR)/RainbowiOSSDKBackground/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/RainbowiOSSDKBackground/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.alcatellucent.otcl.RainbowiOSSDKBackground;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -381,10 +388,14 @@
 				DEVELOPMENT_TEAM = BT9E66P673;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
+					"$(PROJECT_DIR)/Frameworks",
 					"$(PROJECT_DIR)/RainbowiOSSDKBackground/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/RainbowiOSSDKBackground/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.alcatellucent.otcl.RainbowiOSSDKBackground;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";

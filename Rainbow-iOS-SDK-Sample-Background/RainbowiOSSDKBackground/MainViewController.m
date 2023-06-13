@@ -252,7 +252,7 @@
 -(void)sendIM:(NSString *)text to:(Contact *)contact {
     [[ServicesManager sharedInstance].conversationsManagerService startConversationWithPeer:contact withCompletionHandler:^(Conversation *conversation, NSError *error) {
         if(!error){
-            [[ServicesManager sharedInstance].conversationsManagerService sendMessage:text fileAttachment:nil to:conversation completionHandler:^(Message *message, NSError *error) {
+            [[ServicesManager sharedInstance].conversationsManagerService sendTextMessage:text files:nil mentions:nil priority:MessagePriorityDefault repliedMessage:nil conversation:conversation completionHandler:^(Message *message, NSError *error) {
                 if(!error){
                     NSLog(@"[MainViewController] message '%@' sent to %@, XMPP message [ %@ ]",text , contact.displayName, message);
                     NSLog(@"[MainViewController] XMPP message [ %@ ]", [message debugDescription]);
@@ -267,7 +267,7 @@
                 } else {
                     NSLog(@"[MainViewController] Can't send message to the conversation error: %@",[error description]);
                 }
-            } attachmentUploadProgressHandler:nil];
+            }];
         } else {
             NSLog(@"[MainViewController] Can't create the new conversation, error: %@", [error description]);
         }

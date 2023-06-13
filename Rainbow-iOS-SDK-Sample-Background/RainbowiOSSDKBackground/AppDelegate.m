@@ -14,7 +14,7 @@
  */
 
 #import "AppDelegate.h"
-#import "Rainbow/Rainbow.h"
+#import <Rainbow/Rainbow.h>
 
 // Application ID and secret key
 #define kAppID @"Put here the application ID"
@@ -39,7 +39,7 @@
     self.isReconnecting = NO;
     [[ServicesManager sharedInstance] setAppID:kAppID secretKey:kSecretKey];
     [[ServicesManager sharedInstance].rtcService requestMicrophoneAccess];
-    [[ServicesManager sharedInstance].rtcService startCallKitWithIncomingSoundName:@"incoming-call.mp3" iconTemplate:@"logo" appName:[self applicationName]];
+    [[ServicesManager sharedInstance].rtcService startCallKitWithIncomingSoundName:@"incoming-call.mp3" iconTemplate:@"logo"];
     [ServicesManager sharedInstance].rtcService.appSoundOutgoingCall = @"outgoing-rings.mp3";
     [ServicesManager sharedInstance].rtcService.appSoundHangup = @"hangup.wav";
 
