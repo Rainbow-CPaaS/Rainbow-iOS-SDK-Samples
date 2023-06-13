@@ -10,9 +10,10 @@ For informations about the login process you should look for [SDK for iOS: Getti
 
 ### WebRTC conferences
 ---
-The aim of this sample project is to demonstrate WebRTC conferences. After the login screen the rooms you are the owner and the ones you have accepted the invitation and where a conference is started by the organizer are listed. You could select one of theses rooms and you should be connected to the conference, if you are the owner of the room the conference will be started.
+The aim of this sample project is to demonstrate WebRTC audio conferences. After the login screen, the rooms you are the owner and the ones you have accepted the invitation and where a conference is started by the organizer, are listed. You could select one of theses rooms and you should be connected to the conference, if you are the owner of the room the conference will be started.
 
-A sample screenshot:
+Here are sample screenshots:
 
-![screenshot](screenshot.png)
+![screenshot](screenshot.png) &nbsp;&nbsp;&nbsp;&nbsp;
+![screenshot2](screenshot2.png)
 
