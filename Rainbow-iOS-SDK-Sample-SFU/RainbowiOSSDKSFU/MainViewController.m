@@ -18,7 +18,6 @@
 #import "RoomTableViewCell.h"
 #import "UIImage+Room.h"
 #import "LoginViewController.h"
-#import "CallViewController.h"
 #import "ConferenceViewController.h"
 
 @interface MainViewController ()

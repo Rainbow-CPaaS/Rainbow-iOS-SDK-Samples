@@ -10,7 +10,6 @@
 		E54400D6207D5EF4008B90F2 /* hangup.wav in Resources */ = {isa = PBXBuildFile; fileRef = E54400D3207D5EF4008B90F2 /* hangup.wav */; };
 		E54400D7207D5EF4008B90F2 /* outgoing-rings.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = E54400D4207D5EF4008B90F2 /* outgoing-rings.mp3 */; };
 		E54400D8207D5EF4008B90F2 /* incoming-call.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = E54400D5207D5EF4008B90F2 /* incoming-call.mp3 */; };
-		E54400DB207E00DD008B90F2 /* CallViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E54400DA207E00DD008B90F2 /* CallViewController.m */; };
 		E55968D1206D33E50080D632 /* RoomTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E55968D0206D33E50080D632 /* RoomTableViewCell.m */; };
 		E5CF2DF4237077C300E8ECD2 /* UIImage+Room.m in Sources */ = {isa = PBXBuildFile; fileRef = E5CF2DF3237077C300E8ECD2 /* UIImage+Room.m */; };
 		E5CF2DF723718BC700E8ECD2 /* ParticipantTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E5CF2DF623718BC700E8ECD2 /* ParticipantTableViewCell.m */; };
@@ -47,8 +46,6 @@
 		E54400D3207D5EF4008B90F2 /* hangup.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = hangup.wav; sourceTree = "<group>"; };
 		E54400D4207D5EF4008B90F2 /* outgoing-rings.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "outgoing-rings.mp3"; sourceTree = "<group>"; };
 		E54400D5207D5EF4008B90F2 /* incoming-call.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "incoming-call.mp3"; sourceTree = "<group>"; };
-		E54400D9207E00DD008B90F2 /* CallViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CallViewController.h; sourceTree = "<group>"; };
-		E54400DA207E00DD008B90F2 /* CallViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CallViewController.m; sourceTree = "<group>"; };
 		E55968CF206D33E50080D632 /* RoomTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RoomTableViewCell.h; sourceTree = "<group>"; };
 		E55968D0206D33E50080D632 /* RoomTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RoomTableViewCell.m; sourceTree = "<group>"; };
 		E5CF2DF2237077C300E8ECD2 /* UIImage+Room.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIImage+Room.h"; sourceTree = "<group>"; };
@@ -126,8 +123,6 @@
 				E5CF2DF3237077C300E8ECD2 /* UIImage+Room.m */,
 				E55968CF206D33E50080D632 /* RoomTableViewCell.h */,
 				E55968D0206D33E50080D632 /* RoomTableViewCell.m */,
-				E54400D9207E00DD008B90F2 /* CallViewController.h */,
-				E54400DA207E00DD008B90F2 /* CallViewController.m */,
 				E5CF2DF523718BC700E8ECD2 /* ParticipantTableViewCell.h */,
 				E5CF2DF623718BC700E8ECD2 /* ParticipantTableViewCell.m */,
 				E5CF2DF823718C7F00E8ECD2 /* ConferenceViewController.h */,
@@ -227,7 +222,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E54400DB207E00DD008B90F2 /* CallViewController.m in Sources */,
 				E5D2BFA82069314700EEDB5F /* LoginViewController.m in Sources */,
 				E5D2BFB32069314700EEDB5F /* main.m in Sources */,
 				E5CF2DFA23718C7F00E8ECD2 /* ConferenceViewController.m in Sources */,
