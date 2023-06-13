@@ -228,10 +228,9 @@
 
 -(void)joinConferenceInRoom:(Room *)room {
     ParticipantRole role = room.conference.isMyConference ? ParticipantRoleModerator : ParticipantRoleMember;
-    [[ServicesManager sharedInstance].conferencesManagerService startAndJoinConferenceWithRoom:room dialOut:NO phoneNumber:nil role:role completionBlock:^(NSError *error) {
+    [[ServicesManager sharedInstance].conferencesManagerService startAndJoinConferenceWithRoom:room role:role completionBlock:^(NSError *error) {
         if(error){
             [self showErrorPopupWithTitle:@"Conference" message:@"Error while trying to join the conference"];
-        } else {
         }
     }];
 }

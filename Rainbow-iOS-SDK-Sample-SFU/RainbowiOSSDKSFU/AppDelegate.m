@@ -20,15 +20,6 @@
 #define kSecretKey @""
 
 @implementation AppDelegate
-
-+(void)initialize {
-    if (self == [AppDelegate self]) {
-        [super initialize];
-        
-        [[LogsRecorder sharedInstance] startRecord];
-    }
-}
-
 -(NSString *)applicationName {
     static NSString *_appName;
     static dispatch_once_t onceToken;
@@ -47,7 +38,7 @@
 
     [[ServicesManager sharedInstance] setAppID:kAppID secretKey:kSecretKey];
     [[ServicesManager sharedInstance].rtcService requestMicrophoneAccess];
-    [[ServicesManager sharedInstance].rtcService startCallKitWithIncomingSoundName:@"incoming-call.mp3" iconTemplate:@"logo" appName:[self applicationName]];
+    [[ServicesManager sharedInstance].rtcService startCallKitWithIncomingSoundName:@"incoming-call.mp3" iconTemplate:@"logo"];
     [ServicesManager sharedInstance].rtcService.appSoundOutgoingCall = @"outgoing-rings.mp3";
     [ServicesManager sharedInstance].rtcService.appSoundHangup = @"hangup.wav";
 
