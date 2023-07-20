@@ -22,6 +22,7 @@ class RoomsTableViewController: UITableViewController {
     var populated = false
     var selectedIndex : IndexPath? = nil
     var allObjects : [Room] = []
+    
     @IBOutlet weak var logoutButton: UIBarButtonItem!
     
     required init?(coder aDecoder: NSCoder) {
@@ -179,25 +180,26 @@ class RoomsTableViewController: UITableViewController {
         performSegue(withIdentifier: "EditRoomSegue", sender: self)
     }
 
-    override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+    override func tableView(_ tableView : UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let room = allObjects[indexPath.row]
-        
-        let delete = UITableViewRowAction(style: .destructive, title: room.isMyRoom ? "Delete" : "Leave" , handler: { (action, indexPath) -> Void in
-            if room.isMyRoom {
-                self.roomsManager.deleteRoom(room) {_ in
+        let swipeActions = UISwipeActionsConfiguration(actions: [
+            UIContextualAction(style: .destructive, title: room.isMyRoom ? "Delete" : "Leave", handler: { _,_,_ in
+                if room.isMyRoom {
+                    self.roomsManager.deleteRoom(room) {_ in
+                    }
+                } else {
+                    self.roomsManager.leaveRoom(room) {_ in
+                    }
                 }
-            } else {
-                self.roomsManager.leaveRoom(room) {_ in
-                }
-            }
-        })
+            }),
+            
+            UIContextualAction(style: .normal, title: "Edit", handler: { _,_,_ in
+                self.selectedIndex = indexPath
+                self.performSegue(withIdentifier: "EditRoomSegue", sender: self)
+            })
+        ])
         
-        let edit = UITableViewRowAction(style: .normal, title: "Edit" , handler: { (action, indexPath) -> Void in
-            self.selectedIndex = indexPath
-            self.performSegue(withIdentifier: "EditRoomSegue", sender: self)
-        })
-        
-        return [delete, edit]
+        return swipeActions
     }
 
     // MARK: - Navigation

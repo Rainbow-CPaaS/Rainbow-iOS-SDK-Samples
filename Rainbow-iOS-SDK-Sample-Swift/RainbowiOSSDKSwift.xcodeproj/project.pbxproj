@@ -109,23 +109,55 @@
 				E54400F02084E055008B90F2 /* AppDelegate.swift */,
 				E54400F22084E055008B90F2 /* LoginViewController.swift */,
 				E54401092084F014008B90F2 /* MainViewController.swift */,
-				E5773BEB2099C4EF000BC714 /* ContactsTableViewController.swift */,
-				E5773BED2099C5CC000BC714 /* ContactTableViewCell.swift */,
-				E5773BEF2099F3D9000BC714 /* DetailViewController.swift */,
-				E565D9DB20AAD9640074597C /* ConversationsTableViewController.swift */,
-				E565D9DD20AADAB00074597C /* ConversationsTableViewCell.swift */,
-				E550289A248A8C0700A6B603 /* RoomsTableViewController.swift */,
-				E550289C248A8D4600A6B603 /* RoomsTableViewCell.swift */,
-				E550289E248AA53E00A6B603 /* EditRoomViewController.swift */,
-				E565D9E120AB3B670074597C /* ChatViewController.swift */,
-				E565D9E320AB3BB10074597C /* PeerTableViewCell.swift */,
-				E565D9E520AB3BDE0074597C /* MyUserTableViewCell.swift */,
+				E56AC8072A696C7A0081D533 /* Conversations tab */,
+				E56AC8062A696C5A0081D533 /* Contacts tab */,
+				E56AC8082A696C910081D533 /* Rooms tab */,
+				E56AC8092A696CD70081D533 /* Chat */,
 				E54400F42084E055008B90F2 /* Main.storyboard */,
 				E54400F92084E05A008B90F2 /* LaunchScreen.storyboard */,
 				E54400F72084E05A008B90F2 /* Assets.xcassets */,
 				E54400FC2084E05A008B90F2 /* Info.plist */,
 			);
 			path = RainbowiOSSDKSwift;
+			sourceTree = "<group>";
+		};
+		E56AC8062A696C5A0081D533 /* Contacts tab */ = {
+			isa = PBXGroup;
+			children = (
+				E5773BEB2099C4EF000BC714 /* ContactsTableViewController.swift */,
+				E5773BEF2099F3D9000BC714 /* DetailViewController.swift */,
+				E5773BED2099C5CC000BC714 /* ContactTableViewCell.swift */,
+			);
+			path = "Contacts tab";
+			sourceTree = "<group>";
+		};
+		E56AC8072A696C7A0081D533 /* Conversations tab */ = {
+			isa = PBXGroup;
+			children = (
+				E565D9DB20AAD9640074597C /* ConversationsTableViewController.swift */,
+				E565D9DD20AADAB00074597C /* ConversationsTableViewCell.swift */,
+			);
+			path = "Conversations tab";
+			sourceTree = "<group>";
+		};
+		E56AC8082A696C910081D533 /* Rooms tab */ = {
+			isa = PBXGroup;
+			children = (
+				E550289A248A8C0700A6B603 /* RoomsTableViewController.swift */,
+				E550289C248A8D4600A6B603 /* RoomsTableViewCell.swift */,
+				E550289E248AA53E00A6B603 /* EditRoomViewController.swift */,
+			);
+			path = "Rooms tab";
+			sourceTree = "<group>";
+		};
+		E56AC8092A696CD70081D533 /* Chat */ = {
+			isa = PBXGroup;
+			children = (
+				E565D9E120AB3B670074597C /* ChatViewController.swift */,
+				E565D9E320AB3BB10074597C /* PeerTableViewCell.swift */,
+				E565D9E520AB3BDE0074597C /* MyUserTableViewCell.swift */,
+			);
+			path = Chat;
 			sourceTree = "<group>";
 		};
 		E5D6117C25F77C9A0088E52B /* Frameworks */ = {
@@ -310,7 +342,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -365,7 +397,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;

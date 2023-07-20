@@ -39,6 +39,8 @@ class EditRoomViewController: UIViewController {
         super.viewDidLoad()
         
         title = "Edit room informations"
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Open", style: .plain, target: self, action: #selector(openConversation(_:)))
+        
         self.avatar.image = self.roomImage;
         self.avatar.tintColor = self.roomImageTint;
         if let room = room {
@@ -69,6 +71,19 @@ class EditRoomViewController: UIViewController {
         topicTextField.resignFirstResponder()
     }
     
+    @objc func openConversation(_ sender: Any) {
+        if let peer = self.room {
+            self.serviceManager.conversationsManagerService.startConversation(withPeer: peer) {(conversation : Optional<Conversation>, error : Optional<Error>)  in
+                if let error = error as? NSError {
+                    NSLog("Can't start the conversation, error: \(error.debugDescription)")
+                }
+                DispatchQueue.main.async {
+                    self.navigationController?.popViewController(animated: true)
+                }
+            }
+        }
+    }
+    
     @objc func didUpdateRoom(notification : NSNotification) {
         // Enforce that this method is called on the main thread
         if !Thread.isMainThread {
@@ -80,7 +95,7 @@ class EditRoomViewController: UIViewController {
         
         if let roomInfo = notification.object as? Dictionary<String, AnyObject> {
             let room = roomInfo[kRoomKey]! as! Room
-            NSLog("didUpdate room with name=%@", room.displayName)
+            NSLog("didUpdate room with name='\(room.displayName ?? "")'")
         } else {
             NSLog("didUpdate room without roomInfo !")
         }

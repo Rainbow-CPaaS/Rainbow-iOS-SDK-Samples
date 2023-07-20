@@ -17,7 +17,7 @@ import UIKit
 import Rainbow
 
 class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-    var contact : Contact? = nil
+    var contact : RainbowContact? = nil
     var contactImage : UIImage = UIImage.init(named: "Default_Avatar")!
     var contactImageTint = UIColor.clear
     
@@ -46,10 +46,10 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
         self.avatar.tintColor = self.contactImageTint;
         
         self.sectionHeaders = []
-        if (contact.phoneNumbers != nil) && contact.phoneNumbers.count>0 {
+        if contact.phoneNumbers.count>0 {
             self.sectionHeaders.append(phoneNumbersStr)
         }
-        if (contact.emailAddresses != nil) && contact.emailAddresses.count>0 {
+        if contact.emailAddresses.count>0 {
             self.sectionHeaders.append(eMailsStr)
         }
         
@@ -58,6 +58,8 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Open", style: .plain, target: self, action: #selector(openConversation(_:)))
         
         if let contact = self.contact {
             // Update the UI with already fetched informations
@@ -68,6 +70,19 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
         }
     }
 
+    @objc func openConversation(_ sender: Any) {
+        if let peer = contact {
+            ServicesManager.sharedInstance().conversationsManagerService.startConversation(withPeer: peer) {(conversation : Optional<Conversation>, error : Optional<Error>)  in
+                if let error = error as? NSError {
+                    NSLog("Can't start the conversation, error: \(error.debugDescription)")
+                }
+                DispatchQueue.main.async {
+                    self.navigationController?.popViewController(animated: true)
+                }
+            }
+        }
+    }
+    
     // MARK: - get contact info notification
     
     @objc func didGetInfo(notification : Notification) {
@@ -107,8 +122,9 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if let contact = self.contact {
             if self.sectionHeaders[indexPath.section] == phoneNumbersStr {
-                cell.textLabel?.text = contact.phoneNumbers[indexPath.row].label
-                cell.detailTextLabel?.text = contact.phoneNumbers[indexPath.row].number
+                let phoneNumbers = Array(contact.phoneNumbers)
+                cell.textLabel?.text = phoneNumbers[indexPath.row].label
+                cell.detailTextLabel?.text = phoneNumbers[indexPath.row].number
             } else if self.sectionHeaders[indexPath.section] == eMailsStr {
                 cell.textLabel?.text = contact.emailAddresses[indexPath.row].label
                 cell.detailTextLabel?.text = contact.emailAddresses[indexPath.row].address

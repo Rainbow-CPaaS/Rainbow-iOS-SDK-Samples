@@ -71,18 +71,23 @@ class ContactsTableViewController: UITableViewController {
         if contact == serviceManager.myUser.contact {
             return
         }
-        // Ignore contact not in roster
-        if !contact.isInRoster {
-            return
-        }
-        if contact.isBot {
-            return
-        }
         
-        if let index = allObjects.firstIndex(of: contact) {
-            allObjects[index] = contact
-        } else {
-            allObjects.append(contact)
+        // Only handle RainbowContact (no external contact)
+        if let rainbowContact = contact as? RainbowContact {
+            // Ignore contact not in roster
+            if !rainbowContact.isInRoster {
+                return
+            }
+            // Ignore bots
+            if rainbowContact.isBot {
+                return
+            }
+            
+            if let index = allObjects.firstIndex(of: contact) {
+                allObjects[index] = contact
+            } else {
+                allObjects.append(contact)
+            }
         }
     }
     
@@ -113,19 +118,20 @@ class ContactsTableViewController: UITableViewController {
         }
         
         if let userInfo = notification.object as? Dictionary<String, AnyObject> {
-            let contact = userInfo[kContactKey]! as! Contact
-            if contact.isInRoster {
-                self.insert(contact)
-            }
-            else {
-                if let index = allObjects.firstIndex(of: contact) {
-                    if (index != NSNotFound) {
-                        self.allObjects.remove(at: index)
+            if let contact = userInfo[kContactKey]! as? RainbowContact {
+                if contact.isInRoster {
+                    self.insert(contact)
+                }
+                else {
+                    if let index = allObjects.firstIndex(of: contact) {
+                        if (index != NSNotFound) {
+                            self.allObjects.remove(at: index)
+                        }
                     }
                 }
-            }
-            if self.isViewLoaded && populated {
-                self.tableView.reloadData()
+                if self.isViewLoaded && populated {
+                    self.tableView.reloadData()
+                }
             }
         }
     }
@@ -186,8 +192,8 @@ class ContactsTableViewController: UITableViewController {
         if let contactCell = cell as? ContactTableViewCell {
             let contact = allObjects[indexPath.row]
             contactCell.name.text = contact.fullName
-            if contact.photoData != nil {
-                contactCell.avatar.image = UIImage.init(data: contact.photoData)
+            if let photoData = contact.photoData {
+                contactCell.avatar.image = UIImage.init(data: photoData)
                 contactCell.avatar.tintColor = UIColor.clear
             } else {
                 contactCell.avatar.image = UIImage.init(named: "Default_Avatar")
@@ -207,8 +213,8 @@ class ContactsTableViewController: UITableViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if  segue.identifier == "ShowContactDetailSegue" {
             if let selectedIndex = self.selectedIndex {
-                if let vc = segue.destination as? DetailViewController {
-                    vc.contact = allObjects[selectedIndex.row]
+                if let vc = segue.destination as? DetailViewController, let contact =  allObjects[selectedIndex.row] as? RainbowContact {
+                    vc.contact = contact
                     if let cell = self.tableView.cellForRow(at: selectedIndex) as? ContactTableViewCell {
                         vc.contactImage = cell.avatar.image!
                         vc.contactImageTint = cell.avatar.tintColor

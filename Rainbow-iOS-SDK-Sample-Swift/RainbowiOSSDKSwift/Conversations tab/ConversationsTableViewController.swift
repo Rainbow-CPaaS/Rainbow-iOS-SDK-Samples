@@ -23,6 +23,7 @@ class ConversationsTableViewController: UITableViewController {
     var allConversations : [Conversation] = []
     var populated = false
     
+    
     @IBOutlet weak var logoutButton: UIBarButtonItem!
     
     required init?(coder aDecoder: NSCoder) {
@@ -95,9 +96,7 @@ class ConversationsTableViewController: UITableViewController {
         let theConversation = notification.object as! Conversation
         if (theConversation.conversationId != nil) {
             if (allConversations.firstIndex(of: theConversation) == nil) {
-                if(theConversation.peer?.displayName != nil) {
-                    allConversations.append(theConversation)
-                }
+                allConversations.append(theConversation)
             }
         }
         self.sortAllConversation()
@@ -206,13 +205,26 @@ class ConversationsTableViewController: UITableViewController {
         performSegue(withIdentifier: "ChatWithSegue", sender: self)
     }
     
+    override func tableView(_ tableView : UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+
+        let swipeActions = UISwipeActionsConfiguration(actions: [
+            UIContextualAction(style: .normal, title: "Close", handler: { _,_,_ in
+                let conversation = self.allConversations[indexPath.row]
+                self.conversationsManager.stopConversation(conversation)
+            })
+        ])
+        
+        return swipeActions
+    }
+    
     // MARK: - Navigation
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ChatWithSegue" {
             if let selectedIndex = selectedIndex {
                 if let vc = segue.destination as? ChatViewController {
-                    vc.peer = allConversations[selectedIndex.row].peer
+                    let peer = allConversations[selectedIndex.row].peer
+                    vc.conversationPeer = try! ConversationPeer(peer)
                     vc.contactImage = (tableView.cellForRow(at: selectedIndex) as? ConversationsTableViewCell)?.avatar.image
                     vc.contactImageTint = (tableView.cellForRow(at: selectedIndex) as? ConversationsTableViewCell)?.avatar.tintColor
                 }
@@ -223,16 +235,16 @@ class ConversationsTableViewController: UITableViewController {
     func loadAllConversations() {
         allConversations = []
         for conversation in conversationsManager.conversations {
-            if(conversation.peer != nil) {
-                allConversations.append(conversation)
-            }
+            allConversations.append(conversation)
         }
        
     }
+    
     func sortAllConversation() {
         allConversations.sort{($0.lastUpdateDate ?? .distantPast) > ($1.lastUpdateDate ?? .distantPast)}
         self.tableView.reloadData()
     }
+    
     func updateBadgeValue() {
         let totalNbOfUnreadMessagesInAllConversations = ServicesManager.sharedInstance()?.conversationsManagerService.totalNbOfUnreadMessagesInAllConversations ?? 0
         if(totalNbOfUnreadMessagesInAllConversations == 0) {

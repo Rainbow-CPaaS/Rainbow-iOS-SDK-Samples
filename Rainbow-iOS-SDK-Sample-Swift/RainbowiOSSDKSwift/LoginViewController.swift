@@ -19,7 +19,6 @@ import Rainbow
 class LoginViewController: UIViewController {
     let rainbowServer = "sandbox.openrainbow.com"
     var server : String?
-    var doLogout = false
     
     @IBOutlet weak var serverLabel: UILabel!
     @IBOutlet weak var loginTextField: UITextField!
@@ -48,7 +47,6 @@ class LoginViewController: UIViewController {
         if (ServicesManager.sharedInstance().myUser.username != nil) && (ServicesManager.sharedInstance().myUser.password != nil) {
             self.loginTextField.text = ServicesManager.sharedInstance().myUser.username
             self.passwordTextField.text = ServicesManager.sharedInstance().myUser.password
-            ServicesManager.sharedInstance()?.loginManager.disconnect()
             ServicesManager.sharedInstance()?.loginManager.connect()
             activityIndicatorView.startAnimating()
             self.loginButton.isEnabled = false
@@ -83,9 +81,16 @@ class LoginViewController: UIViewController {
     }
     
     @objc func didReconnect(notification : NSNotification) {
+        if !Thread.isMainThread {
+            DispatchQueue.main.sync {
+                self.didReconnect(notification: notification)
+            }
+            return
+        }
         NSLog("[LoginViewController] Did reconnect")
-        ServicesManager.sharedInstance().loginManager.disconnect()
-        ServicesManager.sharedInstance().loginManager.connect()
+        loginButton.isEnabled = true
+        activityIndicatorView.stopAnimating()
+        performSegue(withIdentifier: "DidLoginSegue", sender: self)
     }
     
     @objc func failedToAuthenticate(notification : NSNotification) {
@@ -109,6 +114,7 @@ class LoginViewController: UIViewController {
             return
         }
         NSLog("[LoginViewController] Did logout")
+        self.loginButton.isEnabled = true
         self.passwordTextField.text = ""
         activityIndicatorView.stopAnimating()
     }

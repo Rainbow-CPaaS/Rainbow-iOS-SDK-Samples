@@ -33,22 +33,72 @@ extension Array {
     }
 }
 
-class MessageItem : NSObject {
-    var peer : Peer?
-    var text : String?
-    var date : Date?
+enum ConversationPeer {
+    case contact(RainbowContact)
+    case room(Room)
+ 
+    init(_ aPeer : ConversationPeer) {
+        self = aPeer
+    }
+    
+    init(_ contact : RainbowContact) {
+        self = .contact(contact)
+    }
+    
+    init(_ room : Room) {
+        self = .room(room)
+    }
+    
+    init!(_ peer : PeerProtocol) throws {
+        if let contact = peer as? RainbowContact {
+            self = .contact(contact)
+        } else if let room = peer as? Room {
+            self = .room(room)
+        } else {
+            throw(NSError(domain: "ConversationPeer", code: -1, userInfo: nil))
+        }
+    }
+    
+    var peer: PeerProtocol {
+        switch self {
+        case .contact(let peer as PeerProtocol), .room(let peer as PeerProtocol):
+            return peer
+        }
+    }
+    
+    var displayName: String? {
+        switch self {
+        case .contact(let contact):
+            return contact.displayName
+        case .room(let room):
+            return room.displayName
+        }
+    }
 }
 
-class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDelegate, UITableViewDelegate, UITableViewDataSource {
+class MessageItem : NSObject {
+    var conversationPeer : ConversationPeer
+    var text : String?
+    var date : Date?
     
-    var peer : Peer?
+    init(_ conversationPeer: ConversationPeer, text: String? = nil, date: Date? = nil) {
+        self.conversationPeer = conversationPeer
+        self.text = text
+        self.date = date
+    }
+}
+
+class ChatViewController: UIViewController, CKItemsBrowserDelegate, UITableViewDelegate, UITableViewDataSource, UITextViewDelegate {
+    
+    var conversationPeer : ConversationPeer?
     var contactImage : UIImage?
     var contactImageTint : UIColor?
     
+    @IBOutlet fileprivate weak var contentView: UIView!
     @IBOutlet fileprivate weak var messageList: UITableView!
     @IBOutlet fileprivate weak var textInput: UITextView!
     @IBOutlet fileprivate weak var sendButton: UIButton!
-    @IBOutlet weak var loadMoreButton: UIBarButtonItem!
+    @IBOutlet fileprivate weak var loadMoreButton: UIBarButtonItem!
     
     fileprivate let kPageSize = 10
     fileprivate let serviceManager : ServicesManager
@@ -63,8 +113,8 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
         serviceManager = ServicesManager.sharedInstance()
         conversationsManager = serviceManager.conversationsManagerService
         super.init(coder: aDecoder)
-        if let contact =  serviceManager.myUser.contact, contact.photoData != nil {
-            myAvatar = UIImage(data: contact.photoData)
+        if let photoData =  serviceManager.myUser.contact?.photoData {
+            myAvatar = UIImage(data: photoData)
         }
     }
     
@@ -73,24 +123,24 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
         
         textInput.delegate = self
         self.title = "Conversations"
-        if let contact = peer as? Contact, let photoData = contact.photoData {
+        if  case .contact(let contact) = conversationPeer, let photoData = contact.photoData {
             peerAvatar = UIImage(data: photoData)
         }
         
         // All conversations for myUser
         for conversation in conversationsManager.conversations {
-            if conversation.peer == peer {
+            if conversation.peer.jid == conversationPeer?.peer.jid {
                 theConversation = conversation
                 break
             }
         }
         
         // If there is no conversation with this peer, create a new one
-        if (theConversation != nil) {
-            if let displayName = theConversation?.peer?.displayName {
-                self.title = displayName;
+        if let peer = conversationPeer?.peer {
+            if let peer = theConversation?.peer, let displayName = try? ConversationPeer(peer).displayName {
+                self.title = displayName
             }
-            conversationsManager.startConversation(with: peer){ (conversation : Optional<Conversation>, error : Optional<Error>)  in
+            conversationsManager.startConversation(withPeer: peer) { (conversation : Optional<Conversation>, error : Optional<Error>)  in
                 if error != nil {
                     self.theConversation = conversation
                 } else {
@@ -99,9 +149,6 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
             }
         }
         
-        NotificationCenter.default.addObserver(self, selector:#selector(keyboardWillShow(notification:)), name:NSNotification.Name("UIKeyboardWillShowNotification"), object: nil)
-        NotificationCenter.default.addObserver(self, selector:#selector(keyboardDidHide(notification:)),
-            name:NSNotification.Name("UIKeyboardDidHideNotification"), object:nil)
         NotificationCenter.default.addObserver(self, selector:#selector(didReceiveNewMessage(notification:)), name:NSNotification.Name(kConversationsManagerDidReceiveNewMessageForConversation), object:nil)
         
         loadMoreButton.isEnabled = false
@@ -119,10 +166,12 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
         super.viewWillAppear(animated)
         self.tabBarController?.tabBar.isHidden = true
     }
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.tabBarController?.tabBar.isHidden = false
     }
+    
     // Scroll the message list to the latest one when the reloadData has finished
     func reloadAndScrollToBottom() {
         if self.messageList.dataSource == nil {
@@ -131,16 +180,18 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
         }
         CATransaction.begin()
         CATransaction.setCompletionBlock(){
-            if self.messageList.numberOfRows(inSection: 0) > 0 {
-                let lastRow = IndexPath(item: self.messageList.numberOfRows(inSection: 0) - 1, section:0)
-                self.messageList.scrollToRow(at: lastRow, at:.bottom, animated:true)
-            }
-            
+            self.scrollToBottom()
         }
         self.messageList.reloadData()
         CATransaction.commit()
     }
-
+    
+    func scrollToBottom() {
+        if self.messageList.numberOfRows(inSection: 0) > 0 {
+            let lastRow = IndexPath(row:  messageList.numberOfRows(inSection: 0) - 1, section: 0)
+            messageList.scrollToRow(at: lastRow, at: .bottom, animated: true)
+        }
+    }
     
     // MARK: - IBAction
     
@@ -191,16 +242,20 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
             // insert new items at the beginning of the messages array
             for (index, _) in indexes.sorted().enumerated() {
                 if let message = newItems[index] as? Message {
-                    let item = MessageItem()
-                    if message.isOutgoing {
-                        item.peer = self.serviceManager.myUser.contact
-                    } else {
-                        item.peer = message.peer
+                    var item : MessageItem?
+                    if message.isOutgoing, let myContact = self.serviceManager.myUser.contact {
+                        item = MessageItem(ConversationPeer(.contact(myContact)))
+                    } else if let contact = message.peer as? RainbowContact {
+                        item = MessageItem(ConversationPeer(contact))
+                    } else if let room = message.peer as? Room {
+                        item = MessageItem(ConversationPeer(room))
                     }
-                    item.text = message.body
-                    item.date = message.date
-                    self.messages.insert(item, at: index)
-                    self.messages.sort{($0.date ?? .distantPast) > ($1.date ?? .distantPast)}
+                    if let item = item {
+                        item.text = message.body
+                        item.date = message.date
+                        self.messages.insert(item, at: index)
+                        self.messages.sort{($0.date ?? .distantPast) > ($1.date ?? .distantPast)}
+                    }
 
                 }
             }
@@ -259,44 +314,11 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
             if receivedConversation == self.theConversation, let conversation = self.theConversation {
                 NSLog("did received new message for the conversation")
                 self.conversationsManager.markAllMessagesAsRead(for: conversation)
-                let lastRow = IndexPath(row:  messageList.numberOfRows(inSection: 0) - 1, section: 0)
-                messageList.scrollToRow(at: lastRow, at: .bottom, animated: true)
-                messageList.reloadData()
+                reloadAndScrollToBottom()
             }
         }
     }
     
-    // MARK: - Keyboard notification
-    
-    @objc func keyboardWillShow(notification : Notification) {
-        if !Thread.isMainThread {
-            DispatchQueue.main.async {
-                self.keyboardWillShow(notification: notification)
-            }
-            return
-        }
-        UIView.beginAnimations(nil, context:nil)
-        if let userInfo = notification.userInfo as? [String: Any] {
-            if let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
-                let keyboardRectangle = keyboardFrame.cgRectValue
-                self.view.frame = CGRect(x: 0,  y: -keyboardRectangle.size.height, width: self.view.frame.size.width, height: self.view.frame.size.height)
-                UIView.commitAnimations()
-            }
-        }
-    }
-    
-    @objc func keyboardDidHide(notification : Notification) {
-        if !Thread.isMainThread {
-            DispatchQueue.main.async {
-                self.keyboardDidHide(notification : notification)
-            }
-            return
-        }
-        UIView.beginAnimations(nil, context:nil)
-        self.view.frame = CGRect(x: 0, y: 0, width: self.view.frame.size.width, height: self.view.frame.size.height)
-        UIView.commitAnimations()
-    }
-
     // MARK: - Table view data source
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -309,7 +331,7 @@ class ChatViewController: UIViewController, UITextViewDelegate, CKItemsBrowserDe
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let row = self.messages.count - indexPath.row - 1
-        if self.messages[row].peer == serviceManager.myUser.contact {
+        if case .contact (let contact) = self.messages[row].conversationPeer, contact == serviceManager.myUser.contact {
             return tableView.dequeueReusableCell(withIdentifier: "MyUserTableViewCell", for:indexPath)
         } else {
             return tableView.dequeueReusableCell(withIdentifier:"PeerTableViewCell", for:indexPath)
