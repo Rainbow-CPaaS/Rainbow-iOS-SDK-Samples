@@ -73,9 +73,9 @@
 - (void)didMoveToParentViewController:(UIViewController *)parent {
     if (![parent isEqual:self.parentViewController]) {
         NSLog(@"Back pressed");
-        [self.conferencesManager terminateConference:self.room.conference completionHandler:^(NSError *error) {
+        [self.conferencesManager hangup:self.room block:^(NSError *error) {
             if (error){
-                [self showErrorPopupWithTitle:@"Conference" message:@"Error while trying to terminate the conference"];
+                [self showErrorPopupWithTitle:@"Conference" message:@"Error while trying to hangup the conference"];
             }
         }];
     }
@@ -140,8 +140,8 @@
     ParticipantTableViewCell *participantCell = (ParticipantTableViewCell *)cell;
     ConferenceParticipant *participant = self.participants[indexPath.row];
     if(participant){
-        participantCell.name.text = participant.contact.displayName;
-        participantCell.avatar.image = [UIImage avatarForContact:participant.contact];
+        participantCell.name.text = participant.getDisplayName;
+        participantCell.avatar.image = [UIImage avatarForContact:participant.getContact];
     }
 }
 

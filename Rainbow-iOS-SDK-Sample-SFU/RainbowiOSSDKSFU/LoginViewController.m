@@ -62,18 +62,9 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(failedToAuthenticate:) name:kLoginManagerDidFailedToAuthenticate object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didLogout:) name:kLoginManagerDidLogoutSucceeded object:nil];
     
-
     if ([[ServicesManager sharedInstance].myUser username] &&[[ServicesManager sharedInstance].myUser password]) {
         [self.loginTextField setText:[[ServicesManager sharedInstance].myUser username]];
         [self.passwordTextField setText:[[ServicesManager sharedInstance].myUser password]];
-        // disconnect should not be called on the Main thread
-        dispatch_group_t lock = dispatch_group_create();
-        dispatch_group_enter(lock);
-        dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0), ^{
-            [[ServicesManager sharedInstance].loginManager disconnect];
-            dispatch_group_leave(lock);
-        });
-        dispatch_group_wait(lock, DISPATCH_TIME_FOREVER);
         [[ServicesManager sharedInstance].loginManager connect];
         self.loginButton.enabled = NO;
         [self.activityIndicatorView startAnimating];
@@ -109,10 +100,16 @@
 }
 
 -(void) didReconnect:(NSNotification *) notification {
+    if(![NSThread isMainThread]){
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self didLogin:notification];
+        });
+        return;
+    }
     NSLog(@"[LoginViewController] Did reconnect");
+    self.loginButton.enabled = YES;
     // disconnect should not be called on the Main thread
     dispatch_async(dispatch_get_global_queue( QOS_CLASS_UTILITY, 0), ^{
-        [[ServicesManager sharedInstance].loginManager disconnect];
         [[ServicesManager sharedInstance].loginManager connect];
     });
 }
@@ -139,6 +136,7 @@
     }
     NSLog(@"[LoginViewController] Did logout");
     [self.activityIndicatorView stopAnimating];
+    self.passwordTextField.text = @"";
     self.loginButton.enabled = YES;
 }
 

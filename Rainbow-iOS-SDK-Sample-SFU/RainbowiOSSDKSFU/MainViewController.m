@@ -120,7 +120,7 @@
         // - When this is my room and it isn't archived (room.myStatusInRoom != ParticipantStatusUnsubscribed)
         // - When I accepted the invitation to the room and the conference has been started
         if((room.isMyRoom && room.myStatusInRoom != ParticipantStatusUnsubscribed) ||
-           (room.myStatusInRoom == ParticipantStatusAccepted && room.conference.isActive)){
+           (room.myStatusInRoom == ParticipantStatusAccepted && room.conference != nil)){
             [self insertRoom:room];
         }
     }
@@ -139,7 +139,7 @@
     
     Room *room = notification.object;
     if((room.isMyRoom && room.myStatusInRoom != ParticipantStatusUnsubscribed) ||
-       (room.myStatusInRoom == ParticipantStatusAccepted && room.conference.isActive)){
+       (room.myStatusInRoom == ParticipantStatusAccepted && room.conference != nil)){
         [self insertRoom:room];
         [self.roomsManager fetchRoomWithRainbowId:room.rainbowID withCompletionHandler:nil];
         
@@ -180,7 +180,7 @@
     
     [self removeRoom:room];
     if((room.isMyRoom && room.myStatusInRoom != ParticipantStatusUnsubscribed) ||
-       (room.myStatusInRoom == ParticipantStatusAccepted && room.conference.isActive)){
+       (room.myStatusInRoom == ParticipantStatusAccepted && room.conference != nil)){
         [self insertRoom:room];
     }
 
@@ -226,8 +226,7 @@
 }
 
 -(void)joinConferenceInRoom:(Room *)room {
-    ParticipantRole role = room.conference.isMyConference ? ParticipantRoleModerator : ParticipantRoleMember;
-    [[ServicesManager sharedInstance].conferencesManagerService startAndJoinConferenceWithRoom:room role:role completionBlock:^(NSError *error) {
+    [[ServicesManager sharedInstance].conferencesManagerService startOrJoin:room forceLocalVideo:NO block:^(NSError *error) {
         if(error){
             [self showErrorPopupWithTitle:@"Conference" message:@"Error while trying to join the conference"];
         }

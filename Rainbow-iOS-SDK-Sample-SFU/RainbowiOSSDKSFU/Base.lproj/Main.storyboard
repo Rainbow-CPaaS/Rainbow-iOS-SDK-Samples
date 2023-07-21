@@ -35,8 +35,9 @@ WebRTC Conference Sample</string>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gCI-YX-Qfg">
-                                <rect key="frame" x="168.5" y="396" width="38" height="30"/>
+                                <rect key="frame" x="154.5" y="396" width="66" height="34.5"/>
                                 <state key="normal" title="Login"/>
+                                <buttonConfiguration key="configuration" style="tinted" title="Login"/>
                                 <connections>
                                     <action selector="loginAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="M2X-an-Yx6"/>
                                 </connections>
@@ -48,7 +49,7 @@ WebRTC Conference Sample</string>
                                 <nil key="highlightedColor"/>
                             </label>
                             <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="ogZ-Tg-brf">
-                                <rect key="frame" x="177.5" y="446" width="20" height="20"/>
+                                <rect key="frame" x="177.5" y="450.5" width="20" height="20"/>
                             </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
