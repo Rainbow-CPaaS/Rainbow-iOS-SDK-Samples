@@ -77,37 +77,43 @@
 }
 
 -(void) insertContact:(Contact *) contact {
+    // Ìgnore non RainbowContact ie ExternalContact, LocalContact,...
+    if (contact.class != RainbowContact.class) {
+        return;
+    }
+    RainbowContact *rainbowContact = (RainbowContact *)contact;
+    
     // Ignore myself
-    if (contact == _serviceManager.myUser.contact) {
+    if (rainbowContact.isMe) {
         return;
     }
     // Ignore bots
-    if(contact.isBot) {
+    if(rainbowContact.isBot) {
         return;
     }
     // Ignore temporary invited user
-    if(contact.isInvitedUser) {
+    if(rainbowContact.isGuestMode) {
         return;
     }
     // Check if contact is in the roster
-    if(!contact.isInRoster) {
+    if(!rainbowContact.isInRoster) {
         // Check if contact has been removed from my network
-        if([_myContacts containsObject:contact]) {
-            [_myContacts removeObject:contact];
+        if([_myContacts containsObject:rainbowContact]) {
+            [_myContacts removeObject:rainbowContact];
         }
         return;
     } else {
-        if (![_myContacts containsObject:contact]) {
+        if (![_myContacts containsObject:rainbowContact]) {
             [_myContacts addObject:contact];
         } else {
-            NSUInteger index =  [_myContacts indexOfObjectIdenticalTo:contact];
+            NSUInteger index =  [_myContacts indexOfObjectIdenticalTo:rainbowContact];
             if (index != NSNotFound) {
-                [_myContacts replaceObjectAtIndex:index withObject:contact];
+                [_myContacts replaceObjectAtIndex:index withObject:rainbowContact];
             }
         }
     }
     if(!contact.photoData){
-        [self.contactsManager populateAvatarForContact:contact];
+        [self.contactsManager populateAvatarForContact:rainbowContact];
     }
 }
 
@@ -123,7 +129,6 @@
        invitation.status == InvitationStatusAutoAccepted || // Invitation has been auto-accepted due to users in same company
        
        invitation.status == InvitationStatusDeclined ||     // Invitation has been declined
-       invitation.status == InvitationStatusDeleted ||      // Invitation has been deleted (by us on another device)
        invitation.status == InvitationStatusCanceled ||     // Invitation has been canceled (by owner of this invitation)
        invitation.status == InvitationStatusFailed) {       // Invitation has failed (bad eMail,...)
         

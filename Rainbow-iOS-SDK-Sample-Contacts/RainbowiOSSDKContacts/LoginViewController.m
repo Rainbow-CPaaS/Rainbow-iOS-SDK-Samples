@@ -57,7 +57,6 @@
     if ([[ServicesManager sharedInstance].myUser username] &&[[ServicesManager sharedInstance].myUser password]) {
         [self.loginTextField setText:[[ServicesManager sharedInstance].myUser username]];
         [self.passwordTextField setText:[[ServicesManager sharedInstance].myUser password]];
-        [[ServicesManager sharedInstance].loginManager disconnect];
         [[ServicesManager sharedInstance].loginManager connect];
         self.loginButton.enabled = NO;
         [self.activityIndicatorView startAnimating];
@@ -93,9 +92,15 @@
 }
 
 -(void) didReconnect:(NSNotification *) notification {
+    if(![NSThread isMainThread]){
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self didLogin:notification];
+        });
+        return;
+    }
     NSLog(@"[LoginViewController] Did reconnect");
-    [[ServicesManager sharedInstance].loginManager disconnect];
     [[ServicesManager sharedInstance].loginManager connect];
+    self.loginButton.enabled = YES;
 }
 
 -(void)failedToAuthenticate:(NSNotification *) notification {
@@ -120,6 +125,7 @@
         return;
     }
     NSLog(@"[LoginViewController] Did logout");
+    self.passwordTextField.text = @"";
     [self.activityIndicatorView stopAnimating];
     self.loginButton.enabled = YES;
 }
@@ -146,7 +152,6 @@
         [[ServicesManager sharedInstance].loginManager connect];
         [self.activityIndicatorView startAnimating];
         self.loginButton.enabled = NO;
-
     }
 }
 

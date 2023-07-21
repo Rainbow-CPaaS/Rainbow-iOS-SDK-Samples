@@ -105,8 +105,9 @@
     NSString *label = @"";
     NSString *value = @"";
     if([self.sectionHeaders[section] isEqualToString:phoneNumbersStr]){
-        label = self.contact.phoneNumbers[indexPath.row].label;
-        value = self.contact.phoneNumbers[indexPath.row].number;
+        NSArray<PhoneNumber *> *phoneNumbers = [NSArray arrayWithArray:[self.contact.phoneNumbers allObjects]];
+        label = phoneNumbers[indexPath.row].label;
+        value = phoneNumbers[indexPath.row].number;
     } else if([self.sectionHeaders[section] isEqualToString:eMailsStr]){
         label = self.contact.emailAddresses[indexPath.row].label;
         value = self.contact.emailAddresses[indexPath.row].address;
