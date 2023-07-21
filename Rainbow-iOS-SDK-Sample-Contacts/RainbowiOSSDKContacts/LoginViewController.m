@@ -76,7 +76,6 @@
 }
 
 #pragma mark - Notifications
-
 -(void) didLogin:(NSNotification *) notification {
     if(![NSThread isMainThread]){
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -85,22 +84,25 @@
         return;
     }
     NSLog(@"[LoginViewController] Did login");
-    self.loginButton.enabled = YES;
-    [self.activityIndicatorView stopAnimating];
-    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
-    [self performSegueWithIdentifier:@"DidLoginSegue" sender:self];
+    [self afterConnection];
 }
 
 -(void) didReconnect:(NSNotification *) notification {
     if(![NSThread isMainThread]){
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self didLogin:notification];
+            [self didReconnect:notification];
         });
         return;
     }
     NSLog(@"[LoginViewController] Did reconnect");
-    [[ServicesManager sharedInstance].loginManager connect];
+    [self afterConnection];
+}
+
+-(void) afterConnection {
     self.loginButton.enabled = YES;
+    [self.activityIndicatorView stopAnimating];
+    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
+    [self performSegueWithIdentifier:@"DidLoginSegue" sender:self];
 }
 
 -(void)failedToAuthenticate:(NSNotification *) notification {

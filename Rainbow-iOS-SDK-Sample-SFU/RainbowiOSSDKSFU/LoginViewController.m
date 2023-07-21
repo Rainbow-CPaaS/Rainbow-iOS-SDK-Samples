@@ -93,25 +93,25 @@
         return;
     }
     NSLog(@"[LoginViewController] Did login");
-    self.loginButton.enabled = YES;
-    [self.activityIndicatorView stopAnimating];
-    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
-    [self performSegueWithIdentifier:@"DidLoginSegue" sender:self];
+    [self afterConnection];
 }
 
 -(void) didReconnect:(NSNotification *) notification {
     if(![NSThread isMainThread]){
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self didLogin:notification];
+            [self didReconnect:notification];
         });
         return;
     }
     NSLog(@"[LoginViewController] Did reconnect");
+    [self afterConnection];
+}
+
+-(void) afterConnection {
     self.loginButton.enabled = YES;
-    // disconnect should not be called on the Main thread
-    dispatch_async(dispatch_get_global_queue( QOS_CLASS_UTILITY, 0), ^{
-        [[ServicesManager sharedInstance].loginManager connect];
-    });
+    [self.activityIndicatorView stopAnimating];
+    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
+    [self performSegueWithIdentifier:@"DidLoginSegue" sender:self];
 }
 
 -(void)failedToAuthenticate:(NSNotification *) notification {
