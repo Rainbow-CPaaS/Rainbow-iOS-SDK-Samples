@@ -27,7 +27,6 @@
 @property (nonatomic, strong) NSMutableArray<Contact *> *allObjects;
 @property (nonatomic) BOOL populated;
 @property (nonatomic, strong) NSIndexPath *selectedIndex;
-@property (nonatomic) BOOL isMPCall;
 @property (nonatomic) BOOL isVideoCall;
 @property (nonatomic, strong) RTCCall *call;
 @end
@@ -100,16 +99,22 @@
 }
 
 -(void) insertContact:(Contact *) contact {
+    // Only handle RainbowContact not ExternalContact, LocalContact,...
+    if (contact.class != RainbowContact.class) {
+        return;
+    }
+    RainbowContact *rainbowContact = (RainbowContact *)contact;
+    
     // Ignore myself
-    if (contact == _serviceManager.myUser.contact) {
+    if (rainbowContact.isMe) {
         return;
     }
     // Ignore bots
-    if(contact.isBot) {
+    if(rainbowContact.isBot) {
         return;
     }
     // Ignore contact not in the roster
-    if(!contact.isInRoster){
+    if(!rainbowContact.isInRoster){
         return;
     }
     
@@ -187,16 +192,21 @@
     NSDictionary *userInfo = (NSDictionary *)notification.object;
     Contact *contact = [userInfo objectForKey:kContactKey];
     
-    if (contact.isInRoster){
-        [self insertContact:contact];
-    }
-    else {
-        if ([_allObjects containsObject:contact]) {
-            [_allObjects removeObject:contact];
+    if (contact.class == RainbowContact.class) {
+        RainbowContact *rainbowContact = (RainbowContact *)contact;
+        
+        if (rainbowContact.isInRoster){
+            [self insertContact:rainbowContact];
+            
+        } else {
+            if ([_allObjects containsObject:rainbowContact]) {
+                [_allObjects removeObject:rainbowContact];
+            }
         }
-    }
-    if([self isViewLoaded] && _populated){
-        [self.tableView reloadData];
+        
+        if([self isViewLoaded] && _populated){
+            [self.tableView reloadData];
+        }
     }
 }
 
@@ -204,11 +214,10 @@
     if( [segue.identifier isEqualToString:@"CallInProgressSegue"]){
         CallViewController *vc = segue.destinationViewController;
         if(self.selectedIndex){
-            vc.contact = [self.allObjects objectAtIndex:self.selectedIndex.row];
+            vc.contact = (RainbowContact *)[self.allObjects objectAtIndex:self.selectedIndex.row];
             vc.contactImage = ((ContactTableViewCell *)[self.tableView cellForRowAtIndexPath:self.selectedIndex]).avatar.image;
             vc.contactImageTint = ((ContactTableViewCell *)[self.tableView cellForRowAtIndexPath:self.selectedIndex]).avatar.tintColor;
             vc.isIncoming = NO;
-            vc.isMPCall = self.isMPCall;
             vc.isVideoCall = self.isVideoCall;
         } else {
             vc.isIncoming = YES;
@@ -249,7 +258,6 @@
         NSLog(@"didAddCall notification, call status: %@", [Call stringForStatus:call.status]);
         if(self.call == nil){
             self.call = call;
-            self.isMPCall = NO;
             [self showCallView:call];
         }
     }
@@ -290,7 +298,8 @@
     Contact *contact = [self.allObjects objectAtIndex:indexPath.row];
     if(contact){
         contactCell.name.text = contact.fullName;
-        contactCell.phoneNumber.text = [contact.phoneNumbers firstObject].number;
+        NSArray<PhoneNumber *> *phoneNumbers = [NSArray arrayWithArray:[contact.phoneNumbers allObjects]];
+        contactCell.phoneNumber.text = [phoneNumbers firstObject].number;
         if(contact.photoData){
             contactCell.avatar.image = [UIImage imageWithData: contact.photoData];
             contactCell.avatar.tintColor = [UIColor clearColor];
@@ -309,19 +318,11 @@
     Contact *contact = [self.allObjects objectAtIndex:indexPath.row];
     UIAlertController *menu = [UIAlertController alertControllerWithTitle:@"Calling :" message:contact.displayName preferredStyle:UIAlertControllerStyleActionSheet];
     UIAlertAction *audioCall = [UIAlertAction actionWithTitle:@"Audio call" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        self.isMPCall = NO;
         self.isVideoCall = NO;
         [self performSegueWithIdentifier:@"CallInProgressSegue" sender:self];
     }];
     UIAlertAction *videoCall = [UIAlertAction actionWithTitle:@"Video call" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        self.isMPCall = NO;
         self.isVideoCall = YES;
-        [self performSegueWithIdentifier:@"CallInProgressSegue" sender:self];
-    }];
-    
-    UIAlertAction *mpCall = [UIAlertAction actionWithTitle:@"MP call" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        self.isMPCall = YES;
-        self.isVideoCall = NO;
         [self performSegueWithIdentifier:@"CallInProgressSegue" sender:self];
     }];
     

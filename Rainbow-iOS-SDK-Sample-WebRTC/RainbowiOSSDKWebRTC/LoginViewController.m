@@ -66,14 +66,6 @@
     if ([[ServicesManager sharedInstance].myUser username] &&[[ServicesManager sharedInstance].myUser password]) {
         [self.loginTextField setText:[[ServicesManager sharedInstance].myUser username]];
         [self.passwordTextField setText:[[ServicesManager sharedInstance].myUser password]];
-        // disconnect should not be called on the Main thread
-        dispatch_group_t lock = dispatch_group_create();
-        dispatch_group_enter(lock);
-        dispatch_async(dispatch_get_global_queue( QOS_CLASS_USER_INTERACTIVE, 0), ^{
-            [[ServicesManager sharedInstance].loginManager disconnect];
-            dispatch_group_leave(lock);
-        });
-        dispatch_group_wait(lock, DISPATCH_TIME_FOREVER);
         [[ServicesManager sharedInstance].loginManager connect];
         self.loginButton.enabled = NO;
         [self.activityIndicatorView startAnimating];
@@ -102,19 +94,25 @@
         return;
     }
     NSLog(@"[LoginViewController] Did login");
+    [self afterConnection];
+}
+
+-(void) didReconnect:(NSNotification *) notification {
+    if(![NSThread isMainThread]){
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self didReconnect:notification];
+        });
+        return;
+    }
+    NSLog(@"[LoginViewController] Did reconnect");
+    [self afterConnection];
+}
+
+-(void) afterConnection {
     self.loginButton.enabled = YES;
     [self.activityIndicatorView stopAnimating];
     [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
     [self performSegueWithIdentifier:@"DidLoginSegue" sender:self];
-}
-
--(void) didReconnect:(NSNotification *) notification {
-    NSLog(@"[LoginViewController] Did reconnect");
-    // disconnect should not be called on the Main thread
-    dispatch_async(dispatch_get_global_queue( QOS_CLASS_UTILITY, 0), ^{
-        [[ServicesManager sharedInstance].loginManager disconnect];
-        [[ServicesManager sharedInstance].loginManager connect];
-    });
 }
 
 -(void)failedToAuthenticate:(NSNotification *) notification {
@@ -138,6 +136,7 @@
         return;
     }
     NSLog(@"[LoginViewController] Did logout");
+    self.passwordTextField.text = @"";
     [self.activityIndicatorView stopAnimating];
     self.loginButton.enabled = YES;
 }

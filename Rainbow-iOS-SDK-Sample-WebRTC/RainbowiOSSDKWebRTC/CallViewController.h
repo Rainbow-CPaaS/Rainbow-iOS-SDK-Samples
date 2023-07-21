@@ -10,11 +10,10 @@
 #import <UIKit/UIKit.h>
 
 @interface CallViewController : UIViewController
-@property (nonatomic, strong) Contact *contact;
+@property (nonatomic, strong) RainbowContact *contact;
 @property (nonatomic, strong) UIImage *contactImage;
 @property (nonatomic, strong) UIColor *contactImageTint;
 @property (strong, nonatomic) RTCCall *currentCall;
 @property (nonatomic) BOOL isIncoming;
-@property (nonatomic) BOOL isMPCall;
 @property (nonatomic) BOOL isVideoCall;
 @end

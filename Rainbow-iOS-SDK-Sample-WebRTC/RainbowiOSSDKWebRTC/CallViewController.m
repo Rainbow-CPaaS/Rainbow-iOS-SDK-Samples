@@ -126,7 +126,7 @@
     return NO;
 }
 
--(void) makeCallTo:(Contact *) contact features:(RTCCallFeatureFlags) features {
+-(void) makeCallTo:(RainbowContact *) contact features:(RTCCallFeatureFlags) features {
     if([self checkMicrophoneAccess]){
         self.currentCall = [self.rtcService beginNewOutgoingCallWithPeer:contact withFeatures:features andSubject:@"RainbowiOSSDKWebRTC calling !" ];
         if(!self.currentCall){
@@ -136,16 +136,7 @@
     
 }
 
--(void) makeMPCallTo:(Contact *) contact {
-    if([self checkMicrophoneAccess]){
-        self.currentCall = [_rtcService beginNewOutgoingCallWithWebRTCGatewayToNumber:contact.phoneNumbers[0].numberE164];
-        if(!self.currentCall){
-            NSLog(@"Error making MP call");
-        }
-    }
-}
-
--(void)setPeerAvatar:(Contact *)peer {
+-(void)setPeerAvatar:(RainbowContact *)peer {
     self.contact = peer;
     if (self.contact.photoData){
         self.contactImage = [UIImage imageWithData: self.contact.photoData];
@@ -163,15 +154,13 @@
     if(self.isIncoming){
         NSLog(@"Incoming call !");
         self.callProgress.text = @"In call with";
-        if([self.currentCall.peer isKindOfClass:[Contact class]]){
-            [self setPeerAvatar:(Contact *)self.currentCall.peer];
+        if(self.currentCall.peer.class == RainbowContact.class){
+            [self setPeerAvatar:(RainbowContact *)self.currentCall.peer];
         }
         [self.cancelButton setTitle:@"Take call" forState:UIControlStateNormal];
     } else {
         self.callProgress.text = @"Calling...";
-        if(self.isMPCall){
-            [self makeMPCallTo:self.contact];
-        } else if (self.isVideoCall) {
+        if (self.isVideoCall) {
             [self makeCallTo:self.contact features:(RTCCallFeatureAudio | RTCCallFeatureLocalVideo)];
         } else {
             [self makeCallTo:self.contact features:(RTCCallFeatureAudio)];
