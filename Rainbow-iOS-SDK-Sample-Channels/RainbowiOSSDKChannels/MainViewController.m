@@ -28,7 +28,7 @@
 
 @property (nonatomic, strong) ChannelsService *channelsManager;
 @property (nonatomic, strong) NSIndexPath *selectedIndex;
-@property (nonatomic, strong) NSMutableArray<ChannelItem *> *itemsInChannel;
+@property (nonatomic, strong) NSArray<ChannelItem *> *itemsInChannel;
 @end
 
 @implementation MainViewController
@@ -38,7 +38,7 @@
     if(self){
         _channelsManager = [ServicesManager sharedInstance].channelsService;
         _selectedIndex = nil;
-        _itemsInChannel = [NSMutableArray new];
+        _itemsInChannel = [NSArray new];
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didAddChannel:) name:kChannelsServiceDidAddChannel object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didRemoveChannel:) name:kChannelsServiceDidRemoveChannel object:nil];
@@ -64,6 +64,13 @@
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     _postItemButton.enabled = _selectedIndex ? YES : NO;
+}
+
+-(void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    if (_selectedIndex) {
+        [self getItemsInSelectedChannel];
+    }
 }
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -153,14 +160,16 @@
 }
 
 -(void)getItemsInChannel:(Channel *)channel {
-    @synchronized (self) {
-        [self.itemsInChannel removeAllObjects];
-        for(ChannelItem *item in _channelsManager.channelsItems){
-            if([item.channelId isEqualToString:channel.id]){
-                [_itemsInChannel addObject:item];
-            }
+    [_channelsManager fetchItemsForChannel:channel beforeDate:nil number:20 completionHandler:^(NSArray<ChannelItem *> *items, NSError *error) {
+        if (error) {
+            NSLog(@"[getItemsInChannel] Error: %@", error.localizedDescription);
+        } else {
+            self.itemsInChannel = items;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.itemsListView reloadData];
+            });
         }
-    }
+    }];
 }
 
 -(void)getItemsInSelectedChannel {
