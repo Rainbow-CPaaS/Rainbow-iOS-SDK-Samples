@@ -352,7 +352,6 @@
 				DEVELOPMENT_TEAM = BT9E66P673;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/Frameworks",
 					"$(PROJECT_DIR)/RainbowiOSSDKIM/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = RainbowiOSSDKIM/Info.plist;
@@ -374,7 +373,6 @@
 				DEVELOPMENT_TEAM = BT9E66P673;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/Frameworks",
 					"$(PROJECT_DIR)/RainbowiOSSDKIM/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = RainbowiOSSDKIM/Info.plist;

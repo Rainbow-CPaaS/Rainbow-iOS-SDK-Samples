@@ -33,8 +33,11 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gCI-YX-Qfg">
-                                <rect key="frame" x="168.5" y="376" width="38" height="30"/>
+                                <rect key="frame" x="154.5" y="376" width="66" height="34.5"/>
                                 <state key="normal" title="Login"/>
+                                <buttonConfiguration key="configuration" style="tinted" title="Login">
+                                    <fontDescription key="titleFontDescription" type="system" pointSize="17"/>
+                                </buttonConfiguration>
                                 <connections>
                                     <action selector="loginAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Hgu-Qt-SZ2"/>
                                 </connections>
@@ -45,9 +48,8 @@
                                 <color key="textColor" red="0.99536854029999999" green="0.34165322780000001" blue="0.3435857296" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="MZE-b1-GFP">
-                                <rect key="frame" x="177" y="423" width="20" height="20"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="MZE-b1-GFP">
+                                <rect key="frame" x="177.5" y="418.5" width="20" height="20"/>
                             </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
@@ -62,10 +64,12 @@
                             <constraint firstItem="apZ-NV-At6" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="VLq-lQ-0cW"/>
                             <constraint firstItem="gCI-YX-Qfg" firstAttribute="top" secondItem="apZ-NV-At6" secondAttribute="bottom" constant="80" id="Vgu-B0-WEG"/>
                             <constraint firstItem="VZ4-eu-HdC" firstAttribute="top" secondItem="Zle-L5-HY0" secondAttribute="bottom" constant="27" id="W8z-72-mOi"/>
+                            <constraint firstItem="MZE-b1-GFP" firstAttribute="top" secondItem="gCI-YX-Qfg" secondAttribute="bottom" constant="8" id="dW5-id-FcU"/>
                             <constraint firstItem="s5h-Is-kro" firstAttribute="top" secondItem="Zle-L5-HY0" secondAttribute="bottom" constant="80" id="hOG-it-nTB"/>
                             <constraint firstItem="apZ-NV-At6" firstAttribute="top" secondItem="s5h-Is-kro" secondAttribute="bottom" constant="27" id="mz2-ey-rBE"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="s5h-Is-kro" secondAttribute="trailing" constant="16" id="pz4-Nz-aP7"/>
                             <constraint firstItem="VZ4-eu-HdC" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="x9U-Zp-tfB"/>
+                            <constraint firstItem="MZE-b1-GFP" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="yTx-EA-kqU"/>
                         </constraints>
                     </view>
                     <nil key="simulatedTopBarMetrics"/>

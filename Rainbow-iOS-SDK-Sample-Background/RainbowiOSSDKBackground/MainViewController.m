@@ -93,25 +93,31 @@
 }
 
 -(void) insertContact:(Contact *) contact {
+    // Ignore non Rainbow contact
+    if (contact.class != RainbowContact.class) {
+        return;
+    }
+    RainbowContact *rainbowContact = (RainbowContact *)contact;
+    
     // Ignore myself
-    if (contact == _serviceManager.myUser.contact) {
+    if (rainbowContact.isMe) {
         return;
     }
     // Ignore bots
-    if(contact.isBot) {
+    if(rainbowContact.isBot) {
         return;
     }
-    // Ignore contact not in the roster
-    if(!contact.isInRoster){
+    // Keep only contact that are in the roster
+    if(!rainbowContact.isInRoster){
         return;
     }
     
-    if (![_allObjects containsObject:contact]) {
-        [_allObjects addObject:contact];
+    if (![_allObjects containsObject:rainbowContact]) {
+        [_allObjects addObject:rainbowContact];
     } else {
-        NSUInteger index =  [_allObjects indexOfObjectIdenticalTo:contact];
-        if(index != NSNotFound) {
-            [_allObjects replaceObjectAtIndex:index withObject:contact];
+        NSUInteger index =  [_allObjects indexOfObjectIdenticalTo:rainbowContact];
+        if (index != NSNotFound) {
+            [_allObjects replaceObjectAtIndex:index withObject:rainbowContact];
         }
     }
 }
@@ -179,16 +185,20 @@
     NSDictionary *userInfo = (NSDictionary *)notification.object;
     Contact *contact = [userInfo objectForKey:kContactKey];
     
-    if (contact.isInRoster){
-        [self insertContact:contact];
-    }
-    else {
-        if ([_allObjects containsObject:contact]) {
-            [_allObjects removeObject:contact];
+    if (contact.class == RainbowContact.class) {
+        RainbowContact *rainbowContact = (RainbowContact *)contact;
+        
+        if (rainbowContact.isInRoster){
+            [self insertContact:rainbowContact];
+            
+        } else {
+            if ([_allObjects containsObject:rainbowContact]) {
+                [_allObjects removeObject:rainbowContact];
+            }
         }
-    }
-    if([self isViewLoaded] && _populated){
-        [self.tableView reloadData];
+        if([self isViewLoaded] && _populated){
+            [self.tableView reloadData];
+        }
     }
 }
 
@@ -229,7 +239,8 @@
     Contact *contact = [self.allObjects objectAtIndex:indexPath.row];
     if(contact){
         contactCell.name.text = contact.fullName;
-        contactCell.phoneNumber.text = [contact.phoneNumbers firstObject].number;
+        NSArray<PhoneNumber *> *phoneNumbers = [NSArray arrayWithArray: [contact.phoneNumbers allObjects]];
+        contactCell.phoneNumber.text = [phoneNumbers firstObject].number;
         if(contact.photoData){
             contactCell.avatar.image = [UIImage imageWithData: contact.photoData];
             contactCell.avatar.tintColor = [UIColor clearColor];
@@ -250,7 +261,7 @@
 #pragma mark - Sending IM
 
 -(void)sendIM:(NSString *)text to:(Contact *)contact {
-    [[ServicesManager sharedInstance].conversationsManagerService startConversationWithPeer:contact withCompletionHandler:^(Conversation *conversation, NSError *error) {
+    [[ServicesManager sharedInstance].conversationsManagerService startConversationWithPeer:(id<PeerProtocol>)contact withCompletionHandler:^(Conversation *conversation, NSError *error) {
         if(!error){
             [[ServicesManager sharedInstance].conversationsManagerService sendTextMessage:text files:nil mentions:nil priority:MessagePriorityDefault repliedMessage:nil conversation:conversation completionHandler:^(Message *message, NSError *error) {
                 if(!error){
