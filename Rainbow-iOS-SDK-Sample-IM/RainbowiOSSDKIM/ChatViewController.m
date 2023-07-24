@@ -18,7 +18,7 @@
 #import "PeerTableViewCell.h"
 
 #import <Photos/Photos.h>
-#import <MobileCoreServices/MobileCoreServices.h>
+#import <UniformTypeIdentifiers/UniformTypeIdentifiers.h>
 
 #define kPageSize 50
 
@@ -89,7 +89,7 @@
     }
     // If there is no conversation with this peer, create a new one
     if(!self.theConversation){
-        [[ServicesManager sharedInstance].conversationsManagerService startConversationWithPeer:self.contact withCompletionHandler:^(Conversation *conversation, NSError *error) {
+        [[ServicesManager sharedInstance].conversationsManagerService startConversationWithPeer:(id<PeerProtocol>)self.contact withCompletionHandler:^(Conversation *conversation, NSError *error) {
             if(!error){
                 self.theConversation = conversation;
             } else {
@@ -99,8 +99,6 @@
     }
     self.title = [NSString stringWithFormat:@"Conversation with %@", ((Contact *)self.theConversation.peer).displayName];
     self.attachmentViewHeightConstraint.constant = 0;
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:@"UIKeyboardWillShowNotification" object: nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:@"UIKeyboardDidHideNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveNewMessage:) name:kConversationsManagerDidReceiveNewMessageForConversation object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(shouldUpdateAttachment:) name:kFileSharingServiceDidUpdateFile object:nil];
     
@@ -121,8 +119,6 @@
     _serviceManager = nil;
     _conversationsManager = nil;
     
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"UIKeyboardWillShowNotification" object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"UIKeyboardDidHideNotification" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kConversationsManagerDidReceiveNewMessageForConversation object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kFileSharingServiceDidUpdateFile object:nil];
 }
@@ -213,7 +209,7 @@
                 else
                     imagePickerController.sourceType = UIImagePickerControllerSourceTypeSavedPhotosAlbum;
                 
-                imagePickerController.mediaTypes = [NSArray arrayWithObjects:(NSString *)kUTTypeMovie, (NSString *)kUTTypeImage, nil];
+                imagePickerController.mediaTypes = [NSArray arrayWithObjects:UTTypeMovie.identifier, UTTypeImage.identifier, nil];
                 
                 [self presentViewController:imagePickerController animated:YES completion:nil];
                 
@@ -240,7 +236,7 @@
         options.version = PHImageRequestOptionsVersionCurrent;
         options.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
         options.synchronous = YES;
-        [[PHImageManager defaultManager] requestImageDataForAsset:asset options:options resultHandler:^(NSData * _Nullable imageData, NSString * _Nullable dataUTI, UIImageOrientation orientation, NSDictionary * _Nullable info) {
+        [[PHImageManager defaultManager] requestImageDataAndOrientationForAsset:asset options:options resultHandler:^(NSData * _Nullable imageData, NSString * _Nullable dataUTI, CGImagePropertyOrientation orientation, NSDictionary * _Nullable info) {
             // Convert HEIC to JPEG for not iOS device compatibility
             if( [[url pathExtension] isEqualToString:@"HEIC"] || [[url pathExtension] isEqualToString:@"HEIF"]) {
                 UIImage *im = [UIImage imageWithData:imageData];
@@ -269,16 +265,17 @@
 
 -(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info{
     NSURL *assetURL;
-    if([info objectForKey:UIImagePickerControllerReferenceURL])
+    if ([info objectForKey:UIImagePickerControllerReferenceURL]) {
         assetURL = info[UIImagePickerControllerReferenceURL];
-    else if([info objectForKey:UIImagePickerControllerMediaURL])
+    } else if([info objectForKey:UIImagePickerControllerMediaURL]) {
         assetURL = info[UIImagePickerControllerMediaURL];
+    }
     
     PHFetchResult<PHAsset *> *asset = nil;
     __block NSData *dataToSend = nil;
     __block NSURL *assetUrl = nil;
     
-    if(assetURL){
+    if (assetURL){
         asset = [PHAsset fetchAssetsWithALAssetURLs:@[assetURL] options:nil];
         if(asset.count > 0){
             __block NSString* fileName = [asset.firstObject valueForKey:@"filename"];
@@ -435,34 +432,6 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         [self reloadAndScrollToBottom];
     });
-}
-#pragma mark - Keyboard notification
-
-- (void)keyboardWillShow:(NSNotification *)notification{
-    if(![NSThread isMainThread]){
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self keyboardWillShow:notification];
-        });
-        return;
-    }
-    [UIView beginAnimations:nil context:nil];
-    NSDictionary *userInfo = notification.userInfo;
-    NSValue *keyboardFrame = [userInfo valueForKey: UIKeyboardFrameEndUserInfoKey];
-    CGRect keyboardRectangle = [keyboardFrame CGRectValue];
-    self.view.frame = CGRectMake(0,  - keyboardRectangle.size.height, self.view.frame.size.width, self.view.frame.size.height);
-    [UIView commitAnimations];
-}
-
-- (void)keyboardDidHide:(NSNotification *)notification{
-    if(![NSThread isMainThread]){
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self keyboardDidHide:notification];
-        });
-        return;
-    }
-    [UIView beginAnimations:nil context:nil];
-    self.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
-    [UIView commitAnimations];
 }
 
 #pragma mark - UITableViewDataSource

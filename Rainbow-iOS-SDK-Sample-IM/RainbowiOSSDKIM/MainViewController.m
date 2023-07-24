@@ -89,25 +89,31 @@
 }
 
 -(void) insertContact:(Contact *) contact {
+    // Ignore non Rainbow contact
+    if (contact.class != RainbowContact.class) {
+        return;
+    }
+    RainbowContact *rainbowContact = (RainbowContact *)contact;
+    
     // Ignore myself
-    if (contact == _serviceManager.myUser.contact) {
+    if (rainbowContact.isMe) {
         return;
     }
     // Ignore bots
-    if(contact.isBot) {
+    if(rainbowContact.isBot) {
         return;
     }
     // Keep only contact that are in the roster
-    if(!contact.isInRoster){
+    if(!rainbowContact.isInRoster){
         return;
     }
     
-    if (![_allObjects containsObject:contact]) {
-        [_allObjects addObject:contact];
+    if (![_allObjects containsObject:rainbowContact]) {
+        [_allObjects addObject:rainbowContact];
     } else {
-        NSUInteger index =  [_allObjects indexOfObjectIdenticalTo:contact];
+        NSUInteger index =  [_allObjects indexOfObjectIdenticalTo:rainbowContact];
         if (index != NSNotFound) {
-            [_allObjects replaceObjectAtIndex:index withObject:contact];
+            [_allObjects replaceObjectAtIndex:index withObject:rainbowContact];
         }
     }
 }
