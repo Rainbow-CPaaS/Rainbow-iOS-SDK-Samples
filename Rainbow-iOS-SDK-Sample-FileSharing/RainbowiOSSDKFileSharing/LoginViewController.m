@@ -65,7 +65,6 @@
     if ([[ServicesManager sharedInstance].myUser username] &&[[ServicesManager sharedInstance].myUser password]) {
         [self.loginTextField setText:[[ServicesManager sharedInstance].myUser username]];
         [self.passwordTextField setText:[[ServicesManager sharedInstance].myUser password]];
-        [[ServicesManager sharedInstance].loginManager disconnect];
         [[ServicesManager sharedInstance].loginManager connect];
         self.loginButton.enabled = NO;
         [self.activityIndicatorView startAnimating];
@@ -94,17 +93,27 @@
         return;
     }
     NSLog(@"[LoginViewController] Did login");
+    [self afterConnection];
+}
+
+-(void) didReconnect:(NSNotification *) notification {
+    if(![NSThread isMainThread]){
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self didReconnect:notification];
+        });
+        return;
+    }
+    NSLog(@"[LoginViewController] Did reconnect");
+    [self afterConnection];
+}
+
+-(void) afterConnection {
     self.loginButton.enabled = YES;
     [self.activityIndicatorView stopAnimating];
     [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
     [self performSegueWithIdentifier:@"DidLoginSegue" sender:self];
 }
 
--(void) didReconnect:(NSNotification *) notification {
-    NSLog(@"[LoginViewController] Did reconnect");
-    [[ServicesManager sharedInstance].loginManager disconnect];
-    [[ServicesManager sharedInstance].loginManager connect];
-}
 
 -(void)failedToAuthenticate:(NSNotification *) notification {
     if(![NSThread isMainThread]){
@@ -128,6 +137,7 @@
     }
     NSLog(@"[LoginViewController] Did logout");
     [self.activityIndicatorView stopAnimating];
+    self.passwordTextField.text = @"";
     self.loginButton.enabled = YES;
 }
 

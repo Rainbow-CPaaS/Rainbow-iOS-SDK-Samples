@@ -67,25 +67,31 @@
 }
 
 -(void) insertContact:(Contact *) contact {
+    // Ignore non Rainbow contact
+    if (contact.class != RainbowContact.class) {
+        return;
+    }
+    RainbowContact *rainbowContact = (RainbowContact *)contact;
+    
     // Ignore myself
-    if (contact == _serviceManager.myUser.contact) {
+    if (rainbowContact.isMe) {
         return;
     }
     // Ignore bots
-    if(contact.isBot) {
+    if(rainbowContact.isBot) {
         return;
     }
-    // Ignore contact not in roster
-    if(!contact.isInRoster) {
+    // Keep only contact that are in the roster
+    if(!rainbowContact.isInRoster){
         return;
     }
     
-    if (![_allObjects containsObject:contact]) {
-        [_allObjects addObject:contact];
+    if (![_allObjects containsObject:rainbowContact]) {
+        [_allObjects addObject:rainbowContact];
     } else {
-        NSUInteger index =  [_allObjects indexOfObjectIdenticalTo:contact];
+        NSUInteger index =  [_allObjects indexOfObjectIdenticalTo:rainbowContact];
         if (index != NSNotFound) {
-            [_allObjects replaceObjectAtIndex:index withObject:contact];
+            [_allObjects replaceObjectAtIndex:index withObject:rainbowContact];
         }
     }
 }
@@ -166,16 +172,20 @@
     NSDictionary *userInfo = (NSDictionary *)notification.object;
     Contact *contact = [userInfo objectForKey:kContactKey];
     
-    if (contact.isInRoster){
-        [self insertContact:contact];
-    }
-    else {
-        if ([_allObjects containsObject:contact]) {
-            [_allObjects removeObject:contact];
+    if (contact.class == RainbowContact.class) {
+        RainbowContact *rainbowContact = (RainbowContact *)contact;
+        
+        if (rainbowContact.isInRoster){
+            [self insertContact:rainbowContact];
+            
+        } else {
+            if ([_allObjects containsObject:rainbowContact]) {
+                [_allObjects removeObject:rainbowContact];
+            }
         }
-    }
-    if([self isViewLoaded] && _populated){
-        [self.tableView reloadData];
+        if([self isViewLoaded] && _populated){
+            [self.tableView reloadData];
+        }
     }
 }
 

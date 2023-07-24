@@ -63,7 +63,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    [self.fileSharingService fetchAllFilesWithPeer:self.contact fromOffset:0 withLimit:500 withTypeMIME:FilterFilesAll withSortField:FileSortFieldDate completionHandler:^(NSArray<File *> *files, NSUInteger total, NSError *error) {
+    [self.fileSharingService fetchAllFilesWithViewer:(id<ViewerProtocol>)self.contact fromOffset:0 withLimit:500 withTypeMIME:FilterFilesAll withSortField:FileSortFieldDate completionHandler:^(NSArray<File *> *files, NSUInteger total, NSError *error) {
         if(error){
             NSLog(@"Error while loading shared files: %@", [error localizedDescription]);
         } else {
@@ -106,6 +106,10 @@
         cell.imageView.image = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
     }
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 @end
