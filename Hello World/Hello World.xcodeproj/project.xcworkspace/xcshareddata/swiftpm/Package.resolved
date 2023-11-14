@@ -1,0 +1,23 @@
+{
+  "pins" : [
+    {
+      "identity" : "rainbow-ios-sdk",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Rainbow-CPaaS/Rainbow-iOS-SDK.git",
+      "state" : {
+        "revision" : "dab638988cf5a655a8b2cb651f037df76df8a6a4",
+        "version" : "2.9.0"
+      }
+    },
+    {
+      "identity" : "rainbow-ios-webrtc",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Rainbow-CPaaS/Rainbow-iOS-WebRTC.git",
+      "state" : {
+        "revision" : "2a46a94502b580a113e9f868629b9a70ee4d4730",
+        "version" : "1.1.38197"
+      }
+    }
+  ],
+  "version" : 2
+}
