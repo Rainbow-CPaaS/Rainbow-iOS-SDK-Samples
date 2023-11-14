@@ -7,6 +7,7 @@
 
 Sample applications which demonstrate the uses of the Rainbow SDK for iOS in ObjectiveC and Swift languages:
 
+- [Hello World](https://github.com/Rainbow-CPaaS/Rainbow-iOS-SDK-Samples/tree/master/Hello World): "Hello World" application using Rainbow SDK
 - [Rainbow-iOS-SDK-Sample-Contacts](https://github.com/Rainbow-CPaaS/Rainbow-iOS-SDK-Samples/tree/master/Rainbow-iOS-SDK-Sample-Contacts): demonstration of the Rainbow contact management API
 - [Rainbow-iOS-SDK-Sample-IM](https://github.com/Rainbow-CPaaS/Rainbow-iOS-SDK-Samples/tree/master/Rainbow-iOS-SDK-Sample-IM): demonstration of WebRTC calling API for audio and video communication
 - [Rainbow-iOS-SDK-Sample-SFU](https://github.com/Rainbow-CPaaS/Rainbow-iOS-SDK-Samples/tree/master/Rainbow-iOS-SDK-Sample-SFU): demonstration of joining or starting audio room conversations
