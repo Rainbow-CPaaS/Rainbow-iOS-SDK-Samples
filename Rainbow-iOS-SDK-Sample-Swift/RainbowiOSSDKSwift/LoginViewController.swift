@@ -18,7 +18,6 @@ import Rainbow
 
 class LoginViewController: UIViewController {
     let rainbowServer = "sandbox.openrainbow.com"
-    var server : String?
     
     @IBOutlet weak var serverLabel: UILabel!
     @IBOutlet weak var loginTextField: UITextField!
@@ -27,18 +26,12 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var activityIndicatorView: UIActivityIndicatorView!
     override func awakeFromNib() {
         super.awakeFromNib()
-        self.server = rainbowServer
         self.hidesBottomBarWhenPushed = true
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.serverLabel.text = self.server
-        NotificationCenter.default.addObserver(self, selector: #selector(didChangeServer(notification:)), name: NSNotification.Name(kLoginManagerDidChangeServer), object: nil)
-
-        if let server = self.server {
-            NotificationCenter.default.post(name: NSNotification.Name(kLoginManagerDidChangeServer), object: ["serverURL" : server])
-        }
+        self.serverLabel.text = rainbowServer
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -119,12 +112,6 @@ class LoginViewController: UIViewController {
         activityIndicatorView.stopAnimating()
     }
     
-    @objc func didChangeServer(notification: NSNotification) {
-        if let server = notification.object as? Server {
-            NSLog("[LoginViewController] Did changed server to : %@", server.serverDisplayedName)
-        }
-    }
-    
     @IBAction func logoutAction(_ sender: Any) {
         DispatchQueue.global().async {
             ServicesManager.sharedInstance().loginManager.disconnect()
@@ -135,11 +122,21 @@ class LoginViewController: UIViewController {
     @IBAction func loginAction(_ sender: Any) {
         if let login = self.loginTextField.text, let passwd = self.passwordTextField.text {
             if login.count > 0 && passwd.count > 0 {
-                ServicesManager.sharedInstance().loginManager.setUsername(login, andPassword:passwd)
-                ServicesManager.sharedInstance().loginManager.connect()
+                self.signin(loginEmail: login, password: passwd, server: rainbowServer)
                 activityIndicatorView.startAnimating()
                 self.loginButton.isEnabled = false
             }
+        }
+    }
+    
+    func signin(loginEmail: String, password: String, server: String? = nil) {
+        if let server {
+            NSLog("Switch server then, sign in with loginEmail and password")
+            ServicesManager.sharedInstance().loginManager.switchServer(server, login:loginEmail, password: password)
+        } else {
+            NSLog("Will sign in with loginEmail and password")
+            ServicesManager.sharedInstance().loginManager.setUsername(loginEmail, andPassword: password)
+            ServicesManager.sharedInstance().loginManager.connect()
         }
     }
     
