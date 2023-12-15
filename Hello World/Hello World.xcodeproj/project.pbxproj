@@ -323,6 +323,7 @@
 				DEVELOPMENT_TEAM = BT9E66P673;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Hello World/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Hello World";
 				INFOPLIST_KEY_NSCameraUsageDescription = "a text explaining that you want access to camera";
 				INFOPLIST_KEY_NSContactsUsageDescription = "a text explaining that you want access to contacts";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "a text explaining that you want access to microphone";
@@ -356,6 +357,7 @@
 				DEVELOPMENT_TEAM = BT9E66P673;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Hello World/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Hello World";
 				INFOPLIST_KEY_NSCameraUsageDescription = "a text explaining that you want access to camera";
 				INFOPLIST_KEY_NSContactsUsageDescription = "a text explaining that you want access to contacts";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "a text explaining that you want access to microphone";

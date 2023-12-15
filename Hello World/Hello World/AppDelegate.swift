@@ -22,17 +22,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // User password
     let password = "xxxxxxxxxxxx"
     
+    override init() {
+        RainbowUserDefaults.setSuiteName("group.com.alcatellucent.otcl.Hello-World")
+        
+        LogsRecorder.sharedInstance().startRecord()
+    }
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
-        NSLog("Rainbow SDK version: \(RainbowVersionNumber)")
+        let sdkVersion = ServicesManager.version()
+        NSLog("Rainbow SDK version: \(sdkVersion)")
         ServicesManager.sharedInstance().setAppID(appId, secretKey: appSecret)
-        
+                
         return true
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+        LogsRecorder.sharedInstance().stopRecord()
     }
     
     // MARK: UISceneSession Lifecycle
