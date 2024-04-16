@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21679"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -414,7 +414,6 @@
                                 <subviews>
                                     <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="80" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Gk2-HW-O7u">
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="299.5"/>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <view key="tableHeaderView" contentMode="scaleToFill" id="jn7-ea-0qn">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -540,7 +539,7 @@
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <subviews>
                                                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="WMv-lP-Ci9">
-                                                            <rect key="frame" x="0.0" y="0.0" width="375" height="200"/>
+                                                            <rect key="frame" x="16" y="0.0" width="343" height="200"/>
                                                             <subviews>
                                                                 <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hlm-7S-G2t">
                                                                     <rect key="frame" x="0.0" y="0.0" width="375" height="0.0"/>
@@ -578,8 +577,8 @@
                                                     </subviews>
                                                     <constraints>
                                                         <constraint firstAttribute="bottom" secondItem="WMv-lP-Ci9" secondAttribute="bottom" id="4fV-VW-JZJ"/>
-                                                        <constraint firstItem="WMv-lP-Ci9" firstAttribute="leading" secondItem="VXt-fh-fYn" secondAttribute="leading" id="Jsy-Qy-cBR"/>
-                                                        <constraint firstAttribute="trailing" secondItem="WMv-lP-Ci9" secondAttribute="trailing" id="QVY-sN-bCr"/>
+                                                        <constraint firstItem="WMv-lP-Ci9" firstAttribute="leading" secondItem="VXt-fh-fYn" secondAttribute="leading" constant="16" id="Jsy-Qy-cBR"/>
+                                                        <constraint firstAttribute="trailing" secondItem="WMv-lP-Ci9" secondAttribute="trailing" constant="16" id="QVY-sN-bCr"/>
                                                         <constraint firstAttribute="bottom" secondItem="cDP-ab-0W7" secondAttribute="bottom" id="hcc-1W-2Q2"/>
                                                         <constraint firstItem="WMv-lP-Ci9" firstAttribute="top" secondItem="VXt-fh-fYn" secondAttribute="top" id="pMY-TB-c17"/>
                                                         <constraint firstAttribute="trailing" secondItem="cDP-ab-0W7" secondAttribute="trailing" id="w1C-Qe-5aM"/>
