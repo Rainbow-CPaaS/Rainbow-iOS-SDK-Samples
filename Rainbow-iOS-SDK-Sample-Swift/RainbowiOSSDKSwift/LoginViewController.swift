@@ -40,7 +40,7 @@ class LoginViewController: UIViewController {
         if (ServicesManager.sharedInstance().myUser.username != nil) && (ServicesManager.sharedInstance().myUser.password != nil) {
             self.loginTextField.text = ServicesManager.sharedInstance().myUser.username
             self.passwordTextField.text = ServicesManager.sharedInstance().myUser.password
-            ServicesManager.sharedInstance()?.loginManager.connect()
+            ServicesManager.sharedInstance().loginManager.connect()
             activityIndicatorView.startAnimating()
             self.loginButton.isEnabled = false
         }

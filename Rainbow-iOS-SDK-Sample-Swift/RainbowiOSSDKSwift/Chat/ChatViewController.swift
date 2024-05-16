@@ -135,31 +135,34 @@ class ChatViewController: UIViewController, CKItemsBrowserDelegate, UITableViewD
             }
         }
         
-        // If there is no conversation with this peer, create a new one
-        if let peer = conversationPeer?.peer {
-            if let peer = theConversation?.peer, let displayName = try? ConversationPeer(peer).displayName {
-                self.title = displayName
-            }
-            conversationsManager.startConversation(withPeer: peer) { (conversation : Optional<Conversation>, error : Optional<Error>)  in
-                if error != nil {
-                    self.theConversation = conversation
-                } else {
-                    NSLog("Can't create the new conversation, error: \(error.debugDescription)")
+        if let theConversation = theConversation {
+            
+            // If there is no conversation with this peer, create a new one
+            if conversationPeer?.peer != nil {
+                let peer = theConversation.peer
+                if let displayName = try? ConversationPeer(peer).displayName {
+                    self.title = displayName
+                }
+                conversationsManager.startConversation(withPeer: peer) { (conversation : Optional<Conversation>, error : Optional<Error>)  in
+                    if error != nil {
+                        self.theConversation = conversation
+                    } else {
+                        NSLog("Can't create the new conversation, error: \(error.debugDescription)")
+                    }
                 }
             }
+            
+            NotificationCenter.default.addObserver(self, selector:#selector(didReceiveNewMessage(notification:)), name:NSNotification.Name(kConversationsManagerDidReceiveNewMessageForConversation), object:nil)
+            
+            loadMoreButton.isEnabled = false
+            messagesBrowser = conversationsManager.messagesBrowser(for: theConversation, withPageSize:kPageSize, preloadMessages:true)
+            messagesBrowser?.delegate = self
+            messagesBrowser?.resyncBrowsingCache { (addedCacheItems : Optional<Array<Any>>, removedCacheItems : Optional<Array<Any>>, updatedCacheItems : Optional<Array<Any>>, error : Optional<Error>) in
+                NSLog("Resync done")
+                let hasPage = self.messagesBrowser?.hasMorePages() ?? false
+                self.loadMoreButton.isEnabled = hasPage
+            }
         }
-        
-        NotificationCenter.default.addObserver(self, selector:#selector(didReceiveNewMessage(notification:)), name:NSNotification.Name(kConversationsManagerDidReceiveNewMessageForConversation), object:nil)
-        
-        loadMoreButton.isEnabled = false
-        messagesBrowser = conversationsManager.messagesBrowser(for: self.theConversation, withPageSize:kPageSize, preloadMessages:true)
-        messagesBrowser?.delegate = self
-        messagesBrowser?.resyncBrowsingCache { (addedCacheItems : Optional<Array<Any>>, removedCacheItems : Optional<Array<Any>>, updatedCacheItems : Optional<Array<Any>>, error : Optional<Error>) in
-            NSLog("Resync done")
-            let hasPage = self.messagesBrowser?.hasMorePages() ?? false
-            self.loadMoreButton.isEnabled = hasPage
-        }
- 
     }
     
     override func viewWillAppear(_ animated: Bool) {

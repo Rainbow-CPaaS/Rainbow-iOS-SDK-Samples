@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 53;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -16,6 +16,7 @@
 		E550289B248A8C0700A6B603 /* RoomsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E550289A248A8C0700A6B603 /* RoomsTableViewController.swift */; };
 		E550289D248A8D4600A6B603 /* RoomsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E550289C248A8D4600A6B603 /* RoomsTableViewCell.swift */; };
 		E550289F248AA53F00A6B603 /* EditRoomViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E550289E248AA53E00A6B603 /* EditRoomViewController.swift */; };
+		E5586E172BF4C78C00F60EE8 /* Rainbow.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = E5586E162BF4C78C00F60EE8 /* Rainbow.xcframework */; };
 		E565D9DC20AAD9640074597C /* ConversationsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E565D9DB20AAD9640074597C /* ConversationsTableViewController.swift */; };
 		E565D9DE20AADAB00074597C /* ConversationsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E565D9DD20AADAB00074597C /* ConversationsTableViewCell.swift */; };
 		E565D9E220AB3B670074597C /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E565D9E120AB3B670074597C /* ChatViewController.swift */; };
@@ -26,9 +27,8 @@
 		E5773BF02099F3D9000BC714 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5773BEF2099F3D9000BC714 /* DetailViewController.swift */; };
 		E595F3E42A126CFC004C5C2D /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = E595F3E32A126CFC004C5C2D /* Alamofire */; };
 		E595F3E72A12853C004C5C2D /* CryptoSwift in Frameworks */ = {isa = PBXBuildFile; productRef = E595F3E62A12853C004C5C2D /* CryptoSwift */; };
+		E5CCFE372BF637E800972C62 /* Rainbow.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E5586E162BF4C78C00F60EE8 /* Rainbow.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E5DCEB6727AA90390052CFF4 /* WebRTC.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = E5DCEB6527AA90390052CFF4 /* WebRTC.xcframework */; };
-		E5DCEB6827AA90390052CFF4 /* Rainbow.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = E5DCEB6627AA90390052CFF4 /* Rainbow.xcframework */; };
-		E5DCEB6927AA904A0052CFF4 /* Rainbow.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E5DCEB6627AA90390052CFF4 /* Rainbow.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E5DCEB6A27AA904A0052CFF4 /* WebRTC.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E5DCEB6527AA90390052CFF4 /* WebRTC.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
@@ -39,7 +39,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				E5DCEB6927AA904A0052CFF4 /* Rainbow.xcframework in Embed Frameworks */,
+				E5CCFE372BF637E800972C62 /* Rainbow.xcframework in Embed Frameworks */,
 				E5DCEB6A27AA904A0052CFF4 /* WebRTC.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -59,6 +59,7 @@
 		E550289A248A8C0700A6B603 /* RoomsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomsTableViewController.swift; sourceTree = "<group>"; };
 		E550289C248A8D4600A6B603 /* RoomsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomsTableViewCell.swift; sourceTree = "<group>"; };
 		E550289E248AA53E00A6B603 /* EditRoomViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditRoomViewController.swift; sourceTree = "<group>"; };
+		E5586E162BF4C78C00F60EE8 /* Rainbow.xcframework */ = {isa = PBXFileReference; expectedSignature = "AppleDeveloperProgram:BT9E66P673:ALE International"; lastKnownFileType = wrapper.xcframework; name = Rainbow.xcframework; path = RainbowiOSSDKSwift/Carthage/Build/iOS/Rainbow.xcframework; sourceTree = "<group>"; };
 		E565D9DB20AAD9640074597C /* ConversationsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationsTableViewController.swift; sourceTree = "<group>"; };
 		E565D9DD20AADAB00074597C /* ConversationsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationsTableViewCell.swift; sourceTree = "<group>"; };
 		E565D9E120AB3B670074597C /* ChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
@@ -68,7 +69,6 @@
 		E5773BED2099C5CC000BC714 /* ContactTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactTableViewCell.swift; sourceTree = "<group>"; };
 		E5773BEF2099F3D9000BC714 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		E5DCEB6527AA90390052CFF4 /* WebRTC.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = WebRTC.xcframework; path = RainbowiOSSDKSwift/Carthage/Build/iOS/WebRTC.xcframework; sourceTree = "<group>"; };
-		E5DCEB6627AA90390052CFF4 /* Rainbow.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Rainbow.xcframework; path = RainbowiOSSDKSwift/Carthage/Build/iOS/Rainbow.xcframework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,10 +76,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E5586E172BF4C78C00F60EE8 /* Rainbow.xcframework in Frameworks */,
 				E595F3E42A126CFC004C5C2D /* Alamofire in Frameworks */,
 				E595F3E72A12853C004C5C2D /* CryptoSwift in Frameworks */,
 				E5DCEB6727AA90390052CFF4 /* WebRTC.xcframework in Frameworks */,
-				E5DCEB6827AA90390052CFF4 /* Rainbow.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -163,7 +163,7 @@
 		E5D6117C25F77C9A0088E52B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				E5DCEB6627AA90390052CFF4 /* Rainbow.xcframework */,
+				E5586E162BF4C78C00F60EE8 /* Rainbow.xcframework */,
 				E5DCEB6527AA90390052CFF4 /* WebRTC.xcframework */,
 			);
 			name = Frameworks;

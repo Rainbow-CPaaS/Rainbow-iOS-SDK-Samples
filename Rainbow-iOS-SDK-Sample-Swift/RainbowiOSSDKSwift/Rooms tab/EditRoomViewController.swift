@@ -46,7 +46,7 @@ class EditRoomViewController: UIViewController {
         if let room = room {
             nameTextField.text = room.displayName
             topicTextField.text = room.topic
-            ownerNameLabel.text = room.isMyRoom ? "Me" : room.creator.displayName
+            ownerNameLabel.text = room.isMyRoom ? "Me" : room.creator?.displayName
             nameTextField.isEnabled = room.isMyRoom
             topicTextField.isEnabled = room.isMyRoom
             updateButton.isEnabled = room.isMyRoom

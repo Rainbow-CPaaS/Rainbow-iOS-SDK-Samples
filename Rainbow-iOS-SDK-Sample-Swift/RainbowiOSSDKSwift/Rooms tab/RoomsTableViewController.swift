@@ -55,7 +55,7 @@ class RoomsTableViewController: UITableViewController {
     }
     
     @IBAction func logoutAction(_ sender: Any) {
-        ServicesManager.sharedInstance()?.loginManager.disconnect()
+        ServicesManager.sharedInstance().loginManager.disconnect()
         ServicesManager.sharedInstance().loginManager.resetAllCredentials()
         self.dismiss(animated: false, completion: nil)
     }

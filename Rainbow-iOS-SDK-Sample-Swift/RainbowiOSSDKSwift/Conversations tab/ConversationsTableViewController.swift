@@ -51,7 +51,7 @@ class ConversationsTableViewController: UITableViewController {
     }
 
     @IBAction func logoutAction(_ sender: Any) {
-        ServicesManager.sharedInstance()?.loginManager.disconnect()
+        ServicesManager.sharedInstance().loginManager.disconnect()
         ServicesManager.sharedInstance().loginManager.resetAllCredentials()
         self.dismiss(animated: false, completion: nil)
     }
@@ -246,7 +246,7 @@ class ConversationsTableViewController: UITableViewController {
     }
     
     func updateBadgeValue() {
-        let totalNbOfUnreadMessagesInAllConversations = ServicesManager.sharedInstance()?.conversationsManagerService.totalNbOfUnreadMessagesInAllConversations ?? 0
+        let totalNbOfUnreadMessagesInAllConversations = ServicesManager.sharedInstance().conversationsManagerService.totalNbOfUnreadMessagesInAllConversations
         if(totalNbOfUnreadMessagesInAllConversations == 0) {
             tabBarController?.tabBar.items?[0].badgeValue  = nil;
         }
