@@ -36,20 +36,6 @@
     [super viewDidLoad];
     
     self.serverLabel.text = self.server;
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didChangeServer:) name:kLoginManagerDidChangeServer object:nil];
-    
-    if(self.server){
-        [[NSNotificationCenter defaultCenter] postNotificationName:kLoginManagerDidChangeServer object:@{ @"serverURL": self.server}];
-    }
-    
-    if ([ServicesManager sharedInstance].myUser.username && [ServicesManager sharedInstance].myUser.password) {
-        self.loginTextField.text = [ServicesManager sharedInstance].myUser.username;
-        self.passwordTextField.text = [ServicesManager sharedInstance].myUser.password;
-    }
-    
-    self.loginTextField.delegate = self;
-    self.passwordTextField.delegate = self;
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -63,13 +49,14 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didLogout:) name:kLoginManagerDidLogoutSucceeded object:nil];
     
 
-    if ([[ServicesManager sharedInstance].myUser username] &&[[ServicesManager sharedInstance].myUser password]) {
+    if ([[ServicesManager sharedInstance].myUser username] && [[ServicesManager sharedInstance].myUser password]) {
         [self.loginTextField setText:[[ServicesManager sharedInstance].myUser username]];
         [self.passwordTextField setText:[[ServicesManager sharedInstance].myUser password]];
         [[ServicesManager sharedInstance].loginManager connect];
         self.loginButton.enabled = NO;
         [self.activityIndicatorView startAnimating];
     }
+
     if(self.doLogout){
         self.doLogout = NO;
         [self logoutAction:self];
@@ -141,10 +128,6 @@
     self.loginButton.enabled = YES;
 }
 
--(void)didChangeServer:(NSNotification *) notification {
-    NSLog(@"[LoginViewController] Did changed server to : %@", (NSString *)notification.object);
-}
-
 #pragma mark - IBAction
 
 - (IBAction)logoutAction:(id)sender {
@@ -159,17 +142,21 @@
     NSString *login = self.loginTextField.text;
     NSString *passwd = self.passwordTextField.text;
     if([login length]>0 && [passwd length]>0){
-        [[ServicesManager sharedInstance].loginManager setUsername:login andPassword:passwd];
-        [[ServicesManager sharedInstance].loginManager connect];
+        [self signInWithLoginEmail:login password:passwd server:_server];
         [self.activityIndicatorView startAnimating];
         self.loginButton.enabled = NO;
     }
 }
 
-#pragma mark - UITextFieldDelegate
--(BOOL)textFieldShouldReturn:(UITextField *)textField {
-    [textField resignFirstResponder];
-    return YES;
+- (void)signInWithLoginEmail:(NSString *)loginEmail password:(NSString *)password server:(NSString *)server {
+    if (server != nil) {
+        NSLog(@"Switch server then, sign in with loginEmail and password");
+        [ServicesManager.sharedInstance.loginManager switchServer:server login:loginEmail password:password];
+    } else {
+        NSLog(@"Will sign in with loginEmail and password");
+        [ServicesManager.sharedInstance.loginManager setUsername:loginEmail andPassword:password];
+        [ServicesManager.sharedInstance.loginManager connect];
+    }
 }
 
 @end
