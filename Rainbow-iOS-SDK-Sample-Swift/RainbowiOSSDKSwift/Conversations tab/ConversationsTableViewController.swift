@@ -23,9 +23,6 @@ class ConversationsTableViewController: UITableViewController {
     var allConversations : [Conversation] = []
     var populated = false
     
-    
-    @IBOutlet weak var logoutButton: UIBarButtonItem!
-    
     required init?(coder aDecoder: NSCoder) {
         serviceManager = ServicesManager.sharedInstance()
          conversationsManager = serviceManager.conversationsManagerService
@@ -47,7 +44,20 @@ class ConversationsTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        configureRightButton()
         self.tableView.reloadData()
+    }
+    
+    func configureRightButton() {
+        let logout = UIAction(title: "Logout", image: UIImage(systemName: "power.circle")) { _ in
+            ServicesManager.sharedInstance().loginManager.disconnect()
+            ServicesManager.sharedInstance().loginManager.resetAllCredentials()
+            self.dismiss(animated: false, completion: nil)
+        }
+        
+        let menu = UIMenu(title: "", children: [logout])
+        let barButton = UIBarButtonItem(title: "", image: UIImage(systemName: "ellipsis"), menu: menu)
+        navigationItem.rightBarButtonItem = barButton
     }
 
     @IBAction func logoutAction(_ sender: Any) {

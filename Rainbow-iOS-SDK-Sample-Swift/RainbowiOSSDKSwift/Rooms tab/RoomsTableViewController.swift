@@ -22,9 +22,7 @@ class RoomsTableViewController: UITableViewController {
     var populated = false
     var selectedIndex : IndexPath? = nil
     var allObjects : [Room] = []
-    
-    @IBOutlet weak var logoutButton: UIBarButtonItem!
-    
+        
     required init?(coder aDecoder: NSCoder) {
         serviceManager = ServicesManager.sharedInstance()
         roomsManager = serviceManager.roomsService
@@ -38,7 +36,20 @@ class RoomsTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         allObjects = []
+        configureRightButton()
         self.tableView.reloadData()
+    }
+    
+    func configureRightButton() {
+        let logout = UIAction(title: "Logout", image: UIImage(systemName: "power.circle")) { _ in
+            ServicesManager.sharedInstance().loginManager.disconnect()
+            ServicesManager.sharedInstance().loginManager.resetAllCredentials()
+            self.dismiss(animated: false, completion: nil)
+        }
+        
+        let menu = UIMenu(title: "", children: [logout])
+        let barButton = UIBarButtonItem(title: "", image: UIImage(systemName: "ellipsis"), menu: menu)
+        navigationItem.rightBarButtonItem = barButton
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -52,12 +63,6 @@ class RoomsTableViewController: UITableViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         NotificationCenter.default.removeObserver(self)
-    }
-    
-    @IBAction func logoutAction(_ sender: Any) {
-        ServicesManager.sharedInstance().loginManager.disconnect()
-        ServicesManager.sharedInstance().loginManager.resetAllCredentials()
-        self.dismiss(animated: false, completion: nil)
     }
     
     func insert(_ room : Room) {

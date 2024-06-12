@@ -96,5 +96,4 @@ class MainViewController: UIViewController {
         performSegue(withIdentifier: "BackToLoginSegue", sender:self)
     }
     
-
 }

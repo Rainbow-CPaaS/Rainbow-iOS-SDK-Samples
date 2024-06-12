@@ -22,7 +22,6 @@ class ContactsTableViewController: UITableViewController {
     var populated = false
     var selectedIndex : IndexPath? = nil
     var allObjects : [Contact] = []
-    @IBOutlet weak var logoutButton: UIBarButtonItem!
     
     required init?(coder aDecoder: NSCoder) {
         serviceManager = ServicesManager.sharedInstance()
@@ -37,7 +36,20 @@ class ContactsTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         allObjects = []
+        configureRightButton()
         self.tableView.reloadData()
+    }
+    
+    func configureRightButton() {
+        let logout = UIAction(title: "Logout", image: UIImage(systemName: "power.circle")) { _ in
+            ServicesManager.sharedInstance().loginManager.disconnect()
+            ServicesManager.sharedInstance().loginManager.resetAllCredentials()
+            self.dismiss(animated: false, completion: nil)
+        }
+        
+        let menu = UIMenu(title: "", children: [logout])
+        let barButton = UIBarButtonItem(title: "", image: UIImage(systemName: "ellipsis"), menu: menu)
+        navigationItem.rightBarButtonItem = barButton
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -58,12 +70,6 @@ class ContactsTableViewController: UITableViewController {
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kContactsManagerServiceDidRemoveContact), object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kContactsManagerServiceDidEndPopulatingMyNetwork), object: nil)
 
-    }
-    
-    @IBAction func logoutAction(_ sender: Any) {
-        ServicesManager.sharedInstance().loginManager.disconnect()
-        ServicesManager.sharedInstance().loginManager.resetAllCredentials()
-        self.dismiss(animated: false, completion: nil)
     }
     
     func insert(_ contact : Contact) {

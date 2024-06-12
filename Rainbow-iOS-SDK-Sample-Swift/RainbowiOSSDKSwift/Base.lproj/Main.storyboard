@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21679"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -49,9 +49,8 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
-                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="Pt8-Ax-cue">
-                                <rect key="frame" x="177" y="440" width="20" height="20"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="Pt8-Ax-cue">
+                                <rect key="frame" x="177.5" y="440" width="20" height="20"/>
                             </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
@@ -62,6 +61,8 @@
                             <constraint firstItem="0Jg-V6-RbP" firstAttribute="top" secondItem="6q4-bf-wdN" secondAttribute="bottom" constant="80" id="DD4-XT-sEf"/>
                             <constraint firstItem="QVm-sW-XPD" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="EFl-Oi-KhS"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="6q4-bf-wdN" secondAttribute="trailing" constant="16" id="Fg9-O9-GOE"/>
+                            <constraint firstItem="Pt8-Ax-cue" firstAttribute="top" secondItem="0Jg-V6-RbP" secondAttribute="bottom" constant="36" id="JQt-HD-S7i"/>
+                            <constraint firstItem="Pt8-Ax-cue" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Lru-lI-Eey"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="ENq-a1-TYI" secondAttribute="trailing" constant="16" id="O9O-tc-eGh"/>
                             <constraint firstItem="ENq-a1-TYI" firstAttribute="top" secondItem="d1D-Bj-O8O" secondAttribute="bottom" constant="27" id="bgd-3n-mxb"/>
                             <constraint firstItem="0Jg-V6-RbP" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="hre-nW-wlA"/>
@@ -171,16 +172,9 @@
                         </connections>
                     </tableView>
                     <toolbarItems/>
-                    <navigationItem key="navigationItem" title="Rooms" id="IDU-rg-YIU">
-                        <barButtonItem key="rightBarButtonItem" title="Logout" id="pSU-NP-fAn">
-                            <connections>
-                                <action selector="logoutAction:" destination="VEC-PM-deH" id="7Qk-Uq-Ym8"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Rooms" id="IDU-rg-YIU"/>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
-                        <outlet property="logoutButton" destination="pSU-NP-fAn" id="rAW-Iy-zC8"/>
                         <segue destination="k3J-GD-NKm" kind="show" identifier="EditRoomSegue" id="leZ-CT-G0V"/>
                     </connections>
                 </tableViewController>
@@ -281,6 +275,7 @@
                         <outlet property="ownerNameLabel" destination="Jhx-mn-A9S" id="cYO-0F-RPu"/>
                         <outlet property="topicTextField" destination="VaD-eW-nX5" id="mFu-dl-bQw"/>
                         <outlet property="updateButton" destination="k5q-LQ-bFe" id="f1h-CR-Adn"/>
+                        <segue destination="hCs-uo-IFb" kind="show" identifier="ConferenceSegue" id="e5T-jG-H5j"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="AEg-Zs-6iK" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -371,16 +366,9 @@
                         </connections>
                     </tableView>
                     <toolbarItems/>
-                    <navigationItem key="navigationItem" title="Contacts" id="crV-eY-BnZ">
-                        <barButtonItem key="rightBarButtonItem" title="Logout" id="hbI-Y6-tjT">
-                            <connections>
-                                <action selector="logoutAction:" destination="AKG-5M-hBw" id="4nt-2M-Ii9"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Contacts" id="crV-eY-BnZ"/>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
-                        <outlet property="logoutButton" destination="hbI-Y6-tjT" id="uDK-cL-nU7"/>
                         <segue destination="h7h-J0-qRm" kind="show" identifier="ShowContactDetailSegue" id="j4y-f7-ph6"/>
                     </connections>
                 </tableViewController>
@@ -460,15 +448,8 @@
                             <outlet property="delegate" destination="zNh-EE-6jG" id="agU-GM-fnJ"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Conversations" id="6Kk-aP-ah1">
-                        <barButtonItem key="rightBarButtonItem" title="Logout" id="JqQ-ik-lWU">
-                            <connections>
-                                <action selector="logoutAction:" destination="zNh-EE-6jG" id="vg0-5Z-qpq"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Conversations" id="6Kk-aP-ah1"/>
                     <connections>
-                        <outlet property="logoutButton" destination="JqQ-ik-lWU" id="2SD-ZL-Uj1"/>
                         <segue destination="eHl-B0-0Mf" kind="show" identifier="ChatWithSegue" id="rUU-qf-qac"/>
                     </connections>
                 </tableViewController>
@@ -613,7 +594,7 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Chat" id="dEC-fO-zvn">
-                        <barButtonItem key="rightBarButtonItem" title="More..." id="y5W-cN-Ftv">
+                        <barButtonItem key="rightBarButtonItem" title="Load more..." id="y5W-cN-Ftv">
                             <connections>
                                 <action selector="loadMoreAction:" destination="eHl-B0-0Mf" id="C4J-CK-EyJ"/>
                             </connections>
@@ -718,6 +699,76 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1Ep-my-bXP" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="3358" y="226"/>
+        </scene>
+        <!--Conference-->
+        <scene sceneID="Rda-KW-3ZD">
+            <objects>
+                <viewController id="hCs-uo-IFb" customClass="ConferenceViewController" customModule="RainbowiOSSDKSwift" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="0i8-kV-Bo5">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Conference status:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lrf-71-OBz">
+                                <rect key="frame" x="16" y="44" width="152" height="21"/>
+                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="connecting..." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zfV-mB-mRH">
+                                <rect key="frame" x="176" y="44" width="99" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="eaR-Te-R1x">
+                                <rect key="frame" x="16" y="105" width="343" height="250"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="250" id="f6p-E0-0hj"/>
+                                </constraints>
+                            </tableView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Participants:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yi3-re-rAw">
+                                <rect key="frame" x="16" y="80" width="81" height="17"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="C0E-MI-hMf" customClass="RTCMTLVideoView">
+                                <rect key="frame" x="193" y="417" width="150" height="150"/>
+                                <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="150" id="cee-ZR-FiR"/>
+                                    <constraint firstAttribute="height" constant="150" id="vb4-a2-oUj"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="nXg-cb-EjP"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="eaR-Te-R1x" firstAttribute="leading" secondItem="yi3-re-rAw" secondAttribute="leading" id="8gs-wR-a3A"/>
+                            <constraint firstItem="nXg-cb-EjP" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="zfV-mB-mRH" secondAttribute="trailing" constant="16" id="BYx-DV-5OH"/>
+                            <constraint firstItem="eaR-Te-R1x" firstAttribute="top" secondItem="lrf-71-OBz" secondAttribute="bottom" constant="40" id="Hyt-rg-gdb"/>
+                            <constraint firstItem="nXg-cb-EjP" firstAttribute="trailing" secondItem="eaR-Te-R1x" secondAttribute="trailing" constant="16" id="KAi-ua-zbJ"/>
+                            <constraint firstAttribute="bottom" secondItem="C0E-MI-hMf" secondAttribute="bottom" constant="100" id="LFy-MB-tfb"/>
+                            <constraint firstItem="zfV-mB-mRH" firstAttribute="firstBaseline" secondItem="lrf-71-OBz" secondAttribute="firstBaseline" id="cGi-ei-KpV"/>
+                            <constraint firstItem="lrf-71-OBz" firstAttribute="top" secondItem="nXg-cb-EjP" secondAttribute="top" id="eX8-Di-b3E"/>
+                            <constraint firstItem="nXg-cb-EjP" firstAttribute="trailing" secondItem="C0E-MI-hMf" secondAttribute="trailing" constant="32" id="hKc-4W-JYF"/>
+                            <constraint firstItem="zfV-mB-mRH" firstAttribute="leading" secondItem="lrf-71-OBz" secondAttribute="trailing" constant="8" symbolic="YES" id="ksA-H2-TeC"/>
+                            <constraint firstItem="lrf-71-OBz" firstAttribute="leading" secondItem="nXg-cb-EjP" secondAttribute="leading" constant="16" id="onj-Fz-2fi"/>
+                            <constraint firstItem="eaR-Te-R1x" firstAttribute="top" secondItem="yi3-re-rAw" secondAttribute="bottom" constant="8" symbolic="YES" id="oof-vV-Ioa"/>
+                            <constraint firstItem="eaR-Te-R1x" firstAttribute="leading" secondItem="nXg-cb-EjP" secondAttribute="leading" constant="16" id="zXc-2X-asT"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="Conference" id="FTY-hI-OV5"/>
+                    <connections>
+                        <outlet property="conferenceStatus" destination="zfV-mB-mRH" id="9UV-e6-48e"/>
+                        <outlet property="localVideoView" destination="C0E-MI-hMf" id="f2f-Qe-EdF"/>
+                        <outlet property="participantTableView" destination="eaR-Te-R1x" id="7kH-tR-4y3"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ybp-Cg-dbP" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="4317.6000000000004" y="1908.3958020989508"/>
         </scene>
     </scenes>
     <resources>
