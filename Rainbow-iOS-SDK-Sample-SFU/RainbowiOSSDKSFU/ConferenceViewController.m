@@ -71,7 +71,7 @@
 }
 
 - (void)didMoveToParentViewController:(UIViewController *)parent {
-    if (![parent isEqual:self.parentViewController]) {
+    if (parent == nil) {
         NSLog(@"Back pressed");
         [self.conferencesManager hangup:self.room block:^(NSError *error) {
             if (error){
