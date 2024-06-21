@@ -6,7 +6,7 @@ For informations about development environnement you should look for [SDK for iO
 
 ### The Sample
 ---
-The aim of this sample project is to demonstrate the usage of the Swift language with iOS Rainbow SDK.
+The aim of this sample project is to demonstrate the usage of the iOS Rainbow SDK with the Swift language.
 
 ### Conversations and Instant Messaging
 ---
@@ -114,7 +114,7 @@ func itemsBrowser(_ browser: CKItemsBrowser!, didReorderCacheItemsAtIndexes oldI
 ```
 ### Contact management
 ---
-Second part of the sample  demonstrates Rainbow contact's management. We display list of contacts that are in user's network, also you can select a contact to display more information about him like the company he belongs, his phone numbers,...
+Second part of the sample demonstrates Rainbow contact's management. We display list of contacts that are in user's network, also you can select a contact to display more information about him like the company he belongs, his phone numbers,...
 
 ### Retrieve the list of contacts
 
@@ -164,6 +164,15 @@ Then you should listen to the contact update notifications and take actions acco
 }
 
 ```
+
+### Chat room management
+
+The third part of the sample demonstrates Rainbow chat rooms management. We display a list of the room the loggued user is involved in, as the owner or as a participant.
+
+#### Conferences in rooms
+
+Audio or Audio/Video conferences could be started in rooms, you should refer to the ```ConferenceViewController``` class and the [Managing conferences](https://hub.openrainbow.com/#/documentation/doc/sdk/ios/guides/Managing_conferences) guide.
+
 
 
 
