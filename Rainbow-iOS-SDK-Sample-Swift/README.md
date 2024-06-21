@@ -166,7 +166,7 @@ Then you should listen to the contact update notifications and take actions acco
 ```
 
 ### Chat room management
-
+---
 The third part of the sample demonstrates Rainbow chat rooms management. We display a list of the room the loggued user is involved in, as the owner or as a participant.
 
 #### Conferences in rooms
