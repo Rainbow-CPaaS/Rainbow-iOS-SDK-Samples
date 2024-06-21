@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="ConferenceParticipantCell" rowHeight="80" id="KGk-i7-Jjw" customClass="ConferenceTableViewCell" customModule="RainbowiOSSDKSwift" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="80"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="80"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="contact" translatesAutoresizingMaskIntoConstraints="NO" id="YKh-gc-V87">
+                        <rect key="frame" x="8" y="8" width="60" height="60"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="60" id="cqK-6d-vyX"/>
+                            <constraint firstAttribute="width" constant="60" id="eZL-UN-6Iu"/>
+                        </constraints>
+                    </imageView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IQf-Q8-ggA">
+                        <rect key="frame" x="84" y="29.666666666666671" width="41.333333333333343" height="21"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <view hidden="YES" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eV6-aq-WRa" customClass="RTCMTLVideoView">
+                        <rect key="frame" x="8" y="8" width="60" height="60"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </view>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2XG-11-CU3">
+                        <rect key="frame" x="258" y="22.666666666666671" width="46" height="35"/>
+                        <state key="normal" title="Button"/>
+                        <buttonConfiguration key="configuration" style="plain" image="mic.fill" catalog="system"/>
+                        <connections>
+                            <action selector="muteUmuteAction:" destination="-2" eventType="touchUpInside" id="TCa-oh-uRE"/>
+                        </connections>
+                    </button>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="2XG-11-CU3" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="2dX-xQ-Ewq"/>
+                    <constraint firstItem="IQf-Q8-ggA" firstAttribute="leading" secondItem="YKh-gc-V87" secondAttribute="trailing" constant="16" id="4QI-hZ-VUO"/>
+                    <constraint firstItem="2XG-11-CU3" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="IQf-Q8-ggA" secondAttribute="trailing" constant="8" id="Jm8-DU-oki"/>
+                    <constraint firstItem="YKh-gc-V87" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="8" id="KwM-1W-Gks"/>
+                    <constraint firstItem="YKh-gc-V87" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="8" id="hAZ-Ng-h9n"/>
+                    <constraint firstAttribute="trailing" secondItem="2XG-11-CU3" secondAttribute="trailing" constant="16" id="mzw-8J-K8o"/>
+                    <constraint firstItem="IQf-Q8-ggA" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="udu-KZ-mWf"/>
+                </constraints>
+            </tableViewCellContentView>
+            <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
+            <connections>
+                <outlet property="avatarImage" destination="YKh-gc-V87" id="xSa-c9-QVW"/>
+                <outlet property="muteButton" destination="2XG-11-CU3" id="BH0-gH-URZ"/>
+                <outlet property="nameLabel" destination="IQf-Q8-ggA" id="cYh-nw-Gjb"/>
+                <outlet property="videoView" destination="eV6-aq-WRa" id="RR8-11-Zc7"/>
+            </connections>
+            <point key="canvasLocation" x="27.480916030534349" y="38.732394366197184"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="contact" width="32" height="32"/>
+        <image name="mic.fill" catalog="system" width="110" height="128"/>
+    </resources>
+</document>

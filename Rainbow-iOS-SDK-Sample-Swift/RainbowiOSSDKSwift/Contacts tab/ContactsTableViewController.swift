@@ -23,6 +23,8 @@ class ContactsTableViewController: UITableViewController {
     var selectedIndex : IndexPath? = nil
     var allObjects : [Contact] = []
     
+    private var contactCellIdentifier = "ContactTableViewCell"
+    
     required init?(coder aDecoder: NSCoder) {
         serviceManager = ServicesManager.sharedInstance()
         contactsManager = serviceManager.contactsManagerService
@@ -188,7 +190,7 @@ class ContactsTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ContactTableViewCell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: contactCellIdentifier, for: indexPath)
         return cell
     }
 

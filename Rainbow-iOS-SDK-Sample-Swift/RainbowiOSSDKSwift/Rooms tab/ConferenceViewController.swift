@@ -18,16 +18,17 @@ import Rainbow
 import WebRTC
 
 class ConferenceViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-
+    
     // The room where the conference is running
     var room : Room?
     // true if we start the conference with local video on
     var videoCall = false
-
+    
     @IBOutlet weak var conferenceStatus: UILabel!
     @IBOutlet weak var participantTableView: UITableView!
-    @IBOutlet weak var localVideoView : RTCMTLVideoView!
-
+    
+    private var localVideoView : RTCMTLVideoView?
+    private var remoteVideoViews: [String:RTCMTLVideoView] = [:]
     private let participantCellIdentifier = "ConferenceParticipantCell"
     private var participants : [ConferenceParticipant] = []
     
@@ -39,8 +40,7 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        localVideoView.isHidden = true
-        
+        participantTableView.register(UINib(nibName: "ConferenceTableViewCell", bundle: nil), forCellReuseIdentifier: participantCellIdentifier)
         participantTableView.delegate = self
         participantTableView.dataSource = self
     }
@@ -60,12 +60,20 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
         NotificationCenter.default.addObserver(self, selector:#selector(didAddCaptureSession(notification:)), name:NSNotification.Name(kRTCServiceDidAddCaptureSession), object: nil)
         NotificationCenter.default.addObserver(self, selector:#selector(didAddLocalVideoTrack(notification:)), name:NSNotification.Name(kRTCServiceDidAddLocalVideoTrack), object: nil)
         NotificationCenter.default.addObserver(self, selector:#selector(didRemoveLocalVideoTrack(notification:)), name:NSNotification.Name(kRTCServiceDidRemoveLocalVideoTrack), object: nil)
+        
         // Remote video notifications
-        NotificationCenter.default.addObserver(self, selector:#selector(didAddRemoteVideoTrack(notification:)), name:NSNotification.Name(kRTCServiceDidAddRemoteVideoTrack), object: nil)
-        NotificationCenter.default.addObserver(self, selector:#selector(didRemoveRemoteVideoTrack(notification:)), name:NSNotification.Name(kRTCServiceDidRemoveRemoteVideoTrack), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didAddRemoteVideoTrack(notification:)), name: NSNotification.Name(kRTCServiceDidAddRemoteVideoTrack), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didRemoveRemoteVideoTrack(notification:)), name: NSNotification.Name(kRTCServiceDidRemoveRemoteVideoTrack), object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(didAddPublisher(notification:)), name: NSNotification.Name(kConferencesManagerDidAddPublisher), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didRemovePublisher(notification:)), name: NSNotification.Name(kConferencesManagerDidRemovePublisher), object: nil)
+        
         // Microphone notifications
         NotificationCenter.default.addObserver(self, selector:#selector(didAllowMicrophone(notification:)), name:NSNotification.Name(kRTCServiceDidAllowMicrophone), object: nil)
         NotificationCenter.default.addObserver(self, selector:#selector(didRefuseMicrophone(notification:)), name:NSNotification.Name(kRTCServiceDidRefuseMicrophone), object: nil)
+        
+        // Mute/unmute notifications
+        NotificationCenter.default.addObserver(self, selector:#selector(didReceiveUnmuteRequest(notification:)), name:NSNotification.Name(kConferencesManagerDidReceiveUnmuteRequest), object: nil)
     }
     
     // MARK: - Segue navigation
@@ -76,7 +84,7 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
             
             // Allow some time after back is pressed before doing the hangup
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            // Terminate the conference when the back button is pressed
+                // Terminate the conference when the back button is pressed
                 ServicesManager.sharedInstance().conferencesManagerService.hangup(room) {
                     error in
                     if let error = error as? NSError {
@@ -185,7 +193,7 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     @objc func didAddLocalVideoTrack(notification : Notification) {
-       if !Thread.isMainThread {
+        if !Thread.isMainThread {
             DispatchQueue.main.async {
                 self.didAddLocalVideoTrack(notification: notification)
             }
@@ -203,27 +211,100 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
         }
         self.localVideoTrack = localVideoTrack
         
-        localVideoView.videoContentMode = .scaleAspectFill
-        localVideoView.clipsToBounds = true
-        localVideoTrack.add(localVideoView)
-        localVideoView.isHidden = false
+        if let localVideoView {
+            localVideoView.videoContentMode = .scaleAspectFill
+            localVideoTrack.add(localVideoView)
+            localVideoView.isHidden = false
+        }
     }
     
     @objc func didRemoveLocalVideoTrack(notification : Notification) {
         NSLog("[ConferenceViewController] didRemoveLocalVideoTrack")
-        localVideoTrack?.remove(localVideoView)
-        localVideoView.isHidden = true
+        if let localVideoView {
+            localVideoTrack?.remove(localVideoView)
+            localVideoView.isHidden = true
+        }
     }
-    
     
     // Remote videos notification handlers
     
+    @objc func didAddPublisher(notification : Notification) {
+        if !Thread.isMainThread {
+            DispatchQueue.main.async {
+                self.didAddPublisher(notification: notification)
+            }
+            return
+        }
+        
+        guard let userInfo = notification.object as? NSDictionary,
+              let confParticipant = userInfo.object(forKey: kConferenceParticipantKey) as? RoomConfParticipant,
+              let room = userInfo.object(forKey: kRoomKey) as? Room,
+              !confParticipant.isMe() else {
+            return
+        }
+        
+        NSLog("[ConferenceViewController] didAddPublisher")
+        
+        ServicesManager.sharedInstance().conferencesManagerService.updateVideoSubscription(forPublisher: confParticipant, room: room, streamLevel: .unknown)
+    }
+    
+    @objc func didRemovePublisher(notification : Notification) {
+        if !Thread.isMainThread {
+            DispatchQueue.main.async {
+                self.didRemovePublisher(notification: notification)
+            }
+            return
+        }
+        
+        guard let userInfo = notification.object as? NSDictionary,
+              let confParticipant = userInfo.object(forKey: kConferenceParticipantKey) as? RoomConfParticipant,
+              let room = userInfo.object(forKey: kRoomKey) as? Room,
+              !confParticipant.isMe() else {
+            return
+        }
+        
+        NSLog("[ConferenceViewController] didRemovePublisher")
+        
+        ServicesManager.sharedInstance().conferencesManagerService.releaseVideoSubscription(forPublisher: confParticipant, room: room)
+        
+        if let publisherId = confParticipant.getRainbowId(),
+           let videoView = self.remoteVideoViews[publisherId] {
+            let videoTrack = ServicesManager.sharedInstance().rtcService.remoteVideoTrack(forPublisherRainbowID: publisherId)
+            videoTrack?.remove(videoView)
+            videoView.isHidden = true
+        }
+    }
+    
     @objc func didAddRemoteVideoTrack(notification : Notification) {
-        NSLog("[ConferenceViewController] didAddRemoteVideoTrack")
+        if !Thread.isMainThread {
+            DispatchQueue.main.async {
+                self.didAddRemoteVideoTrack(notification: notification)
+            }
+            return
+        }
+        
+        guard let userInfo = notification.object as? NSDictionary,
+              let  publisherId = userInfo.object(forKey: "publisherId") as? String else {
+            return
+        }
+        
+        if let videoView = self.remoteVideoViews[publisherId],
+           videoView.isHidden,
+           let videoTrack = ServicesManager.sharedInstance().rtcService.remoteVideoTrack(forPublisherRainbowID: publisherId) {
+            NSLog("[ConferenceViewController] didAddRemoteVideoTrack: publisherId=\(publisherId) videoTrack=\(String(describing: videoTrack))")
+            videoView.videoContentMode = .scaleAspectFill
+            videoTrack.add(videoView)
+            videoView.isHidden = false
+        }
     }
     
     @objc func didRemoveRemoteVideoTrack(notification : Notification) {
-        NSLog("[ConferenceViewController] didRemoveRemoteVideoTrack")
+        guard let userInfo = notification.object as? NSDictionary,
+              let  publisherId = userInfo.object(forKey: "publisherId") as? String else {
+            return
+        }
+        
+        NSLog("[ConferenceViewController] didRemoveRemoteVideoTrack: : publisherId=\(publisherId)")
     }
     
     // Microphone permission handlers
@@ -236,6 +317,12 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
         NSLog("[ConferenceViewController] didRefuseMicrophone")
     }
     
+    // Mute/unmute notification handlers
+    
+    @objc func didReceiveUnmuteRequest(notification : Notification) {
+        NSLog("[ConferenceViewController] didReceiveUnmuteRequest")
+    }
+    
     // MARK: - UITableViewDelegate protocol
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -246,13 +333,51 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if let cell = cell as? ConferenceTableViewCell {
+            let participant = participants[indexPath.row]
+            let contact = participant.getContact()
+            cell.nameLabel.text = participant.getDisplayName()
+            if let photoData = contact.photoData {
+                cell.avatarImage.image = UIImage.init(data: photoData)
+                cell.avatarImage.tintColor = UIColor.clear
+            } else {
+                cell.avatarImage.image = UIImage.init(named: "Default_Avatar")
+                cell.avatarImage.tintColor = UIColor.init(hue: CGFloat(indexPath.row*36%100)/100.0, saturation: 1.0, brightness: 1.0, alpha: 1.0)
+            }
+            if participant.isMe() {
+                localVideoView = cell.videoView
+            } else {
+                remoteVideoViews[contact.identifier] = cell.videoView
+            }
+            cell.muteButton.tag = indexPath.row
+            let image = participant.muted ? UIImage(systemName: "mic.slash.fill") : UIImage(systemName: "mic.fill")
+            cell.muteButton.setImage(image, for: .normal)
+        }
+    }
+    
     // MARK: - UITableViewDataSource protocol
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell(style: .default, reuseIdentifier: participantCellIdentifier)
-        let participant = participants[indexPath.row]
-        cell.textLabel?.text = participant.getDisplayName()
+        let cell = tableView.dequeueReusableCell(withIdentifier: participantCellIdentifier, for: indexPath)
         return cell
     }
-
+    
+    // MARK: - UIAction
+    
+    @IBAction func muteUmuteAction(_ sender: Any?) {
+        if let button = sender as? UIButton {
+            let participant = participants[button.tag]
+            let newMuteState = !participant.muted
+            
+            if let room {
+                ServicesManager.sharedInstance().conferencesManagerService.changeMuteParticipantState(room, conferenceParticipant: participant, muted: newMuteState) { error, askToUnmuteSuccess in
+                    let image = newMuteState ? UIImage(systemName: "mic.slash.fill") : UIImage(systemName: "mic.fill")
+                    DispatchQueue.main.async {
+                        button.setImage(image, for: .normal)
+                    }
+                }
+            }
+        }
+    }
 }

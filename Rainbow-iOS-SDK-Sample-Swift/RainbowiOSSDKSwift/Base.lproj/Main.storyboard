@@ -720,12 +720,9 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="eaR-Te-R1x">
-                                <rect key="frame" x="16" y="105" width="343" height="250"/>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="80" estimatedRowHeight="80" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="eaR-Te-R1x">
+                                <rect key="frame" x="16" y="105" width="343" height="432"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="250" id="f6p-E0-0hj"/>
-                                </constraints>
                             </tableView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Participants:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yi3-re-rAw">
                                 <rect key="frame" x="16" y="80" width="81" height="17"/>
@@ -733,14 +730,6 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="C0E-MI-hMf" customClass="RTCMTLVideoView">
-                                <rect key="frame" x="193" y="417" width="150" height="150"/>
-                                <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="150" id="cee-ZR-FiR"/>
-                                    <constraint firstAttribute="height" constant="150" id="vb4-a2-oUj"/>
-                                </constraints>
-                            </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="nXg-cb-EjP"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -749,20 +738,18 @@
                             <constraint firstItem="nXg-cb-EjP" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="zfV-mB-mRH" secondAttribute="trailing" constant="16" id="BYx-DV-5OH"/>
                             <constraint firstItem="eaR-Te-R1x" firstAttribute="top" secondItem="lrf-71-OBz" secondAttribute="bottom" constant="40" id="Hyt-rg-gdb"/>
                             <constraint firstItem="nXg-cb-EjP" firstAttribute="trailing" secondItem="eaR-Te-R1x" secondAttribute="trailing" constant="16" id="KAi-ua-zbJ"/>
-                            <constraint firstAttribute="bottom" secondItem="C0E-MI-hMf" secondAttribute="bottom" constant="100" id="LFy-MB-tfb"/>
                             <constraint firstItem="zfV-mB-mRH" firstAttribute="firstBaseline" secondItem="lrf-71-OBz" secondAttribute="firstBaseline" id="cGi-ei-KpV"/>
                             <constraint firstItem="lrf-71-OBz" firstAttribute="top" secondItem="nXg-cb-EjP" secondAttribute="top" id="eX8-Di-b3E"/>
-                            <constraint firstItem="nXg-cb-EjP" firstAttribute="trailing" secondItem="C0E-MI-hMf" secondAttribute="trailing" constant="32" id="hKc-4W-JYF"/>
                             <constraint firstItem="zfV-mB-mRH" firstAttribute="leading" secondItem="lrf-71-OBz" secondAttribute="trailing" constant="8" symbolic="YES" id="ksA-H2-TeC"/>
                             <constraint firstItem="lrf-71-OBz" firstAttribute="leading" secondItem="nXg-cb-EjP" secondAttribute="leading" constant="16" id="onj-Fz-2fi"/>
                             <constraint firstItem="eaR-Te-R1x" firstAttribute="top" secondItem="yi3-re-rAw" secondAttribute="bottom" constant="8" symbolic="YES" id="oof-vV-Ioa"/>
+                            <constraint firstItem="nXg-cb-EjP" firstAttribute="bottom" secondItem="eaR-Te-R1x" secondAttribute="bottom" constant="32" id="tSu-8a-Y8j"/>
                             <constraint firstItem="eaR-Te-R1x" firstAttribute="leading" secondItem="nXg-cb-EjP" secondAttribute="leading" constant="16" id="zXc-2X-asT"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Conference" id="FTY-hI-OV5"/>
                     <connections>
                         <outlet property="conferenceStatus" destination="zfV-mB-mRH" id="9UV-e6-48e"/>
-                        <outlet property="localVideoView" destination="C0E-MI-hMf" id="f2f-Qe-EdF"/>
                         <outlet property="participantTableView" destination="eaR-Te-R1x" id="7kH-tR-4y3"/>
                     </connections>
                 </viewController>
