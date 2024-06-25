@@ -369,7 +369,7 @@
 -(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 0 && self.invited.count > 0) {
         Invitation *invitation = [self.invited objectAtIndex:indexPath.row];
-        [self.contactsManager deleteInvitationWithID:invitation];
+        [self.contactsManager deleteInvitationWithID:invitation completionHandler:nil];
         return;
     }
     if(editingStyle == UITableViewCellEditingStyleDelete) {
