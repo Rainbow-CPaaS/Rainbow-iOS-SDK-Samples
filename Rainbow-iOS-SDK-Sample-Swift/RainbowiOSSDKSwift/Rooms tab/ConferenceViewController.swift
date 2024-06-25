@@ -17,6 +17,16 @@ import UIKit
 import Rainbow
 import WebRTC
 
+class ListItem {
+    var conferenceParticipant : ConferenceParticipant?
+    var cell : ConferenceTableViewCell?
+    
+    init(conferenceParticipant: ConferenceParticipant? = nil, cell: ConferenceTableViewCell? = nil) {
+        self.conferenceParticipant = conferenceParticipant
+        self.cell = cell
+    }
+}
+
 class ConferenceViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     // The room where the conference is running
@@ -27,11 +37,10 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
     @IBOutlet weak var conferenceStatus: UILabel!
     @IBOutlet weak var participantTableView: UITableView!
     
-    private var localVideoView : RTCMTLVideoView?
-    private var remoteVideoViews: [String:RTCMTLVideoView] = [:]
+    private var videoViews: [String:RTCMTLVideoView] = [:]
     private let participantCellIdentifier = "ConferenceParticipantCell"
-    private var participants : [ConferenceParticipant] = []
-    
+    private var participants : [ListItem] = []
+    private var myParticipantId : String?
     private var cameraCaptureSession : AVCaptureSession?
     private var localVideoTrack : RTCVideoTrack?
     
@@ -40,7 +49,6 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        participantTableView.register(UINib(nibName: "ConferenceTableViewCell", bundle: nil), forCellReuseIdentifier: participantCellIdentifier)
         participantTableView.delegate = self
         participantTableView.dataSource = self
     }
@@ -96,7 +104,7 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
         }
     }
     
-    // MARK: - Notification handlers
+    // MARK: - Conference notification handlers
     
     @objc func didUpdateConference(notification : Notification) {
         if !Thread.isMainThread {
@@ -126,35 +134,39 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
             if changedAttributes.contains("participants") {
                 NSLog("[ConferenceViewController] didUpdateConference: participants: \(theRoom.conference?.participants ?? [])")
                 if let conference = theRoom.conference {
-                    
-                    // Check for added conference participant
-                    for participant in conference.participants {
-                        if !participants.contains(participant) {
-                            participants.append(participant)
-                            if participant.isMe() {
-                                conferenceStatus.text = "Connected"
-                            }
-                        }
-                    }
-                    
-                    // Check for removed conference participant
-                    if let theRoomParticipants  = theRoom.conference?.participants {
-                        for participant in participants {
-                            if !theRoomParticipants.contains(participant) {
-                                participants.removeAll { otherParticipant in
-                                    participant.getContact().identifier == otherParticipant.getContact().identifier
-                                }
-                            }
-                        }
-                    }
-                    
+                    resyncParticipants(in: conference)
                     participantTableView.reloadData()
                 }
             }
         }
     }
     
-    // Call notification handlers
+    // Resync the participants array with added/removed participants in the conference
+    func resyncParticipants(in conference : Conference) {
+        // Check for added conference participant
+        for participant in conference.participants {
+            if !participants.contains(where: { listItem in listItem.conferenceParticipant == participant }) {
+                let cell = Bundle.main.loadNibNamed("ConferenceTableViewCell", owner: self, options: nil)?[0] as? ConferenceTableViewCell
+                participants.append(ListItem(conferenceParticipant: participant, cell: cell))
+                if participant.isMe() {
+                    myParticipantId = participant.getContact().identifier
+                    conferenceStatus.text = "Connected"
+                }
+            }
+        }
+        
+        // Check for removed conference participant
+        for listItem in participants {
+            if let conferenceParticipant = listItem.conferenceParticipant,
+               !conference.participants.contains(conferenceParticipant) {
+                participants.removeAll { listItem in
+                    conferenceParticipant.getContact().identifier == listItem.conferenceParticipant?.getContact().identifier
+                }
+            }
+        }
+    }
+    
+    // MARK: -  Call notification handlers
     
     @objc func didAddCall(notification : Notification) {
         if !Thread.isMainThread {
@@ -182,7 +194,7 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
         NSLog("[ConferenceViewController] didRemoveCall")
     }
     
-    // Local video notification handlers
+    // MARK: - Local video notification handlers
     
     @objc func didAddCaptureSession(notification : Notification) {
         NSLog("[ConferenceViewController] didAddCaptureSession")
@@ -211,7 +223,7 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
         }
         self.localVideoTrack = localVideoTrack
         
-        if let localVideoView {
+        if let participantId = myParticipantId, let localVideoView = videoViews[participantId] {
             localVideoView.videoContentMode = .scaleAspectFill
             localVideoTrack.add(localVideoView)
             localVideoView.isHidden = false
@@ -220,13 +232,13 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
     
     @objc func didRemoveLocalVideoTrack(notification : Notification) {
         NSLog("[ConferenceViewController] didRemoveLocalVideoTrack")
-        if let localVideoView {
+        if let participantId = myParticipantId, let localVideoView = videoViews[participantId] {
             localVideoTrack?.remove(localVideoView)
             localVideoView.isHidden = true
         }
     }
     
-    // Remote videos notification handlers
+    // MARK: - Remote videos notification handlers
     
     @objc func didAddPublisher(notification : Notification) {
         if !Thread.isMainThread {
@@ -239,11 +251,12 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
         guard let userInfo = notification.object as? NSDictionary,
               let confParticipant = userInfo.object(forKey: kConferenceParticipantKey) as? RoomConfParticipant,
               let room = userInfo.object(forKey: kRoomKey) as? Room,
+              let publisherId = confParticipant.getRainbowId(),
               !confParticipant.isMe() else {
             return
         }
         
-        NSLog("[ConferenceViewController] didAddPublisher")
+        NSLog("[ConferenceViewController] didAddPublisher publisherID=\(publisherId)")
         
         ServicesManager.sharedInstance().conferencesManagerService.updateVideoSubscription(forPublisher: confParticipant, room: room, streamLevel: .unknown)
     }
@@ -259,16 +272,16 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
         guard let userInfo = notification.object as? NSDictionary,
               let confParticipant = userInfo.object(forKey: kConferenceParticipantKey) as? RoomConfParticipant,
               let room = userInfo.object(forKey: kRoomKey) as? Room,
+              let publisherId = confParticipant.getRainbowId(),
               !confParticipant.isMe() else {
             return
         }
         
-        NSLog("[ConferenceViewController] didRemovePublisher")
+        NSLog("[ConferenceViewController] didRemovePublisher publisherID=\(publisherId)")
         
         ServicesManager.sharedInstance().conferencesManagerService.releaseVideoSubscription(forPublisher: confParticipant, room: room)
         
-        if let publisherId = confParticipant.getRainbowId(),
-           let videoView = self.remoteVideoViews[publisherId] {
+        if let videoView = self.videoViews[publisherId] {
             let videoTrack = ServicesManager.sharedInstance().rtcService.remoteVideoTrack(forPublisherRainbowID: publisherId)
             videoTrack?.remove(videoView)
             videoView.isHidden = true
@@ -288,7 +301,7 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
             return
         }
         
-        if let videoView = self.remoteVideoViews[publisherId],
+        if let videoView = self.videoViews[publisherId],
            videoView.isHidden,
            let videoTrack = ServicesManager.sharedInstance().rtcService.remoteVideoTrack(forPublisherRainbowID: publisherId) {
             NSLog("[ConferenceViewController] didAddRemoteVideoTrack: publisherId=\(publisherId) videoTrack=\(String(describing: videoTrack))")
@@ -307,7 +320,7 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
         NSLog("[ConferenceViewController] didRemoveRemoteVideoTrack: : publisherId=\(publisherId)")
     }
     
-    // Microphone permission handlers
+    // MARK: - Microphone permission handlers
     
     @objc func didAllowMicrophone(notification : Notification) {
         NSLog("[ConferenceViewController] didAllowMicrophone")
@@ -317,7 +330,7 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
         NSLog("[ConferenceViewController] didRefuseMicrophone")
     }
     
-    // Mute/unmute notification handlers
+    // MARK: - Mute/unmute notification handlers
     
     @objc func didReceiveUnmuteRequest(notification : Notification) {
         NSLog("[ConferenceViewController] didReceiveUnmuteRequest")
@@ -333,9 +346,21 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if let cell = cell as? ConferenceTableViewCell {
-            let participant = participants[indexPath.row]
+    // MARK: - UITableViewDataSource protocol
+    
+    // We don't use tableView.dequeueReusableCell() because it doesn't guarantee that we'll get the same cell
+    // with the good VideoView for the conference participant.
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if participants.count > indexPath.row,
+            let cell = participants[indexPath.row].cell {
+            configure(cell: cell, for: indexPath)
+            return cell
+        }
+        return UITableViewCell()
+    }
+    
+    func configure(cell : ConferenceTableViewCell, for indexPath: IndexPath) {
+        if let participant = participants[indexPath.row].conferenceParticipant {
             let contact = participant.getContact()
             cell.nameLabel.text = participant.getDisplayName()
             if let photoData = contact.photoData {
@@ -345,29 +370,19 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
                 cell.avatarImage.image = UIImage.init(named: "Default_Avatar")
                 cell.avatarImage.tintColor = UIColor.init(hue: CGFloat(indexPath.row*36%100)/100.0, saturation: 1.0, brightness: 1.0, alpha: 1.0)
             }
-            if participant.isMe() {
-                localVideoView = cell.videoView
-            } else {
-                remoteVideoViews[contact.identifier] = cell.videoView
-            }
+            videoViews[contact.identifier] = cell.videoView
             cell.muteButton.tag = indexPath.row
             let image = participant.muted ? UIImage(systemName: "mic.slash.fill") : UIImage(systemName: "mic.fill")
             cell.muteButton.setImage(image, for: .normal)
         }
     }
     
-    // MARK: - UITableViewDataSource protocol
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: participantCellIdentifier, for: indexPath)
-        return cell
-    }
-    
     // MARK: - UIAction
     
     @IBAction func muteUmuteAction(_ sender: Any?) {
-        if let button = sender as? UIButton {
-            let participant = participants[button.tag]
+        if let button = sender as? UIButton,
+            let participant = participants[button.tag].conferenceParticipant {
+            
             let newMuteState = !participant.muted
             
             if let room {
