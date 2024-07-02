@@ -46,6 +46,10 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
     private var localVideoTrack : RTCVideoTrack?
     private var isDismissing = false
     
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
     // MARK: - View lifecycle
     
     override func viewDidLoad() {
@@ -82,10 +86,6 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
         
         participantTableView.delegate = self
         participantTableView.dataSource = self
-    }
-    
-    deinit {
-        NotificationCenter.default.removeObserver(self)
     }
     
     override func viewWillAppear(_ animated: Bool) {

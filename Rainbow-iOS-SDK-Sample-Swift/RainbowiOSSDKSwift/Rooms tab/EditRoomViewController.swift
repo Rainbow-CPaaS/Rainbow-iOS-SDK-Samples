@@ -37,12 +37,15 @@ class EditRoomViewController: UIViewController {
         super.init(coder: aDecoder)
         
         NotificationCenter.default.addObserver(self, selector: #selector(didUpdateRoom(notification:)), name: NSNotification.Name(kRoomsServiceDidUpdateRoom), object: nil)
+        NotificationCenter.default.addObserver(self, selector:#selector(didAddCall(notification:)), name:NSNotification.Name(kTelephonyServiceDidAddCall), object: nil)
         NotificationCenter.default.addObserver(self, selector:#selector(didRemoveCall(notification:)), name:NSNotification.Name(kTelephonyServiceDidRemoveCall), object: nil)
     }
     
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
+
+    // MARK: - View lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -69,12 +72,103 @@ class EditRoomViewController: UIViewController {
         }
     }
     
+    // MARK: - Segue navigation
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "ConferenceSegue",
+            let conferenceVC = segue.destination as? ConferenceViewController {
+            conferenceVC.room = room
+            conferenceVC.videoCall = self.videoCall
+            let backItem = UIBarButtonItem()
+            backItem.title = "Hangup"
+            navigationItem.backBarButtonItem = backItem
+        }
+    }
+
+    // MARK: - IBActions
+    
+    @IBAction func updateAction(_ sender: Any) {
+        if let name = nameTextField.text, let topic = topicTextField.text, let room = room {
+            roomsManager.updateRoom(room, name: name, topic: topic)
+        }
+        nameTextField.resignFirstResponder()
+        topicTextField.resignFirstResponder()
+    }
+    
+    // MARK: - Room service notifications
+    
+    @objc func didUpdateRoom(notification : NSNotification) {
+        // Enforce that this method is called on the main thread
+        if !Thread.isMainThread {
+            DispatchQueue.main.async {
+                self.didUpdateRoom(notification: notification)
+            }
+            return
+        }
+        
+        if let roomInfo = notification.object as? Dictionary<String, AnyObject>, let room = roomInfo[kRoomKey] as? Room {
+            NSLog("[EditRoomViewController] didUpdateRoom '\(room.displayName ?? "")' with roomInfo=\(roomInfo)")
+            // Update the right button menu as the state of the conference may have changed
+            configureRightButton(room: room)
+            updateConferenceState()
+            
+        } else {
+            NSLog("[EditRoomViewController] didUpdateRoom without roomInfo !")
+        }
+    }
+    
+    // MARK: - Telephony service notifications
+    
+    @objc func didRemoveCall(notification : NSNotification) {
+        NSLog("[EditRoomViewController] didRemoveCall")
+        
+        if let room {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self.configureRightButton(room: room)
+                self.updateConferenceState()
+            }
+        }
+    }
+    
+    @objc func didAddCall(notification : NSNotification) {
+        NSLog("[EditRoomViewController] didAddCall")
+        
+        if let room {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self.configureRightButton(room: room)
+                self.updateConferenceState()
+            }
+        }
+    }
+    
+    // MARK: - utility methods
+    
+    func updateConferenceState() {
+        if let conference = room?.conference {
+            conferenceLabel.text = conference.isConnectedState() ? "connected" : "started"
+        } else {
+            conferenceLabel.text = "not started"
+        }
+    }
+    
+    func openConversation() {
+        if let peer = self.room {
+            self.serviceManager.conversationsManagerService.startConversation(withPeer: peer) {(conversation : Optional<Conversation>, error : Optional<Error>)  in
+                if let error = error as? NSError {
+                    NSLog("[EditRoomViewController] Can't start the conversation, error: \(error.debugDescription)")
+                }
+                DispatchQueue.main.async {
+                    self.navigationController?.popViewController(animated: true)
+                }
+            }
+        }
+    }
     
     func configureRightButton(room : Room) {
         var actions : [UIAction] = []
         
         let openConversation = UIAction(title: "Open conversation", image: UIImage(systemName: "person.2.fill")) { _ in
-            self.openConversation(self)
+            self.openConversation()
         }
         actions.append(openConversation)
         
@@ -147,74 +241,4 @@ class EditRoomViewController: UIViewController {
         navigationItem.rightBarButtonItem = barButton
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "ConferenceSegue",
-            let conferenceVC = segue.destination as? ConferenceViewController {
-            conferenceVC.room = room
-            conferenceVC.videoCall = self.videoCall
-            let backItem = UIBarButtonItem()
-            backItem.title = "Hangup"
-            navigationItem.backBarButtonItem = backItem
-        }
-    }
-
-    @IBAction func updateAction(_ sender: Any) {
-        if let name = nameTextField.text, let topic = topicTextField.text, let room = room {
-            roomsManager.updateRoom(room, name: name, topic: topic)
-        }
-        nameTextField.resignFirstResponder()
-        topicTextField.resignFirstResponder()
-    }
-    
-    @objc func openConversation(_ sender: Any) {
-        if let peer = self.room {
-            self.serviceManager.conversationsManagerService.startConversation(withPeer: peer) {(conversation : Optional<Conversation>, error : Optional<Error>)  in
-                if let error = error as? NSError {
-                    NSLog("[EditRoomViewController] Can't start the conversation, error: \(error.debugDescription)")
-                }
-                DispatchQueue.main.async {
-                    self.navigationController?.popViewController(animated: true)
-                }
-            }
-        }
-    }
-    
-    @objc func didUpdateRoom(notification : NSNotification) {
-        // Enforce that this method is called on the main thread
-        if !Thread.isMainThread {
-            DispatchQueue.main.async {
-                self.didUpdateRoom(notification: notification)
-            }
-            return
-        }
-        
-        if let roomInfo = notification.object as? Dictionary<String, AnyObject>, let room = roomInfo[kRoomKey] as? Room {
-            NSLog("[EditRoomViewController] didUpdateRoom '\(room.displayName ?? "")' with roomInfo=\(roomInfo)")
-            // Update the right button menu as the state of the conference may have changed
-            configureRightButton(room: room)
-            updateConferenceState()
-            
-        } else {
-            NSLog("[EditRoomViewController] didUpdateRoom without roomInfo !")
-        }
-    }
-    
-    @objc func didRemoveCall(notification : NSNotification) {
-        NSLog("[EditRoomViewController] didRemoveCall")
-        
-        if let room {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                self.configureRightButton(room: room)
-                self.updateConferenceState()
-            }
-        }
-    }
-    
-    func updateConferenceState() {
-        if let conference = room?.conference {
-            conferenceLabel.text = conference.isConnectedState() ? "connected" : "started"
-        } else {
-            conferenceLabel.text = "not started"
-        }
-    }
 }
