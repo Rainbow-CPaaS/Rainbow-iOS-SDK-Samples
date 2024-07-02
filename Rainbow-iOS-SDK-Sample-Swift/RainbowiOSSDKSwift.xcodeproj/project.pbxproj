@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		E5433DED2C20813D002D008E /* ConferenceTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = E5433DEC2C20813D002D008E /* ConferenceTableViewCell.xib */; };
 		E5433DEE2C20813D002D008E /* ConferenceTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5433DEB2C20813D002D008E /* ConferenceTableViewCell.swift */; };
+		E5433E4A2C2EBF81002D008E /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5433E492C2EBF81002D008E /* TabBarController.swift */; };
 		E54400F12084E055008B90F2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E54400F02084E055008B90F2 /* AppDelegate.swift */; };
 		E54400F32084E055008B90F2 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E54400F22084E055008B90F2 /* LoginViewController.swift */; };
 		E54400F62084E055008B90F2 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E54400F42084E055008B90F2 /* Main.storyboard */; };
@@ -53,6 +54,7 @@
 /* Begin PBXFileReference section */
 		E5433DEB2C20813D002D008E /* ConferenceTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConferenceTableViewCell.swift; sourceTree = "<group>"; };
 		E5433DEC2C20813D002D008E /* ConferenceTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConferenceTableViewCell.xib; sourceTree = "<group>"; };
+		E5433E492C2EBF81002D008E /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		E54400ED2084E055008B90F2 /* RainbowiOSSDKSwift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RainbowiOSSDKSwift.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E54400F02084E055008B90F2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E54400F22084E055008B90F2 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
@@ -115,6 +117,7 @@
 				E54400F02084E055008B90F2 /* AppDelegate.swift */,
 				E54400F22084E055008B90F2 /* LoginViewController.swift */,
 				E54401092084F014008B90F2 /* MainViewController.swift */,
+				E5433E492C2EBF81002D008E /* TabBarController.swift */,
 				E56AC8072A696C7A0081D533 /* Conversations tab */,
 				E56AC8062A696C5A0081D533 /* Contacts tab */,
 				E56AC8082A696C910081D533 /* Rooms tab */,
@@ -267,6 +270,7 @@
 				E5433DEE2C20813D002D008E /* ConferenceTableViewCell.swift in Sources */,
 				E550289F248AA53F00A6B603 /* EditRoomViewController.swift in Sources */,
 				E550289D248A8D4600A6B603 /* RoomsTableViewCell.swift in Sources */,
+				E5433E4A2C2EBF81002D008E /* TabBarController.swift in Sources */,
 				E5773BEE2099C5CC000BC714 /* ContactTableViewCell.swift in Sources */,
 				E54400F32084E055008B90F2 /* LoginViewController.swift in Sources */,
 				E5773BF02099F3D9000BC714 /* DetailViewController.swift in Sources */,

@@ -27,6 +27,7 @@ class ConferenceTableViewCell: UITableViewCell {
         super.awakeFromNib()
         avatarImage.isHidden = false
         videoView.isHidden = true
+        videoView.clipsToBounds = true
         muteButton.setImage(UIImage(systemName: "mic.fill"), for: .normal)
     }
     

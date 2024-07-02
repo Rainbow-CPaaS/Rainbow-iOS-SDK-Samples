@@ -40,24 +40,21 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
     private var videoViews: [String:RTCMTLVideoView] = [:]
     private let participantCellIdentifier = "ConferenceParticipantCell"
     private var participants : [ListItem] = []
+    private var publishers : [RoomConfParticipant] = []
     private var myParticipantId : String?
     private var cameraCaptureSession : AVCaptureSession?
     private var localVideoTrack : RTCVideoTrack?
+    private var isDismissing = false
     
     // MARK: - View lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        participantTableView.delegate = self
-        participantTableView.dataSource = self
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        // Listen to 'kConferencesManagerDidUpdateConference' ConferencesManagerService events
+        // Listen to update conference notification
         NotificationCenter.default.addObserver(self, selector:#selector(didUpdateConference(notification:)), name:NSNotification.Name(kConferencesManagerDidUpdateConference), object:nil)
+        NotificationCenter.default.addObserver(self, selector:#selector(participantHasJoined(notification:)), name:NSNotification.Name(kConferencesManagerParticipantHasJoined), object:nil)
+        NotificationCenter.default.addObserver(self, selector:#selector(participantHasLeft(notification:)), name:NSNotification.Name(kConferencesManagerParticipantHasLeft), object:nil)
         
         // WebRTC audio call handling
         NotificationCenter.default.addObserver(self, selector:#selector(didAddCall(notification:)), name:NSNotification.Name(kTelephonyServiceDidAddCall), object: nil)
@@ -82,23 +79,41 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
         
         // Mute/unmute notifications
         NotificationCenter.default.addObserver(self, selector:#selector(didReceiveUnmuteRequest(notification:)), name:NSNotification.Name(kConferencesManagerDidReceiveUnmuteRequest), object: nil)
+        
+        participantTableView.delegate = self
+        participantTableView.dataSource = self
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        if let conference = room?.conference, conference.isConnectedState() {
+            conferenceStatus.text = "Connected"
+            resyncParticipants(in: conference)
+        }
     }
     
     // MARK: - Segue navigation
     
     override func didMove(toParent parent: UIViewController?) {
         if parent == nil, let room = room {
-            NSLog("Back pressed")
+            NSLog("[ConferenceViewController] dismiss viewcontroller")
             
-            // Allow some time after back is pressed before doing the hangup
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                // Terminate the conference when the back button is pressed
-                ServicesManager.sharedInstance().conferencesManagerService.hangup(room) {
-                    error in
-                    if let error = error as? NSError {
-                        NSLog("Error: ", error.localizedDescription)
+            if let conference = room.conference, conference.isConnectedState() {
+                // Allow some time after back is pressed before doing the hangup
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    // Terminate the conference when the back button is pressed
+                    NSLog("[ConferenceViewController] hangup conference")
+                    ServicesManager.sharedInstance().conferencesManagerService.hangup(room) {
+                        error in
+                        if let error = error as? NSError {
+                            NSLog("Error: ", error.localizedDescription)
+                        }
                     }
-                    NotificationCenter.default.removeObserver(self)
                 }
             }
         }
@@ -127,6 +142,9 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
                 } else {
                     conferenceStatus.text = "Disconnected"
                     NSLog("[ConferenceViewController] didUpdateConference: conference is disconnected")
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                        self.navigationController?.popViewController(animated: true)
+                    }
                 }
             }
             
@@ -135,7 +153,6 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
                 NSLog("[ConferenceViewController] didUpdateConference: participants: \(theRoom.conference?.participants ?? [])")
                 if let conference = theRoom.conference {
                     resyncParticipants(in: conference)
-                    participantTableView.reloadData()
                 }
             }
         }
@@ -164,8 +181,37 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
                 }
             }
         }
+        
+        participantTableView.reloadData()
     }
     
+    @objc func participantHasJoined(notification : Notification) {
+        if !Thread.isMainThread {
+            DispatchQueue.main.async {
+                self.participantHasJoined(notification: notification)
+            }
+            return
+        }
+        
+        if let dict = notification.object as? Dictionary<String, Any>,
+           let conferenceParticipant = dict[kConferenceParticipantKey] as? ConferenceParticipant {
+            NSLog("[ConferenceViewController] participantHasJoined: name='\(conferenceParticipant.getDisplayName())'")
+        }
+    }
+    
+    @objc func participantHasLeft(notification : Notification) {
+        if !Thread.isMainThread {
+            DispatchQueue.main.async {
+                self.participantHasLeft(notification: notification)
+            }
+            return
+        }
+        
+        if let dict = notification.object as? Dictionary<String, Any>,
+           let conferenceParticipant = dict[kConferenceParticipantKey] as? ConferenceParticipant {
+            NSLog("[ConferenceViewController] participantHasLeft: name='\(conferenceParticipant.getDisplayName())'")
+        }
+    }
     // MARK: -  Call notification handlers
     
     @objc func didAddCall(notification : Notification) {
@@ -178,15 +224,30 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
         
         if let rtcCall = notification.object as? RTCCall {
             NSLog("[ConferenceViewController] didAddCall status='\(Call.string(for: rtcCall.status) ?? "")' videoCall=\(videoCall)")
-            if videoCall {
+            if rtcCall.isIncoming {
+                if let room, rtcCall.isRtcSfuCall {
+                    ServicesManager.sharedInstance().conferencesManagerService.join(room, forceLocalVideo: videoCall, forceMuted: false)
+                }
+                
+            } else if videoCall {
                 ServicesManager.sharedInstance().rtcService.addVideoMedia(to: rtcCall)
             }
         }
     }
     
     @objc func didUpdateCall(notification : Notification) {
+        if !Thread.isMainThread {
+            DispatchQueue.main.async {
+                self.didUpdateCall(notification: notification)
+            }
+            return
+        }
         if let rtcCall = notification.object as? RTCCall {
             NSLog("[ConferenceViewController] didUpdateCall status='\(Call.string(for: rtcCall.status) ?? "")'")
+            
+            if rtcCall.status == .established, let conference = room?.conference, !conference.isOwner() {
+                resyncParticipants(in: conference)
+            }
         }
     }
     
@@ -212,15 +273,11 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
             return
         }
         
+        guard let localVideoTrack = notification.object as? RTCVideoTrack, 
+            self.localVideoTrack != localVideoTrack else {
+            return
+        }
         NSLog("[ConferenceViewController] didAddLocalVideoTrack")
-        
-        guard let localVideoTrack = notification.object as? RTCVideoTrack else {
-            return
-        }
-        
-        if self.localVideoTrack == localVideoTrack {
-            return
-        }
         self.localVideoTrack = localVideoTrack
         
         if let participantId = myParticipantId, let localVideoView = videoViews[participantId] {
@@ -252,13 +309,15 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
               let confParticipant = userInfo.object(forKey: kConferenceParticipantKey) as? RoomConfParticipant,
               let room = userInfo.object(forKey: kRoomKey) as? Room,
               let publisherId = confParticipant.getRainbowId(),
+              !publishers.contains(confParticipant),
               !confParticipant.isMe() else {
             return
         }
         
         NSLog("[ConferenceViewController] didAddPublisher publisherID=\(publisherId)")
+        publishers.append(confParticipant)
         
-        ServicesManager.sharedInstance().conferencesManagerService.updateVideoSubscription(forPublisher: confParticipant, room: room, streamLevel: .unknown)
+        ServicesManager.sharedInstance().conferencesManagerService.updateDisplayedVideos(room, level: .low, publishers: publishers)
     }
     
     @objc func didRemovePublisher(notification : Notification) {
@@ -273,19 +332,15 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
               let confParticipant = userInfo.object(forKey: kConferenceParticipantKey) as? RoomConfParticipant,
               let room = userInfo.object(forKey: kRoomKey) as? Room,
               let publisherId = confParticipant.getRainbowId(),
+              publishers.contains(confParticipant),
               !confParticipant.isMe() else {
             return
         }
         
         NSLog("[ConferenceViewController] didRemovePublisher publisherID=\(publisherId)")
         
-        ServicesManager.sharedInstance().conferencesManagerService.releaseVideoSubscription(forPublisher: confParticipant, room: room)
-        
-        if let videoView = self.videoViews[publisherId] {
-            let videoTrack = ServicesManager.sharedInstance().rtcService.remoteVideoTrack(forPublisherRainbowID: publisherId)
-            videoTrack?.remove(videoView)
-            videoView.isHidden = true
-        }
+        publishers.removeAll(where: { confParticipant in confParticipant.getRainbowId() == publisherId })
+        ServicesManager.sharedInstance().conferencesManagerService.updateDisplayedVideos(room, level: .low, publishers: publishers)
     }
     
     @objc func didAddRemoteVideoTrack(notification : Notification) {
@@ -306,18 +361,31 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
            let videoTrack = ServicesManager.sharedInstance().rtcService.remoteVideoTrack(forPublisherRainbowID: publisherId) {
             NSLog("[ConferenceViewController] didAddRemoteVideoTrack: publisherId=\(publisherId) videoTrack=\(String(describing: videoTrack))")
             videoView.videoContentMode = .scaleAspectFill
+            videoView.renderFrame(nil)
             videoTrack.add(videoView)
             videoView.isHidden = false
         }
     }
     
     @objc func didRemoveRemoteVideoTrack(notification : Notification) {
+        if !Thread.isMainThread {
+            DispatchQueue.main.async {
+                self.didRemoveRemoteVideoTrack(notification: notification)
+            }
+            return
+        }
+        
         guard let userInfo = notification.object as? NSDictionary,
               let  publisherId = userInfo.object(forKey: "publisherId") as? String else {
             return
         }
         
-        NSLog("[ConferenceViewController] didRemoveRemoteVideoTrack: : publisherId=\(publisherId)")
+        if let videoView = self.videoViews[publisherId],
+           !videoView.isHidden {
+            NSLog("[ConferenceViewController] didRemoveRemoteVideoTrack: publisherId=\(publisherId))")
+            videoView.renderFrame(nil)
+            videoView.isHidden = true
+        }
     }
     
     // MARK: - Microphone permission handlers

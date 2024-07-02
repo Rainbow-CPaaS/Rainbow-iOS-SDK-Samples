@@ -26,6 +26,7 @@ class EditRoomViewController: UIViewController {
     
     @IBOutlet weak var avatar: UIImageView!
     @IBOutlet weak var ownerNameLabel: UILabel!
+    @IBOutlet weak var conferenceLabel: UILabel!
     @IBOutlet weak var nameTextField: UITextField!
     @IBOutlet weak var topicTextField: UITextField!
     @IBOutlet weak var updateButton: UIButton!
@@ -34,6 +35,13 @@ class EditRoomViewController: UIViewController {
         serviceManager = ServicesManager.sharedInstance()
         roomsManager = serviceManager.roomsService
         super.init(coder: aDecoder)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(didUpdateRoom(notification:)), name: NSNotification.Name(kRoomsServiceDidUpdateRoom), object: nil)
+        NotificationCenter.default.addObserver(self, selector:#selector(didRemoveCall(notification:)), name:NSNotification.Name(kTelephonyServiceDidRemoveCall), object: nil)
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
     
     override func viewDidLoad() {
@@ -53,6 +61,15 @@ class EditRoomViewController: UIViewController {
         }
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        if let room = room {
+            configureRightButton(room: room)
+            updateConferenceState()
+        }
+    }
+    
+    
     func configureRightButton(room : Room) {
         var actions : [UIAction] = []
         
@@ -61,8 +78,17 @@ class EditRoomViewController: UIViewController {
         }
         actions.append(openConversation)
         
-        if room.isAbleToJoinConference() {
+        if let conference = room.conference, conference.isConnectedState() {
+            let enterConference = UIAction(title: "Enter in conference", image: UIImage(systemName: "door.left.hand.open")) { _ in
+                DispatchQueue.main.async {
+                    self.performSegue(withIdentifier: "ConferenceSegue", sender:self)
+                }
+            }
+            actions.append(enterConference)
+            
+        } else if room.isAbleToJoinConference() {
             let joinConference = UIAction(title: "Join conference", image: UIImage(systemName: "phone.badge.waveform.fill")) { _ in
+                self.videoCall = false
                 if let roomId = room.rainbowID {
                     ServicesManager.sharedInstance().conferencesManagerService.join(roomId) { error in
                         if let error = error as? NSError {
@@ -78,6 +104,25 @@ class EditRoomViewController: UIViewController {
             }
             actions.append(joinConference)
             
+            if ServicesManager.sharedInstance().myUser.isAllowedToUseWebRTCMobileVideo {
+                let joinConferenceWithVideo = UIAction(title: "Join conference with video", image: UIImage(systemName: "video.badge.waveform.fill")) { _ in
+                    self.videoCall = true
+                    if let roomId = room.rainbowID {
+                        ServicesManager.sharedInstance().conferencesManagerService.join(roomId) { error in
+                            if let error = error as? NSError {
+                                NSLog("Join conference error: \(error.localizedDescription)")
+                            } else {
+                                DispatchQueue.main.async {
+                                    self.performSegue(withIdentifier: "ConferenceSegue", sender:self)
+                                }
+                            }
+                            
+                        }
+                    }
+                }
+                actions.append(joinConferenceWithVideo)
+            }
+            
         } else if room.isAbleToStartConference() {
             let startConference = UIAction(title: "Start audio conference", image: UIImage(systemName: "phone.connection.fill")) { _ in
                 self.videoCall = false
@@ -86,12 +131,14 @@ class EditRoomViewController: UIViewController {
             }
             actions.append(startConference)
 
-            let startVideoConference = UIAction(title: "Start video conference", image: UIImage(systemName: "person.crop.square.badge.video")) { _ in
-                self.videoCall = true
-                self.performSegue(withIdentifier: "ConferenceSegue", sender:self)
-                ServicesManager.sharedInstance().conferencesManagerService.startOrJoin(room, forceLocalVideo: true)
+            if ServicesManager.sharedInstance().myUser.isAllowedToUseWebRTCMobileVideo {
+                let startVideoConference = UIAction(title: "Start video conference", image: UIImage(systemName: "person.crop.square.badge.video")) { _ in
+                    self.videoCall = true
+                    self.performSegue(withIdentifier: "ConferenceSegue", sender:self)
+                    ServicesManager.sharedInstance().conferencesManagerService.startOrJoin(room, forceLocalVideo: true)
+                }
+                actions.append(startVideoConference)
             }
-            actions.append(startVideoConference)
 
         }
         
@@ -100,24 +147,14 @@ class EditRoomViewController: UIViewController {
         navigationItem.rightBarButtonItem = barButton
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        if let room = room {
-            configureRightButton(room: room)
-        }
-        NotificationCenter.default.addObserver(self, selector: #selector(didUpdateRoom(notification:)), name: NSNotification.Name(kRoomsServiceDidUpdateRoom), object: nil)
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        NotificationCenter.default.removeObserver(self)
-    }
-    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ConferenceSegue",
             let conferenceVC = segue.destination as? ConferenceViewController {
             conferenceVC.room = room
             conferenceVC.videoCall = self.videoCall
+            let backItem = UIBarButtonItem()
+            backItem.title = "Hangup"
+            navigationItem.backBarButtonItem = backItem
         }
     }
 
@@ -155,9 +192,29 @@ class EditRoomViewController: UIViewController {
             NSLog("[EditRoomViewController] didUpdateRoom '\(room.displayName ?? "")' with roomInfo=\(roomInfo)")
             // Update the right button menu as the state of the conference may have changed
             configureRightButton(room: room)
+            updateConferenceState()
             
         } else {
             NSLog("[EditRoomViewController] didUpdateRoom without roomInfo !")
+        }
+    }
+    
+    @objc func didRemoveCall(notification : NSNotification) {
+        NSLog("[EditRoomViewController] didRemoveCall")
+        
+        if let room {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self.configureRightButton(room: room)
+                self.updateConferenceState()
+            }
+        }
+    }
+    
+    func updateConferenceState() {
+        if let conference = room?.conference {
+            conferenceLabel.text = conference.isConnectedState() ? "connected" : "started"
+        } else {
+            conferenceLabel.text = "not started"
         }
     }
 }
