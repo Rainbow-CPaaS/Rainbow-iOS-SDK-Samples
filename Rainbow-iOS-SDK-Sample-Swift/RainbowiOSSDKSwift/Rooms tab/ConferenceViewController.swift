@@ -31,20 +31,24 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
     
     // The room where the conference is running
     var room : Room?
-    // true if we start the conference with local video on
+    // true if we start or join the conference with local video on
     var videoCall = false
     
     @IBOutlet weak var conferenceStatus: UILabel!
     @IBOutlet weak var participantTableView: UITableView!
     
-    private var videoViews: [String:RTCMTLVideoView] = [:]
-    private let participantCellIdentifier = "ConferenceParticipantCell"
+    // The conference participant including the connected user
     private var participants : [ListItem] = []
+    
+    // Conference publisher not including the connected user
     private var publishers : [RoomConfParticipant] = []
+    // RTCMTLVideoView for displaying the local and remote videos
+    private var videoViews: [String:RTCMTLVideoView] = [:]
+
     private var myParticipantId : String?
-    private var cameraCaptureSession : AVCaptureSession?
     private var localVideoTrack : RTCVideoTrack?
     private var isDismissing = false
+    private let participantCellIdentifier = "ConferenceParticipantCell"
     
     deinit {
         NotificationCenter.default.removeObserver(self)
@@ -66,7 +70,6 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
         NotificationCenter.default.addObserver(self, selector:#selector(didRemoveCall(notification:)), name:NSNotification.Name(kTelephonyServiceDidRemoveCall), object: nil)
         
         // Local video notifications
-        NotificationCenter.default.addObserver(self, selector:#selector(didAddCaptureSession(notification:)), name:NSNotification.Name(kRTCServiceDidAddCaptureSession), object: nil)
         NotificationCenter.default.addObserver(self, selector:#selector(didAddLocalVideoTrack(notification:)), name:NSNotification.Name(kRTCServiceDidAddLocalVideoTrack), object: nil)
         NotificationCenter.default.addObserver(self, selector:#selector(didRemoveLocalVideoTrack(notification:)), name:NSNotification.Name(kRTCServiceDidRemoveLocalVideoTrack), object: nil)
         
@@ -74,6 +77,7 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
         NotificationCenter.default.addObserver(self, selector: #selector(didAddRemoteVideoTrack(notification:)), name: NSNotification.Name(kRTCServiceDidAddRemoteVideoTrack), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(didRemoveRemoteVideoTrack(notification:)), name: NSNotification.Name(kRTCServiceDidRemoveRemoteVideoTrack), object: nil)
         
+        // Publisher notifications
         NotificationCenter.default.addObserver(self, selector: #selector(didAddPublisher(notification:)), name: NSNotification.Name(kConferencesManagerDidAddPublisher), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(didRemovePublisher(notification:)), name: NSNotification.Name(kConferencesManagerDidRemovePublisher), object: nil)
         
@@ -81,7 +85,7 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
         NotificationCenter.default.addObserver(self, selector:#selector(didAllowMicrophone(notification:)), name:NSNotification.Name(kRTCServiceDidAllowMicrophone), object: nil)
         NotificationCenter.default.addObserver(self, selector:#selector(didRefuseMicrophone(notification:)), name:NSNotification.Name(kRTCServiceDidRefuseMicrophone), object: nil)
         
-        // Mute/unmute notifications
+        // Unmute request notifications
         NotificationCenter.default.addObserver(self, selector:#selector(didReceiveUnmuteRequest(notification:)), name:NSNotification.Name(kConferencesManagerDidReceiveUnmuteRequest), object: nil)
         
         participantTableView.delegate = self
@@ -148,12 +152,11 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
                 }
             }
             
-            // Handle conference participant being added or removed
-            if changedAttributes.contains("participants") {
-                NSLog("[ConferenceViewController] didUpdateConference: participants: \(theRoom.conference?.participants ?? [])")
-                if let conference = theRoom.conference {
-                    resyncParticipants(in: conference)
-                }
+            // Handle conference participant being added, updated or removed
+            if changedAttributes.contains("participants"),
+               let conference = theRoom.conference {
+                NSLog("[ConferenceViewController] didUpdateConference: participants: \(conference.participants)")
+                resyncParticipants(in: conference)
             }
         }
     }
@@ -224,12 +227,7 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
         
         if let rtcCall = notification.object as? RTCCall {
             NSLog("[ConferenceViewController] didAddCall status='\(Call.string(for: rtcCall.status) ?? "")' videoCall=\(videoCall)")
-            if rtcCall.isIncoming {
-                if let room, rtcCall.isRtcSfuCall {
-                    ServicesManager.sharedInstance().conferencesManagerService.join(room, forceLocalVideo: videoCall, forceMuted: false)
-                }
-                
-            } else if videoCall {
+            if videoCall && rtcCall.canAddVideo() && !rtcCall.isLocalVideoEnabled() {
                 ServicesManager.sharedInstance().rtcService.addVideoMedia(to: rtcCall)
             }
         }
@@ -256,14 +254,6 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     // MARK: - Local video notification handlers
-    
-    @objc func didAddCaptureSession(notification : Notification) {
-        NSLog("[ConferenceViewController] didAddCaptureSession")
-        
-        if let captureSession = notification.object as? AVCaptureSession {
-            self.cameraCaptureSession = captureSession
-        }
-    }
     
     @objc func didAddLocalVideoTrack(notification : Notification) {
         if !Thread.isMainThread {
@@ -295,7 +285,7 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
         }
     }
     
-    // MARK: - Remote videos notification handlers
+    // MARK: - publisher notification handlers
     
     @objc func didAddPublisher(notification : Notification) {
         if !Thread.isMainThread {
@@ -342,6 +332,8 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
         publishers.removeAll(where: { confParticipant in confParticipant.getRainbowId() == publisherId })
         ServicesManager.sharedInstance().conferencesManagerService.updateDisplayedVideos(room, level: .low, publishers: publishers)
     }
+    
+    // MARK: - Remote videos notification handlers
     
     @objc func didAddRemoteVideoTrack(notification : Notification) {
         if !Thread.isMainThread {
@@ -402,6 +394,20 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
     
     @objc func didReceiveUnmuteRequest(notification : Notification) {
         NSLog("[ConferenceViewController] didReceiveUnmuteRequest")
+        
+        guard let infos = notification.object as? Dictionary<String,Any>,
+              let room = infos[kRoomKey] as? Room else {
+            NSLog("[ConferenceViewController] didReceiveUnmuteRequest error: missing parameter")
+            return
+        }
+        
+        guard let myParticipant = room.conference?.getMyParticipant() else {
+            NSLog("[ConferenceViewController] didReceiveUnmuteRequest error: missing myParticipant")
+            return
+        }
+        
+        // Do the unmute
+        ServicesManager.sharedInstance().conferencesManagerService.changeMuteParticipantState(room, conferenceParticipant: myParticipant, muted: false)
     }
     
     // MARK: - UITableViewDelegate protocol
@@ -449,7 +455,8 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
     
     @IBAction func muteUmuteAction(_ sender: Any?) {
         if let button = sender as? UIButton,
-            let participant = participants[button.tag].conferenceParticipant {
+           let myParticipant = room?.conference?.getMyParticipant(),
+           let participant = participants[button.tag].conferenceParticipant, participant.isMe() || myParticipant.role == .moderator {
             
             let newMuteState = !participant.muted
             
