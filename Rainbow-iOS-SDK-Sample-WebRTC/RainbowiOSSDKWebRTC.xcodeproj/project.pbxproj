@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 53;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -48,7 +48,7 @@
 		E54400DA207E00DD008B90F2 /* CallViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CallViewController.m; sourceTree = "<group>"; };
 		E55968CF206D33E50080D632 /* ContactTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ContactTableViewCell.h; sourceTree = "<group>"; };
 		E55968D0206D33E50080D632 /* ContactTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ContactTableViewCell.m; sourceTree = "<group>"; };
-		E5A914142A375B70001993D1 /* Rainbow.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Rainbow.xcframework; path = RainbowiOSSDKWebRTC/Carthage/Build/iOS/Rainbow.xcframework; sourceTree = "<group>"; };
+		E5A914142A375B70001993D1 /* Rainbow.xcframework */ = {isa = PBXFileReference; expectedSignature = "AppleDeveloperProgram:BT9E66P673:ALE International"; lastKnownFileType = wrapper.xcframework; name = Rainbow.xcframework; path = RainbowiOSSDKWebRTC/Carthage/Build/iOS/Rainbow.xcframework; sourceTree = "<group>"; };
 		E5A914152A375B70001993D1 /* WebRTC.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = WebRTC.xcframework; path = RainbowiOSSDKWebRTC/Carthage/Build/iOS/WebRTC.xcframework; sourceTree = "<group>"; };
 		E5D2BFA02069314700EEDB5F /* WebRTC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WebRTC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E5D2BFA32069314700EEDB5F /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -164,7 +164,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
-				LastUpgradeCheck = 1430;
+				LastUpgradeCheck = 1620;
 				ORGANIZATIONNAME = ALE;
 				TargetAttributes = {
 					E5D2BF9F2069314700EEDB5F = {
@@ -174,7 +174,7 @@
 				};
 			};
 			buildConfigurationList = E5D2BF9B2069314700EEDB5F /* Build configuration list for PBXProject "RainbowiOSSDKWebRTC" */;
-			compatibilityVersion = "Xcode 8.0";
+			compatibilityVersion = "Xcode 15.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -281,6 +281,7 @@
 				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -340,6 +341,7 @@
 				ENABLE_BITCODE = NO;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;

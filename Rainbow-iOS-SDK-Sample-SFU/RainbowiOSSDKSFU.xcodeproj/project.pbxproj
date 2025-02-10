@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 53;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -66,7 +66,7 @@
 		E5D2BFB22069314700EEDB5F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		E5D2BFC320693D3E00EEDB5F /* MainViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
 		E5D2BFC420693D3E00EEDB5F /* MainViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
-		E5F6BD242A38634100D63F70 /* Rainbow.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Rainbow.xcframework; path = RainbowiOSSDKSFU/Carthage/Build/iOS/Rainbow.xcframework; sourceTree = "<group>"; };
+		E5F6BD242A38634100D63F70 /* Rainbow.xcframework */ = {isa = PBXFileReference; expectedSignature = "AppleDeveloperProgram:BT9E66P673:ALE International"; lastKnownFileType = wrapper.xcframework; name = Rainbow.xcframework; path = RainbowiOSSDKSFU/Carthage/Build/iOS/Rainbow.xcframework; sourceTree = "<group>"; };
 		E5F6BD252A38634200D63F70 /* WebRTC.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = WebRTC.xcframework; path = RainbowiOSSDKSFU/Carthage/Build/iOS/WebRTC.xcframework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -174,7 +174,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
-				LastUpgradeCheck = 1430;
+				LastUpgradeCheck = 1620;
 				ORGANIZATIONNAME = ALE;
 				TargetAttributes = {
 					E5D2BF9F2069314700EEDB5F = {
@@ -293,6 +293,7 @@
 				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -352,6 +353,7 @@
 				ENABLE_BITCODE = NO;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;

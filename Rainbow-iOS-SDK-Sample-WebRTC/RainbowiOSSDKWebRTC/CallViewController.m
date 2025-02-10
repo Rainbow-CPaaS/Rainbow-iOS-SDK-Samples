@@ -128,7 +128,7 @@
 
 -(void) makeCallTo:(RainbowContact *) contact features:(RTCCallFeatureFlags) features {
     if([self checkMicrophoneAccess]){
-        self.currentCall = [self.rtcService beginNewOutgoingCallWithPeer:contact withFeatures:features andSubject:@"RainbowiOSSDKWebRTC calling !" ];
+        self.currentCall = [self.rtcService startOutgoingP2PCallTo:contact withFeatures:features];
         if(!self.currentCall){
             NSLog(@"Error making WebRTC call");
         }
