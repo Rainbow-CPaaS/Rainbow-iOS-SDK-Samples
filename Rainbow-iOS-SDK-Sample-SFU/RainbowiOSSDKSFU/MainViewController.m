@@ -226,7 +226,7 @@
 }
 
 -(void)joinConferenceInRoom:(Room *)room {
-    [[ServicesManager sharedInstance].conferencesManagerService startOrJoin:room forceLocalVideo:NO block:^(NSError *error) {
+    [[ServicesManager sharedInstance].conferencesManagerService startOrJoin:room forceLocalVideo:NO completionHandler:^(NSError *error) {
         if(error){
             [self showErrorPopupWithTitle:@"Conference" message:@"Error while trying to join the conference"];
         }

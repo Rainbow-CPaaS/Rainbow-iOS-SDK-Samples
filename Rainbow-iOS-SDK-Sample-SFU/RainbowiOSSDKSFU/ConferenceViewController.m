@@ -73,7 +73,7 @@
 - (void)didMoveToParentViewController:(UIViewController *)parent {
     if (parent == nil) {
         NSLog(@"Back pressed");
-        [self.conferencesManager hangup:self.room block:^(NSError *error) {
+        [self.conferencesManager hangup:self.room completionHandler:^(NSError *error) {
             if (error){
                 [self showErrorPopupWithTitle:@"Conference" message:@"Error while trying to hangup the conference"];
             }
@@ -104,9 +104,9 @@
     }
     
     NSDictionary *userInfo = (NSDictionary *)notification.object;
-    Conference *conference = [userInfo objectForKey:kConferenceKey];
+    Room *room = [userInfo objectForKey: kRoomKey];
     
-    NSLog(@"Conference '%@' was updated", conference.description);
+    NSLog(@"Conference '%@' was updated", room.conference.description);
     
     [self updateParticipants];
     
