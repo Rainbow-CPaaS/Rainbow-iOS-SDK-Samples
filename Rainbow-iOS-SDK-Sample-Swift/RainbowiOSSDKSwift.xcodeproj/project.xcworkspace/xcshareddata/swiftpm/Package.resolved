@@ -1,5 +1,5 @@
 {
-  "originHash" : "1914a6021ce8bfc7384a77418f4de8aa83b924ccb52171b05903dabbc0c9fef9",
+  "originHash" : "bd917e6d9dd205a6753d0387f46801b2d47518317b7c181dd1f8838b0087bae4",
   "pins" : [
     {
       "identity" : "alamofire",
@@ -26,6 +26,24 @@
       "state" : {
         "branch" : "main",
         "revision" : "9b03fa83669f6e01ee2135af8ab9105cc2b9b744"
+      }
+    },
+    {
+      "identity" : "rainbow-ios-sdk",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Rainbow-CPaaS/Rainbow-iOS-SDK.git",
+      "state" : {
+        "revision" : "7424518ff21df13cba7f6a747d60fc2a0889b87c",
+        "version" : "2.14.1"
+      }
+    },
+    {
+      "identity" : "rainbow-ios-webrtc",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Rainbow-CPaaS/Rainbow-iOS-WebRTC.git",
+      "state" : {
+        "revision" : "2a46a94502b580a113e9f868629b9a70ee4d4730",
+        "version" : "1.1.38197"
       }
     },
     {

@@ -3,11 +3,13 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 60;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		D5BCD7ED301377240049FFB8 /* DispatchTimer in Frameworks */ = {isa = PBXBuildFile; productRef = D5BCD7EC301377240049FFB8 /* DispatchTimer */; };
+		D5BCD863301396D20049FFB8 /* Rainbow in Frameworks */ = {isa = PBXBuildFile; productRef = D5BCD862301396D20049FFB8 /* Rainbow */; };
+		D5BCD866301396D90049FFB8 /* WebRTC in Frameworks */ = {isa = PBXBuildFile; productRef = D5BCD865301396D90049FFB8 /* WebRTC */; };
 		E5433DED2C20813D002D008E /* ConferenceTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = E5433DEC2C20813D002D008E /* ConferenceTableViewCell.xib */; };
 		E5433DEE2C20813D002D008E /* ConferenceTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5433DEB2C20813D002D008E /* ConferenceTableViewCell.swift */; };
 		E5433E4A2C2EBF81002D008E /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5433E492C2EBF81002D008E /* TabBarController.swift */; };
@@ -20,7 +22,6 @@
 		E550289B248A8C0700A6B603 /* RoomsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E550289A248A8C0700A6B603 /* RoomsTableViewController.swift */; };
 		E550289D248A8D4600A6B603 /* RoomsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E550289C248A8D4600A6B603 /* RoomsTableViewCell.swift */; };
 		E550289F248AA53F00A6B603 /* EditRoomViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E550289E248AA53E00A6B603 /* EditRoomViewController.swift */; };
-		E5586E172BF4C78C00F60EE8 /* Rainbow.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = E5586E162BF4C78C00F60EE8 /* Rainbow.xcframework */; };
 		E565D9DC20AAD9640074597C /* ConversationsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E565D9DB20AAD9640074597C /* ConversationsTableViewController.swift */; };
 		E565D9DE20AADAB00074597C /* ConversationsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E565D9DD20AADAB00074597C /* ConversationsTableViewCell.swift */; };
 		E565D9E220AB3B670074597C /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E565D9E120AB3B670074597C /* ChatViewController.swift */; };
@@ -31,26 +32,8 @@
 		E5773BF02099F3D9000BC714 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5773BEF2099F3D9000BC714 /* DetailViewController.swift */; };
 		E595F3E42A126CFC004C5C2D /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = E595F3E32A126CFC004C5C2D /* Alamofire */; };
 		E595F3E72A12853C004C5C2D /* CryptoSwift in Frameworks */ = {isa = PBXBuildFile; productRef = E595F3E62A12853C004C5C2D /* CryptoSwift */; };
-		E5CCFE372BF637E800972C62 /* Rainbow.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E5586E162BF4C78C00F60EE8 /* Rainbow.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E5CCFE392BF668F900972C62 /* ConferenceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5CCFE382BF668F900972C62 /* ConferenceViewController.swift */; };
-		E5DCEB6727AA90390052CFF4 /* WebRTC.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = E5DCEB6527AA90390052CFF4 /* WebRTC.xcframework */; };
-		E5DCEB6A27AA904A0052CFF4 /* WebRTC.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E5DCEB6527AA90390052CFF4 /* WebRTC.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		E54401082084E15F008B90F2 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				E5CCFE372BF637E800972C62 /* Rainbow.xcframework in Embed Frameworks */,
-				E5DCEB6A27AA904A0052CFF4 /* WebRTC.xcframework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		E5433DEB2C20813D002D008E /* ConferenceTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConferenceTableViewCell.swift; sourceTree = "<group>"; };
@@ -67,7 +50,6 @@
 		E550289A248A8C0700A6B603 /* RoomsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomsTableViewController.swift; sourceTree = "<group>"; };
 		E550289C248A8D4600A6B603 /* RoomsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomsTableViewCell.swift; sourceTree = "<group>"; };
 		E550289E248AA53E00A6B603 /* EditRoomViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditRoomViewController.swift; sourceTree = "<group>"; };
-		E5586E162BF4C78C00F60EE8 /* Rainbow.xcframework */ = {isa = PBXFileReference; expectedSignature = "AppleDeveloperProgram:BT9E66P673:ALE International"; lastKnownFileType = wrapper.xcframework; name = Rainbow.xcframework; path = RainbowiOSSDKSwift/Carthage/Build/Rainbow.xcframework; sourceTree = "<group>"; };
 		E565D9DB20AAD9640074597C /* ConversationsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationsTableViewController.swift; sourceTree = "<group>"; };
 		E565D9DD20AADAB00074597C /* ConversationsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationsTableViewCell.swift; sourceTree = "<group>"; };
 		E565D9E120AB3B670074597C /* ChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
@@ -77,7 +59,6 @@
 		E5773BED2099C5CC000BC714 /* ContactTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactTableViewCell.swift; sourceTree = "<group>"; };
 		E5773BEF2099F3D9000BC714 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		E5CCFE382BF668F900972C62 /* ConferenceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConferenceViewController.swift; sourceTree = "<group>"; };
-		E5DCEB6527AA90390052CFF4 /* WebRTC.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = WebRTC.xcframework; path = RainbowiOSSDKSwift/Carthage/Build/WebRTC.xcframework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,11 +66,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E5586E172BF4C78C00F60EE8 /* Rainbow.xcframework in Frameworks */,
+				D5BCD866301396D90049FFB8 /* WebRTC in Frameworks */,
 				D5BCD7ED301377240049FFB8 /* DispatchTimer in Frameworks */,
+				D5BCD863301396D20049FFB8 /* Rainbow in Frameworks */,
 				E595F3E42A126CFC004C5C2D /* Alamofire in Frameworks */,
 				E595F3E72A12853C004C5C2D /* CryptoSwift in Frameworks */,
-				E5DCEB6727AA90390052CFF4 /* WebRTC.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -101,7 +82,6 @@
 			children = (
 				E54400EF2084E055008B90F2 /* RainbowiOSSDKSwift */,
 				E54400EE2084E055008B90F2 /* Products */,
-				E5D6117C25F77C9A0088E52B /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -174,15 +154,6 @@
 			path = Chat;
 			sourceTree = "<group>";
 		};
-		E5D6117C25F77C9A0088E52B /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				E5586E162BF4C78C00F60EE8 /* Rainbow.xcframework */,
-				E5DCEB6527AA90390052CFF4 /* WebRTC.xcframework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -193,7 +164,6 @@
 				E54400E92084E055008B90F2 /* Sources */,
 				E54400EA2084E055008B90F2 /* Frameworks */,
 				E54400EB2084E055008B90F2 /* Resources */,
-				E54401082084E15F008B90F2 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -204,6 +174,8 @@
 				E595F3E32A126CFC004C5C2D /* Alamofire */,
 				E595F3E62A12853C004C5C2D /* CryptoSwift */,
 				D5BCD7EC301377240049FFB8 /* DispatchTimer */,
+				D5BCD862301396D20049FFB8 /* Rainbow */,
+				D5BCD865301396D90049FFB8 /* WebRTC */,
 			);
 			productName = RainbowiOSSDKSwift;
 			productReference = E54400ED2084E055008B90F2 /* RainbowiOSSDKSwift.app */;
@@ -239,6 +211,8 @@
 				E595F3E22A126CFC004C5C2D /* XCRemoteSwiftPackageReference "Alamofire" */,
 				E595F3E52A12853C004C5C2D /* XCRemoteSwiftPackageReference "CryptoSwift" */,
 				D5BCD7EB301377240049FFB8 /* XCRemoteSwiftPackageReference "dispatch-timer" */,
+				D5BCD861301396D20049FFB8 /* XCRemoteSwiftPackageReference "Rainbow-iOS-SDK" */,
+				D5BCD864301396D90049FFB8 /* XCRemoteSwiftPackageReference "Rainbow-iOS-WebRTC" */,
 			);
 			productRefGroup = E54400EE2084E055008B90F2 /* Products */;
 			projectDirPath = "";
@@ -508,6 +482,22 @@
 				kind = branch;
 			};
 		};
+		D5BCD861301396D20049FFB8 /* XCRemoteSwiftPackageReference "Rainbow-iOS-SDK" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Rainbow-CPaaS/Rainbow-iOS-SDK.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.14.1;
+			};
+		};
+		D5BCD864301396D90049FFB8 /* XCRemoteSwiftPackageReference "Rainbow-iOS-WebRTC" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Rainbow-CPaaS/Rainbow-iOS-WebRTC.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.38197;
+			};
+		};
 		E595F3E22A126CFC004C5C2D /* XCRemoteSwiftPackageReference "Alamofire" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
@@ -531,6 +521,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = D5BCD7EB301377240049FFB8 /* XCRemoteSwiftPackageReference "dispatch-timer" */;
 			productName = DispatchTimer;
+		};
+		D5BCD862301396D20049FFB8 /* Rainbow */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D5BCD861301396D20049FFB8 /* XCRemoteSwiftPackageReference "Rainbow-iOS-SDK" */;
+			productName = Rainbow;
+		};
+		D5BCD865301396D90049FFB8 /* WebRTC */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D5BCD864301396D90049FFB8 /* XCRemoteSwiftPackageReference "Rainbow-iOS-WebRTC" */;
+			productName = WebRTC;
 		};
 		E595F3E32A126CFC004C5C2D /* Alamofire */ = {
 			isa = XCSwiftPackageProductDependency;
