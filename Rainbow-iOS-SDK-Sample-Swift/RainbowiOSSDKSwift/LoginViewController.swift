@@ -40,22 +40,20 @@ class LoginViewController: UIViewController {
         if (ServicesManager.sharedInstance().myUser.username != nil) && (ServicesManager.sharedInstance().myUser.password != nil) {
             self.loginTextField.text = ServicesManager.sharedInstance().myUser.username
             self.passwordTextField.text = ServicesManager.sharedInstance().myUser.password
-            ServicesManager.sharedInstance().loginManager.connect()
+            ServicesManager.sharedInstance().loginManager.connectToServer()
             activityIndicatorView.startAnimating()
             self.loginButton.isEnabled = false
         }
-        NotificationCenter.default.addObserver(self, selector: #selector(didLogin(notification:)), name: NSNotification.Name(kLoginManagerDidLoginSucceeded), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(didReconnect(notification:)), name: NSNotification.Name(kLoginManagerDidReconnect), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(didLogout(notification:)), name: NSNotification.Name(kLoginManagerDidLogoutSucceeded), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(failedToAuthenticate(notification:)), name: NSNotification.Name(kLoginManagerDidFailedToAuthenticate), object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(didLogin(notification:)), name: LoginManager.Notifications.didLogin, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didReconnect(notification:)), name: LoginManager.Notifications.didReconnect, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didLogout(notification:)), name: LoginManager.Notifications.didLogout, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(failedToAuthenticate(notification:)), name: LoginManager.Notifications.didFailedToAuthenticate, object: nil)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kLoginManagerDidLoginSucceeded), object: nil)
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kLoginManagerDidReconnect), object: nil)
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kLoginManagerDidLogoutSucceeded), object: nil)
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kLoginManagerDidFailedToAuthenticate), object: nil)
+        NotificationCenter.default.removeObserver(self)
     }
     
     // MARK: - LoginManager notifications
@@ -113,9 +111,8 @@ class LoginViewController: UIViewController {
     }
     
     @IBAction func logoutAction(_ sender: Any) {
-        DispatchQueue.global().async {
-            ServicesManager.sharedInstance().loginManager.disconnect()
-            ServicesManager.sharedInstance().loginManager.resetAllCredentials()
+        Task { @MainActor in
+            try? await ServicesManager.sharedInstance().loginManager.logout()
         }
     }
     
@@ -130,13 +127,14 @@ class LoginViewController: UIViewController {
     }
     
     func signin(loginEmail: String, password: String, server: String? = nil) {
-        if let server {
-            NSLog("Switch server then, sign in with loginEmail and password")
-            ServicesManager.sharedInstance().loginManager.switchServer(server, login:loginEmail, password: password)
-        } else {
-            NSLog("Will sign in with loginEmail and password")
-            ServicesManager.sharedInstance().loginManager.setUsername(loginEmail, andPassword: password)
-            ServicesManager.sharedInstance().loginManager.connect()
+        Task {
+            if let server {
+                NSLog("Switch server then, sign in with loginEmail and password")
+                try? await ServicesManager.sharedInstance().loginManager.switchToServer(server, withLogin: loginEmail, andPassword: password)
+            } else {
+                NSLog("Will sign in with loginEmail and password")
+                try? await ServicesManager.sharedInstance().loginManager.login(withUsername: loginEmail, andPassword: password)
+            }
         }
     }
     

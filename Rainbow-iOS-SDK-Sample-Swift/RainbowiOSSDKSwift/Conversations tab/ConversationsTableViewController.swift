@@ -35,7 +35,7 @@ class ConversationsTableViewController: UITableViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(didEndLoadingConversations), name: NSNotification.Name( kConversationsManagerDidEndLoadingConversations), object: nil)
         
         // notification sent when the app regain the network after loosing it
-        NotificationCenter.default.addObserver(self, selector: #selector(didReconnect(notification:)), name: NSNotification.Name(kLoginManagerDidReconnect), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didReconnect(notification:)), name: LoginManager.Notifications.didReconnect, object: nil)
     }
     
     deinit {
@@ -50,8 +50,7 @@ class ConversationsTableViewController: UITableViewController {
     
     func configureRightButton() {
         let logout = UIAction(title: "Logout", image: UIImage(systemName: "power.circle")) { _ in
-            ServicesManager.sharedInstance().loginManager.disconnect()
-            ServicesManager.sharedInstance().loginManager.resetAllCredentials()
+            Task { try? await ServicesManager.sharedInstance().loginManager.logout() }
             self.dismiss(animated: false, completion: nil)
         }
         
@@ -61,8 +60,7 @@ class ConversationsTableViewController: UITableViewController {
     }
 
     @IBAction func logoutAction(_ sender: Any) {
-        ServicesManager.sharedInstance().loginManager.disconnect()
-        ServicesManager.sharedInstance().loginManager.resetAllCredentials()
+        Task { try? await ServicesManager.sharedInstance().loginManager.logout() }
         self.dismiss(animated: false, completion: nil)
     }
     
@@ -104,10 +102,8 @@ class ConversationsTableViewController: UITableViewController {
             return
         }
         let theConversation = notification.object as! Conversation
-        if (theConversation.conversationId != nil) {
-            if (allConversations.firstIndex(of: theConversation) == nil) {
-                allConversations.append(theConversation)
-            }
+        if (allConversations.firstIndex(of: theConversation) == nil) {
+            allConversations.append(theConversation)
         }
         self.sortAllConversation()
     }
@@ -195,7 +191,7 @@ class ConversationsTableViewController: UITableViewController {
                 // The peer is a Room, the conversation is a chat room
                 conversationsCell.avatar.image = UIImage(named: "Default_Room_Avatar")
                 conversationsCell.avatar.tintColor = UIColor(hue:CGFloat(indexPath.row*36%100)/100.0, saturation:1.0, brightness:1.0, alpha:1.0)
-                conversationsCell.peerName.text = room.displayName
+                conversationsCell.peerName.text = room.displayName()
             }
             
             if(allConversations[indexPath.row].unreadMessagesCount != 0) {

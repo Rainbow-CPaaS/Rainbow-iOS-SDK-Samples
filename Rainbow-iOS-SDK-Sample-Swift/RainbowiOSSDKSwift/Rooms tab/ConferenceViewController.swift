@@ -60,9 +60,9 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
         super.viewDidLoad()
         
         // Listen to update conference notification
-        NotificationCenter.default.addObserver(self, selector:#selector(didUpdateConference(notification:)), name:NSNotification.Name(kConferencesManagerDidUpdateConference), object:nil)
-        NotificationCenter.default.addObserver(self, selector:#selector(participantHasJoined(notification:)), name:NSNotification.Name(kConferencesManagerParticipantHasJoined), object:nil)
-        NotificationCenter.default.addObserver(self, selector:#selector(participantHasLeft(notification:)), name:NSNotification.Name(kConferencesManagerParticipantHasLeft), object:nil)
+        NotificationCenter.default.addObserver(self, selector:#selector(didUpdateConference(notification:)), name: ConferenceService.Notifications.didUpdateConference, object:nil)
+        NotificationCenter.default.addObserver(self, selector:#selector(participantHasJoined(notification:)), name: ConferenceService.Notifications.participantHasJoined, object:nil)
+        NotificationCenter.default.addObserver(self, selector:#selector(participantHasLeft(notification:)), name:ConferenceService.Notifications.participantHasLeft, object:nil)
         
         // WebRTC audio call handling
         NotificationCenter.default.addObserver(self, selector:#selector(didAddCall(notification:)), name:NSNotification.Name(kTelephonyServiceDidAddCall), object: nil)
@@ -78,15 +78,15 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
         NotificationCenter.default.addObserver(self, selector: #selector(didRemoveRemoteVideoTrack(notification:)), name: NSNotification.Name(kRTCServiceDidRemoveRemoteVideoTrack), object: nil)
         
         // Publisher notifications
-        NotificationCenter.default.addObserver(self, selector: #selector(didAddPublisher(notification:)), name: NSNotification.Name(kConferencesManagerDidAddPublisher), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(didRemovePublisher(notification:)), name: NSNotification.Name(kConferencesManagerDidRemovePublisher), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didAddPublisher(notification:)), name: ConferenceService.Notifications.didAddPublisher, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didRemovePublisher(notification:)), name: ConferenceService.Notifications.didRemovePublisher, object: nil)
         
         // Microphone notifications
         NotificationCenter.default.addObserver(self, selector:#selector(didAllowMicrophone(notification:)), name:NSNotification.Name(kRTCServiceDidAllowMicrophone), object: nil)
         NotificationCenter.default.addObserver(self, selector:#selector(didRefuseMicrophone(notification:)), name:NSNotification.Name(kRTCServiceDidRefuseMicrophone), object: nil)
         
         // Unmute request notifications
-        NotificationCenter.default.addObserver(self, selector:#selector(didReceiveUnmuteRequest(notification:)), name:NSNotification.Name(kConferencesManagerDidReceiveUnmuteRequest), object: nil)
+        NotificationCenter.default.addObserver(self, selector:#selector(didReceiveUnmuteRequest(notification:)), name: ConferenceService.Notifications.didReceiveUnmuteRequest, object: nil)
         
         participantTableView.delegate = self
         participantTableView.dataSource = self
@@ -95,7 +95,9 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        if let conference = room?.conference, conference.isConnectedState() {
+        guard let room, let conference = room.conference else { return }
+        
+        if ServicesManager.sharedInstance().roomService.hasJoinedConferenceOnThisDevice(in: room) {
             conferenceStatus.text = "Connected"
             resyncParticipants(in: conference)
         }
@@ -107,15 +109,16 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
         if parent == nil, let room = room {
             NSLog("[ConferenceViewController] dismiss viewcontroller")
             
-            if let conference = room.conference, conference.isConnectedState() {
+            if ServicesManager.sharedInstance().roomService.hasJoinedConferenceOnThisDevice(in: room) {
                 // Allow some time after back is pressed before doing the hangup
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                     // Terminate the conference when the back button is pressed
                     NSLog("[ConferenceViewController] hangup conference")
-                    ServicesManager.sharedInstance().conferencesManagerService.hangup(room) {
-                        error in
-                        if let error = error as? NSError {
-                            NSLog("Error: ", error.localizedDescription)
+                    Task { @MainActor in
+                        do {
+                            try await ServicesManager.sharedInstance().conferenceService.leaveConference(in: room)
+                        } catch {
+                            NSLog("Error: \(error)")
                         }
                     }
                 }
@@ -134,9 +137,9 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
         }
         
         if let notificationDict = notification.object as? Dictionary<String, Any>,
-           let theRoom = notificationDict[kRoomKey] as? Room,
-           let changedAttributes = notificationDict[kConferenceChangedAttributesKey] as? Array<String> {
-            NSLog("[ConferenceViewController] didUpdateConference: room: '\(theRoom.displayName ?? "")' changed attributes: \(changedAttributes)")
+           let theRoom = notificationDict[RoomService.Constants.kRoomKey] as? Room,
+           let changedAttributes = notificationDict[RoomService.Constants.kRoomChangedAttributesKey] as? Array<String> {
+            NSLog("[ConferenceViewController] didUpdateConference: room: '\(theRoom.name ?? "")' changed attributes: \(changedAttributes)")
             
             // Check if a conference was started or terminated in the room
             if changedAttributes.contains("conference"){
@@ -168,8 +171,9 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
             if !participants.contains(where: { listItem in listItem.conferenceParticipant == participant }) {
                 let cell = Bundle.main.loadNibNamed("ConferenceTableViewCell", owner: self, options: nil)?[0] as? ConferenceTableViewCell
                 participants.append(ListItem(conferenceParticipant: participant, cell: cell))
-                if participant.isMe() {
-                    myParticipantId = participant.getContact().identifier
+                
+                if let rainbowContact = participant.contact as? RainbowContact, rainbowContact.isMe {
+                    myParticipantId = rainbowContact.identifier
                     conferenceStatus.text = "Connected"
                 }
             }
@@ -180,7 +184,7 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
             if let conferenceParticipant = listItem.conferenceParticipant,
                !conference.participants.contains(conferenceParticipant) {
                 participants.removeAll { listItem in
-                    conferenceParticipant.getContact().identifier == listItem.conferenceParticipant?.getContact().identifier
+                    conferenceParticipant.contact.identifier == listItem.conferenceParticipant?.contact.identifier
                 }
             }
         }
@@ -197,8 +201,8 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
         }
         
         if let dict = notification.object as? Dictionary<String, Any>,
-           let conferenceParticipant = dict[kConferenceParticipantKey] as? ConferenceParticipant {
-            NSLog("[ConferenceViewController] participantHasJoined: name='\(conferenceParticipant.getDisplayName())'")
+           let conferenceParticipant = dict[ConferenceService.Constants.kConferenceParticipantKey] as? ConferenceParticipant {
+            NSLog("[ConferenceViewController] participantHasJoined: name='\(conferenceParticipant.displayName)'")
         }
     }
     
@@ -211,8 +215,8 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
         }
         
         if let dict = notification.object as? Dictionary<String, Any>,
-           let conferenceParticipant = dict[kConferenceParticipantKey] as? ConferenceParticipant {
-            NSLog("[ConferenceViewController] participantHasLeft: name='\(conferenceParticipant.getDisplayName())'")
+           let conferenceParticipant = dict[ConferenceService.Constants.kConferenceParticipantKey] as? ConferenceParticipant {
+            NSLog("[ConferenceViewController] participantHasLeft: name='\(conferenceParticipant.displayName)'")
         }
     }
     // MARK: -  Call notification handlers
@@ -226,9 +230,9 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
         }
         
         if let rtcCall = notification.object as? RTCCall {
-            NSLog("[ConferenceViewController] didAddCall status='\(Call.string(for: rtcCall.status) ?? "")' videoCall=\(videoCall)")
+            NSLog("[ConferenceViewController] didAddCall status='\(Call.string(for: rtcCall.status))' videoCall=\(videoCall)")
             if videoCall && rtcCall.canAddVideo() && !rtcCall.isLocalVideoEnabled() {
-                ServicesManager.sharedInstance().rtcService.addVideoMedia(to: rtcCall)
+                ServicesManager.sharedInstance().rtcService.addVideoMedia(to: rtcCall, with: .localVideo)
             }
         }
     }
@@ -241,9 +245,14 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
             return
         }
         if let rtcCall = notification.object as? RTCCall {
-            NSLog("[ConferenceViewController] didUpdateCall status='\(Call.string(for: rtcCall.status) ?? "")'")
+            NSLog("[ConferenceViewController] didUpdateCall status='\(Call.string(for: rtcCall.status))'")
             
-            if rtcCall.status == .established, let conference = room?.conference, !conference.isOwner() {
+            let isMyConference = {
+                guard let myContact = ServicesManager.sharedInstance().myUser.contact else { return false }
+                return room?.conference?.isOwner(contact: myContact) ?? false
+            }()
+            
+            if rtcCall.status == .established, let conference = room?.conference, !isMyConference {
                 resyncParticipants(in: conference)
             }
         }
@@ -296,18 +305,18 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
         }
         
         guard let userInfo = notification.object as? NSDictionary,
-              let confParticipant = userInfo.object(forKey: kConferenceParticipantKey) as? RoomConfParticipant,
-              let room = userInfo.object(forKey: kRoomKey) as? Room,
-              let publisherId = confParticipant.getRainbowId(),
+              let confParticipant = userInfo.object(forKey: ConferenceService.Constants.kConferenceParticipantKey) as? RoomConfParticipant,
+              let room = userInfo.object(forKey: RoomService.Constants.kRoomKey) as? Room,
+              let publisherId = confParticipant.roomMember.contact.rainbowID,
               !publishers.contains(confParticipant),
-              !confParticipant.isMe() else {
+              !confParticipant.roomMember.contact.isMe else {
             return
         }
         
         NSLog("[ConferenceViewController] didAddPublisher publisherID=\(publisherId)")
         publishers.append(confParticipant)
         
-        ServicesManager.sharedInstance().conferencesManagerService.updateDisplayedVideos(room, level: .low, publishers: publishers)
+        ServicesManager.sharedInstance().conferenceService.updateVideoSubcribtions(subscriteTo: publishers, level: .low, in: room)
     }
     
     @objc func didRemovePublisher(notification : Notification) {
@@ -319,18 +328,18 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
         }
         
         guard let userInfo = notification.object as? NSDictionary,
-              let confParticipant = userInfo.object(forKey: kConferenceParticipantKey) as? RoomConfParticipant,
-              let room = userInfo.object(forKey: kRoomKey) as? Room,
-              let publisherId = confParticipant.getRainbowId(),
+              let confParticipant = userInfo.object(forKey: ConferenceService.Constants.kConferenceParticipantKey) as? RoomConfParticipant,
+              let room = userInfo.object(forKey: RoomService.Constants.kRoomKey) as? Room,
+              let publisherId = confParticipant.roomMember.contact.rainbowID,
               publishers.contains(confParticipant),
-              !confParticipant.isMe() else {
+              !confParticipant.roomMember.contact.isMe else {
             return
         }
         
         NSLog("[ConferenceViewController] didRemovePublisher publisherID=\(publisherId)")
         
-        publishers.removeAll(where: { confParticipant in confParticipant.getRainbowId() == publisherId })
-        ServicesManager.sharedInstance().conferencesManagerService.updateDisplayedVideos(room, level: .low, publishers: publishers)
+        publishers.removeAll(where: { confParticipant in confParticipant.roomMember.contact.rainbowID == publisherId })
+        ServicesManager.sharedInstance().conferenceService.updateVideoSubcribtions(subscriteTo: publishers, level: .low, in: room)
     }
     
     // MARK: - Remote videos notification handlers
@@ -396,18 +405,15 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
         NSLog("[ConferenceViewController] didReceiveUnmuteRequest")
         
         guard let infos = notification.object as? Dictionary<String,Any>,
-              let room = infos[kRoomKey] as? Room else {
+              let room = infos[RoomService.Constants.kRoomKey] as? Room else {
             NSLog("[ConferenceViewController] didReceiveUnmuteRequest error: missing parameter")
             return
         }
         
-        guard let myParticipant = room.conference?.getMyParticipant() else {
-            NSLog("[ConferenceViewController] didReceiveUnmuteRequest error: missing myParticipant")
-            return
-        }
-        
         // Do the unmute
-        ServicesManager.sharedInstance().conferencesManagerService.changeMuteParticipantState(room, conferenceParticipant: myParticipant, muted: false)
+        Task {
+            try? await ServicesManager.sharedInstance().conferenceService.changeMyMuteState(in: room, muted: false)
+        }
     }
     
     // MARK: - UITableViewDelegate protocol
@@ -435,8 +441,8 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func configure(cell : ConferenceTableViewCell, for indexPath: IndexPath) {
         if let participant = participants[indexPath.row].conferenceParticipant {
-            let contact = participant.getContact()
-            cell.nameLabel.text = participant.getDisplayName()
+            let contact = participant.contact
+            cell.nameLabel.text = participant.displayName
             if let photoData = contact.photoData {
                 cell.avatarImage.image = UIImage.init(data: photoData)
                 cell.avatarImage.tintColor = UIColor.clear
@@ -446,7 +452,7 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
             }
             videoViews[contact.identifier] = cell.videoView
             cell.muteButton.tag = indexPath.row
-            let image = participant.muted ? UIImage(systemName: "mic.slash.fill") : UIImage(systemName: "mic.fill")
+            let image = participant.isMuted ? UIImage(systemName: "mic.slash.fill") : UIImage(systemName: "mic.fill")
             cell.muteButton.setImage(image, for: .normal)
         }
     }
@@ -454,19 +460,25 @@ class ConferenceViewController: UIViewController, UITableViewDelegate, UITableVi
     // MARK: - UIAction
     
     @IBAction func muteUmuteAction(_ sender: Any?) {
-        if let button = sender as? UIButton,
-           let myParticipant = room?.conference?.getMyParticipant(),
-           let participant = participants[button.tag].conferenceParticipant, participant.isMe() || myParticipant.role == .moderator {
+        guard let button = sender as? UIButton else { return }
+        
+        guard let room else { return }
+        
+        guard let myContact = ServicesManager.sharedInstance().myUser.contact,
+              let myParticipant = room.conference?.participant(for: myContact) else { return }
+        
+        guard let participant = participants[button.tag].conferenceParticipant else { return }
+        guard participant == myParticipant || myParticipant.roomMember.privilege == .moderator else { return }
             
-            let newMuteState = !participant.muted
-            
-            if let room {
-                ServicesManager.sharedInstance().conferencesManagerService.changeMuteParticipantState(room, conferenceParticipant: participant, muted: newMuteState) { error, askToUnmuteSuccess in
-                    let image = newMuteState ? UIImage(systemName: "mic.slash.fill") : UIImage(systemName: "mic.fill")
-                    DispatchQueue.main.async {
-                        button.setImage(image, for: .normal)
-                    }
-                }
+        let newMuteState = !participant.isMuted
+
+        Task { @MainActor in
+            do {
+                try await ServicesManager.sharedInstance().conferenceService.changeMuteState(of: participant, in: room, muted: newMuteState)
+                let image = newMuteState ? UIImage(systemName: "mic.slash.fill") : UIImage(systemName: "mic.fill")
+                button.setImage(image, for: .normal)
+            } catch {
+                NSLog("Error: \(error)")
             }
         }
     }

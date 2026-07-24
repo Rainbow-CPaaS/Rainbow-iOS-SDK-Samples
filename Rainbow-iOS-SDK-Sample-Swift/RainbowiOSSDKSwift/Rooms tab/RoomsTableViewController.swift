@@ -18,14 +18,14 @@ import Rainbow
 
 class RoomsTableViewController: UITableViewController {
     let serviceManager : ServicesManager
-    let roomsManager : RoomsService
+    let roomsManager : RoomService
     var populated = false
     var selectedIndex : IndexPath? = nil
     var allObjects : [Room] = []
         
     required init?(coder aDecoder: NSCoder) {
         serviceManager = ServicesManager.sharedInstance()
-        roomsManager = serviceManager.roomsService
+        roomsManager = serviceManager.roomService
         super.init(coder: aDecoder)
     }
     
@@ -42,9 +42,10 @@ class RoomsTableViewController: UITableViewController {
     
     func configureRightButton() {
         let logout = UIAction(title: "Logout", image: UIImage(systemName: "power.circle")) { _ in
-            ServicesManager.sharedInstance().loginManager.disconnect()
-            ServicesManager.sharedInstance().loginManager.resetAllCredentials()
-            self.dismiss(animated: false, completion: nil)
+            Task { @MainActor in
+                try? await ServicesManager.sharedInstance().loginManager.logout()
+                self.dismiss(animated: false, completion: nil)
+            }
         }
         
         let menu = UIMenu(title: "", children: [logout])
@@ -54,9 +55,9 @@ class RoomsTableViewController: UITableViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        NotificationCenter.default.addObserver(self, selector: #selector(didAddRoom(notification:)), name: NSNotification.Name(kRoomsServiceDidAddRoom), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(didUpdateRoom(notification:)), name: NSNotification.Name(kRoomsServiceDidUpdateRoom), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(didRemoveRoom(notification:)), name: NSNotification.Name(kRoomsServiceDidRemoveRoom), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didAddRoom(notification:)), name: RoomService.Notifications.didAddRoom, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didUpdateRoom(notification:)), name: RoomService.Notifications.didUpdateRoom, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didRemoveRoom(notification:)), name: RoomService.Notifications.didRemoveRoom, object: nil)
         fetchRooms()
     }
     
@@ -100,7 +101,7 @@ class RoomsTableViewController: UITableViewController {
         }
         
         if let userInfo = notification.object as? Dictionary<String, AnyObject> {
-            let room = userInfo[kRoomKey]! as! Room
+            let room = userInfo[RoomService.Constants.kRoomKey]! as! Room
             if let index = allObjects.firstIndex(of: room) {
                 if (index != NSNotFound) {
                     self.allObjects.remove(at: index)
@@ -132,18 +133,15 @@ class RoomsTableViewController: UITableViewController {
     }
     
     func fetchRooms() {
-        roomsManager.fetchFirstPage(forType: .activeAll, sortingField: .lastActivity) {rooms, error in
-            if let error = error {
-                NSLog("Error: \(error.localizedDescription)")
-            } else {
-                if let rooms = rooms {
-                    self.allObjects = rooms
+        Task { @MainActor in
+            do {
+                let (rooms, _) = try await roomsManager.getRoomsByPage(filteredBy: .activeAll, page: .first)
+                self.allObjects = rooms
+                if self.isViewLoaded {
+                    self.tableView.reloadData()
                 }
-                DispatchQueue.main.async {
-                    if self.isViewLoaded {
-                        self.tableView.reloadData()
-                    }
-                }
+            } catch {
+                NSLog("Error: \(error)")
             }
         }
     }
@@ -168,7 +166,7 @@ class RoomsTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if let roomCell = cell as? RoomsTableViewCell {
             let room = allObjects[indexPath.row]
-            roomCell.name.text = room.displayName
+            roomCell.name.text = room.displayName()
             if let photoData = room.photoData {
                 roomCell.avatar.image = UIImage.init(data: photoData)
                 roomCell.avatar.tintColor = UIColor.clear
@@ -187,15 +185,22 @@ class RoomsTableViewController: UITableViewController {
 
     override func tableView(_ tableView : UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let room = allObjects[indexPath.row]
+        let isMyRoom = {
+            guard let myContact = ServicesManager.sharedInstance().myUser.contact else { return false }
+            return room.isOwner(contact: myContact)
+        }()
+        
         let swipeActions = UISwipeActionsConfiguration(actions: [
-            UIContextualAction(style: .destructive, title: room.isMyRoom ? "Delete" : "Leave", handler: { _,_,_ in
-                if room.isMyRoom {
-                    self.roomsManager.deleteRoom(room) {_ in
-                    }
-                } else {
-                    self.roomsManager.leaveRoom(room) {_ in
+            UIContextualAction(style: .destructive, title: isMyRoom ? "Delete" : "Leave", handler: { [weak self] _,_,_ in
+                guard let self else { return }
+                Task {
+                    if isMyRoom {
+                        try? await self.roomsManager.delete(room: room)
+                    } else {
+                        try? await self.roomsManager.leave(room: room)
                     }
                 }
+
             }),
             
             UIContextualAction(style: .normal, title: "Edit", handler: { _,_,_ in

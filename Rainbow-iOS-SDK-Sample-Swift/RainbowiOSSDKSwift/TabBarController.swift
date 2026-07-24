@@ -43,7 +43,7 @@ class TabBarController: UITabBarController {
            let peerId = peer.rainbowID,
            let conversation = ServicesManager.sharedInstance().conversationsManagerService.getConversationWithPeerID(peerId ?? ""),
            let room = conversation.peer as? Room {
-            NSLog("[TabBarController] didAddCall: is incoming=\(rtcCall.isIncoming), is a conference call=\(rtcCall.isRtcSfuCall) in room='\(room.displayName ?? "")'")
+            NSLog("[TabBarController] didAddCall: is incoming=\(rtcCall.isIncoming), is a conference call=\(rtcCall.isRtcSfuCall) in room='\(String(describing: room.displayName()))'")
             
         } else {
             NSLog("[TabBarController] didAddCall: not a WebRTC call")

@@ -71,7 +71,7 @@ enum ConversationPeer {
         case .contact(let contact):
             return contact.displayName
         case .room(let room):
-            return room.displayName
+            return room.displayName()
         }
     }
 }
@@ -143,11 +143,12 @@ class ChatViewController: UIViewController, CKItemsBrowserDelegate, UITableViewD
                 if let displayName = try? ConversationPeer(peer).displayName {
                     self.title = displayName
                 }
-                conversationsManager.startConversation(withPeer: peer) { (conversation : Optional<Conversation>, error : Optional<Error>)  in
-                    if error != nil {
-                        self.theConversation = conversation
-                    } else {
-                        NSLog("Can't create the new conversation, error: \(error.debugDescription)")
+                
+                Task {
+                    do {
+                        self.theConversation = try await conversationsManager.startConversation(with: peer)
+                    } catch {
+                        NSLog("Can't create the new conversation, error: \(error)")
                     }
                 }
             }

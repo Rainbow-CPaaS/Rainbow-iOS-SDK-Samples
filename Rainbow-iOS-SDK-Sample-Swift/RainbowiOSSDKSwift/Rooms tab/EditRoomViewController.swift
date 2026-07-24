@@ -18,7 +18,7 @@ import Rainbow
 
 class EditRoomViewController: UIViewController {
     let serviceManager : ServicesManager
-    let roomsManager : RoomsService
+    let roomsManager : RoomService
     var room : Room? = nil
     var roomImage : UIImage = UIImage.init(named: "Default_Room_Avatar")!
     var roomImageTint = UIColor.clear
@@ -33,10 +33,10 @@ class EditRoomViewController: UIViewController {
     
     required init?(coder aDecoder: NSCoder) {
         serviceManager = ServicesManager.sharedInstance()
-        roomsManager = serviceManager.roomsService
+        roomsManager = serviceManager.roomService
         super.init(coder: aDecoder)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(didUpdateRoom(notification:)), name: NSNotification.Name(kRoomsServiceDidUpdateRoom), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didUpdateRoom(notification:)), name: RoomService.Notifications.didUpdateRoom, object: nil)
         NotificationCenter.default.addObserver(self, selector:#selector(didAddCall(notification:)), name:NSNotification.Name(kTelephonyServiceDidAddCall), object: nil)
         NotificationCenter.default.addObserver(self, selector:#selector(didRemoveCall(notification:)), name:NSNotification.Name(kTelephonyServiceDidRemoveCall), object: nil)
     }
@@ -55,12 +55,17 @@ class EditRoomViewController: UIViewController {
         self.avatar.image = self.roomImage;
         self.avatar.tintColor = self.roomImageTint;
         if let room = room {
-            nameTextField.text = room.displayName
+            let isMyRoom = {
+                guard let myContact = ServicesManager.sharedInstance().myUser.contact else { return false }
+                return room.isOwner(contact: myContact)
+            }()
+            
+            nameTextField.text = room.displayName()
             topicTextField.text = room.topic
-            ownerNameLabel.text = room.isMyRoom ? "Me" : room.creator?.displayName
-            nameTextField.isEnabled = room.isMyRoom
-            topicTextField.isEnabled = room.isMyRoom
-            updateButton.isEnabled = room.isMyRoom
+            ownerNameLabel.text = isMyRoom ? "Me" : room.creator?.displayName
+            nameTextField.isEnabled = isMyRoom
+            topicTextField.isEnabled = isMyRoom
+            updateButton.isEnabled = isMyRoom
         }
     }
     
@@ -89,7 +94,9 @@ class EditRoomViewController: UIViewController {
     
     @IBAction func updateAction(_ sender: Any) {
         if let name = nameTextField.text, let topic = topicTextField.text, let room = room {
-            roomsManager.updateRoom(room, name: name, topic: topic)
+            Task {
+                try? await roomsManager.update(room, withName: name, topic: topic)
+            }
         }
         nameTextField.resignFirstResponder()
         topicTextField.resignFirstResponder()
@@ -106,8 +113,8 @@ class EditRoomViewController: UIViewController {
             return
         }
         
-        if let roomInfo = notification.object as? Dictionary<String, AnyObject>, let room = roomInfo[kRoomKey] as? Room {
-            NSLog("[EditRoomViewController] didUpdateRoom '\(room.displayName ?? "")' with roomInfo=\(roomInfo)")
+        if let roomInfo = notification.object as? Dictionary<String, AnyObject>, let room = roomInfo[RoomService.Constants.kRoomKey] as? Room {
+            NSLog("[EditRoomViewController] didUpdateRoom '\(String(describing: room.displayName()))' with roomInfo=\(roomInfo)")
             // Update the right button menu as the state of the conference may have changed
             configureRightButton(room: room)
             updateConferenceState()
@@ -145,21 +152,23 @@ class EditRoomViewController: UIViewController {
     
     func updateConferenceState() {
         if let conference = room?.conference {
-            conferenceLabel.text = conference.isConnectedState() ? "connected" : "started"
+            conferenceLabel.text = "started"
         } else {
             conferenceLabel.text = "not started"
         }
     }
     
     func openConversation() {
-        if let peer = self.room {
-            self.serviceManager.conversationsManagerService.startConversation(withPeer: peer) {(conversation : Optional<Conversation>, error : Optional<Error>)  in
-                if let error = error as? NSError {
-                    NSLog("[EditRoomViewController] Can't start the conversation, error: \(error.debugDescription)")
-                }
-                DispatchQueue.main.async {
-                    self.navigationController?.popViewController(animated: true)
-                }
+        guard let peer = room else {
+            return
+        }
+        
+        Task { @MainActor in
+            do {
+                let _ = try await serviceManager.conversationsManagerService.startConversation(with: peer)
+                self.navigationController?.popViewController(animated: true)
+            } catch {
+                NSLog("[EditRoomViewController] Can't start the conversation, error: \(error)")
             }
         }
     }
@@ -172,27 +181,15 @@ class EditRoomViewController: UIViewController {
         }
         actions.append(openConversation)
         
-        if let conference = room.conference, conference.isConnectedState() {
-            let enterConference = UIAction(title: "Enter in conference", image: UIImage(systemName: "door.left.hand.open")) { _ in
-                DispatchQueue.main.async {
-                    self.performSegue(withIdentifier: "ConferenceSegue", sender:self)
-                }
-            }
-            actions.append(enterConference)
-            
-        } else if room.isAbleToJoinConference() {
+        if roomsManager.canIJoinConference(in: room) {
             let joinConference = UIAction(title: "Join conference", image: UIImage(systemName: "phone.badge.waveform.fill")) { _ in
                 self.videoCall = false
-                if let roomId = room.rainbowID {
-                    ServicesManager.sharedInstance().conferencesManagerService.join(roomId) { error in
-                        if let error = error as? NSError {
-                            NSLog("Join conference error: \(error.localizedDescription)")
-                        } else {
-                            DispatchQueue.main.async {
-                                self.performSegue(withIdentifier: "ConferenceSegue", sender:self)
-                            }
-                        }
-                        
+                Task { @MainActor in
+                    do {
+                        try await ServicesManager.sharedInstance().conferenceService.joinTheConference(in: room)
+                        self.performSegue(withIdentifier: "ConferenceSegue", sender:self)
+                    } catch {
+                        NSLog("Join conference error: \(error)")
                     }
                 }
             }
@@ -201,35 +198,43 @@ class EditRoomViewController: UIViewController {
             if ServicesManager.sharedInstance().myUser.isAllowedToUseWebRTCMobileVideo {
                 let joinConferenceWithVideo = UIAction(title: "Join conference with video", image: UIImage(systemName: "video.badge.waveform.fill")) { _ in
                     self.videoCall = true
-                    if let roomId = room.rainbowID {
-                        ServicesManager.sharedInstance().conferencesManagerService.join(roomId) { error in
-                            if let error = error as? NSError {
-                                NSLog("Join conference error: \(error.localizedDescription)")
-                            } else {
-                                DispatchQueue.main.async {
-                                    self.performSegue(withIdentifier: "ConferenceSegue", sender:self)
-                                }
-                            }
-                            
+                    Task { @MainActor in
+                        do {
+                            try await ServicesManager.sharedInstance().conferenceService.joinTheConference(in: room, activateMyVideo: true)
+                            self.performSegue(withIdentifier: "ConferenceSegue", sender:self)
+                        } catch {
+                            NSLog("Join conference error: \(error)")
                         }
                     }
                 }
                 actions.append(joinConferenceWithVideo)
             }
             
-        } else if room.isAbleToStartConference() {
+        } else if roomsManager.canIStartConference(in: room) {
             let startConference = UIAction(title: "Start audio conference", image: UIImage(systemName: "phone.connection.fill")) { _ in
                 self.videoCall = false
-                self.performSegue(withIdentifier: "ConferenceSegue", sender:self)
-                ServicesManager.sharedInstance().conferencesManagerService.startOrJoin(room, forceLocalVideo: false)
+                Task { @MainActor in
+                    do {
+                        try await ServicesManager.sharedInstance().conferenceService.startTheConference(in: room)
+                        self.performSegue(withIdentifier: "ConferenceSegue", sender:self)
+                    } catch {
+                        NSLog("Start conference error: \(error)")
+                    }
+                }
             }
             actions.append(startConference)
 
             if ServicesManager.sharedInstance().myUser.isAllowedToUseWebRTCMobileVideo {
                 let startVideoConference = UIAction(title: "Start video conference", image: UIImage(systemName: "person.crop.square.badge.video")) { _ in
                     self.videoCall = true
-                    self.performSegue(withIdentifier: "ConferenceSegue", sender:self)
-                    ServicesManager.sharedInstance().conferencesManagerService.startOrJoin(room, forceLocalVideo: true)
+                    Task { @MainActor in
+                        do {
+                            try await ServicesManager.sharedInstance().conferenceService.startTheConference(in: room, activateMyVideo: true)
+                            self.performSegue(withIdentifier: "ConferenceSegue", sender:self)
+                        } catch {
+                            NSLog("Start conference error: \(error)")
+                        }
+                    }
                 }
                 actions.append(startVideoConference)
             }

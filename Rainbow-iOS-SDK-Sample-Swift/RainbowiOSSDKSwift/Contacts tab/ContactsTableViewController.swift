@@ -44,8 +44,7 @@ class ContactsTableViewController: UITableViewController {
     
     func configureRightButton() {
         let logout = UIAction(title: "Logout", image: UIImage(systemName: "power.circle")) { _ in
-            ServicesManager.sharedInstance().loginManager.disconnect()
-            ServicesManager.sharedInstance().loginManager.resetAllCredentials()
+            Task { try? await ServicesManager.sharedInstance().loginManager.logout() }
             self.dismiss(animated: false, completion: nil)
         }
         

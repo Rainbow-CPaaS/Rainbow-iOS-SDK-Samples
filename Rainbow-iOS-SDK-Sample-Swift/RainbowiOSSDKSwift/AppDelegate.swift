@@ -26,11 +26,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         NSLog("Rainbow SDK version:\(RainbowVersionNumber)")
         ServicesManager.sharedInstance().setAppID(appID, secretKey: secretKey)
+        ServicesManager.sharedInstance().loginManager.setHttpApiManager(secretKey: secretKey)
         return true
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
-        ServicesManager.sharedInstance().loginManager.disconnect()
+        Task { try? await ServicesManager.sharedInstance().loginManager.logout() }
     }
 
 

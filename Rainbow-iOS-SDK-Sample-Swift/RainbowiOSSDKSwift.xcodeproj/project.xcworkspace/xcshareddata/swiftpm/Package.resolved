@@ -1,0 +1,42 @@
+{
+  "originHash" : "1914a6021ce8bfc7384a77418f4de8aa83b924ccb52171b05903dabbc0c9fef9",
+  "pins" : [
+    {
+      "identity" : "alamofire",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Alamofire/Alamofire.git",
+      "state" : {
+        "revision" : "7595cbcf59809f9977c5f6378500de2ad73b7ddb",
+        "version" : "5.12.0"
+      }
+    },
+    {
+      "identity" : "cryptoswift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/krzyzanowskim/CryptoSwift",
+      "state" : {
+        "revision" : "f2a627b84c1ff96f21ac2fcb623ab36142dd5512",
+        "version" : "1.10.0"
+      }
+    },
+    {
+      "identity" : "dispatch-timer",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/shareup/dispatch-timer.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "9b03fa83669f6e01ee2135af8ab9105cc2b9b744"
+      }
+    },
+    {
+      "identity" : "synchronized",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/shareup/synchronized.git",
+      "state" : {
+        "revision" : "85653e23270ec88ae19f8d494157769487e34aed",
+        "version" : "4.0.1"
+      }
+    }
+  ],
+  "version" : 3
+}

@@ -71,14 +71,16 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
 
     @objc func openConversation(_ sender: Any) {
-        if let peer = contact {
-            ServicesManager.sharedInstance().conversationsManagerService.startConversation(withPeer: peer) {(conversation : Optional<Conversation>, error : Optional<Error>)  in
-                if let error = error as? NSError {
-                    NSLog("Can't start the conversation, error: \(error.debugDescription)")
-                }
-                DispatchQueue.main.async {
-                    self.navigationController?.popViewController(animated: true)
-                }
+        guard let peer = contact else {
+            return
+        }
+        
+        Task { @MainActor in
+            do {
+                let _ = try await ServicesManager.sharedInstance().conversationsManagerService.startConversation(with: peer)
+                self.navigationController?.popViewController(animated: true)
+            } catch {
+                NSLog("[EditRoomViewController] Can't start the conversation, error: \(error)")
             }
         }
     }
